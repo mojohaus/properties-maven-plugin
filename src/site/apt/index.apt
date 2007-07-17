@@ -1,0 +1,30 @@
+ ------
+ Introduction
+ ------
+ Dennis Lundberg
+ ------
+ 2007-07-17
+ ------
+
+
+Properties Maven Plugin
+
+  The Properties Maven Plugin is here to make life a little easier when dealing
+  with properties.  It provides goals to read and write properties from files.
+
+* Goals Overview
+
+~~  General Information about the goals.
+
+  * {{{generate-mojo.html}properties:read-project-properties}} Reads property
+    files as Project properties.
+
+  * {{{generate-mojo.html}properties:write-active-profile-properties}} Writes
+    properties of all active profiles to a file.
+
+  * {{{generate-mojo.html}properties:write-project-properties}} Writes project
+    properties to a file.
+
+* Usage
+
+  Instructions on how to use the Properties Maven Plugin can be found {{{usage.html}here}}.
