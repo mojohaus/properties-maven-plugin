@@ -13,7 +13,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 /**
- * Reads property files as Project properties
+ * Reads property files as Project properties.
  *
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
  * @version $Id$
@@ -31,6 +31,8 @@ public class ReadPropertiesMojo
      private MavenProject project;
 
     /**
+     * The properties files that will be used when reading properties.
+     * 
      * @parameter
      * @required
      */

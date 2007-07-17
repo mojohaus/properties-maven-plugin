@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Writes properties of all active profiles to a file
+ * Writes properties of all active profiles to a file.
  * 
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
  * @version $Id$

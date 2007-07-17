@@ -6,7 +6,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import java.util.Properties;
 
 /**
- * Writes project properties to a file
+ * Writes project properties to a file.
  *
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
  * @version $Id$

@@ -24,6 +24,8 @@ public abstract class AbstractWritePropertiesMojo extends AbstractMojo {
      protected MavenProject project;
 
     /**
+     * The properties file that will be used when writing properties.
+     *  
      * @parameter
      * @required
      */
