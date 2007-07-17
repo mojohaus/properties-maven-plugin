@@ -12,31 +12,32 @@ import java.util.Properties;
 
 /**
  * Writes properties of all active profiles to a file.
- * 
+ *
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
  * @version $Id$
  * @goal write-active-profile-properties
  */
-public class WriteActiveProfileProperties
-    extends AbstractWritePropertiesMojo
+public class WriteActiveProfileProperties extends AbstractWritePropertiesMojo
 {
-
     public void execute()
-        throws MojoExecutionException {
+        throws MojoExecutionException
+    {
         validateOutputFile();
         List list = project.getActiveProfiles();
-        if (getLog().isInfoEnabled()) {
-            getLog().info(list.size() + " profile(s) active");
+        if ( getLog().isInfoEnabled() )
+        {
+            getLog().info( list.size() + " profile(s) active" );
         }
         Properties properties = new Properties();
-        for (Iterator iter = list.iterator(); iter.hasNext();) {
+        for ( Iterator iter = list.iterator(); iter.hasNext(); )
+        {
             Profile profile = (Profile) iter.next();
-            if (profile.getProperties() != null) {
-                properties.putAll(profile.getProperties());
+            if ( profile.getProperties() != null )
+            {
+                properties.putAll( profile.getProperties() );
             }
         }
 
-        writeProperties(properties, outputFile);
+        writeProperties( properties, outputFile );
     }
 }
-

@@ -12,11 +12,13 @@ import java.util.Properties;
  * @version $Id$
  * @goal write-project-properties
  */
-public class WriteProjectProperties extends AbstractWritePropertiesMojo {
-
-    public void execute() throws MojoExecutionException, MojoFailureException {
+public class WriteProjectProperties extends AbstractWritePropertiesMojo
+{
+    public void execute()
+        throws MojoExecutionException, MojoFailureException
+    {
         validateOutputFile();
         Properties properties = project.getProperties();
-        writeProperties(properties, outputFile);
+        writeProperties( properties, outputFile );
     }
 }
