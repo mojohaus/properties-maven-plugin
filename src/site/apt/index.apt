@@ -1,9 +1,9 @@
  ------
  Introduction
  ------
- Dennis Lundberg
+ Zarar Siddiqi
  ------
- 2007-07-17
+ 2007-07-18
  ------
 
 
@@ -16,13 +16,13 @@ Properties Maven Plugin
 
 ~~  General Information about the goals.
 
-  * {{{generate-mojo.html}properties:read-project-properties}} Reads property
+  * {{{read-project-properties-mojo.html}properties:read-project-properties}} Reads property
     files as Project properties.
 
-  * {{{generate-mojo.html}properties:write-active-profile-properties}} Writes
+  * {{{write-active-profile-properties-mojo.html}properties:write-active-profile-properties}} Writes
     properties of all active profiles to a file.
 
-  * {{{generate-mojo.html}properties:write-project-properties}} Writes project
+  * {{{write-project-properties-mojo.html}properties:write-project-properties}} Writes project
     properties to a file.
 
 * Usage
