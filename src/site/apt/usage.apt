@@ -9,7 +9,10 @@
 
 Usage
 
-* The read-project-properties goal
+* read-project-properties
+
+  The {{{read-project-properties-mojo.html}properties:read-project-properties}} goal 
+  reads property files and stores them as project properties.
 
 ----------------
 <project>
@@ -38,7 +41,10 @@ Usage
 </project>
 ----------------
 
-* The write-project-properties goal
+* write-project-properties
+
+  The {{{write-project-properties-mojo.html}properties:write-project-properties}} goal
+  writes all project properties to a given file.
 
 ----------------
 <project>
@@ -67,7 +73,10 @@ Usage
 </project>
 ----------------
 
-* The write-active-profile-properties goal
+* write-active-profile-properties
+
+  The {{{write-active-profile-properties-mojo.html}properties:write-active-profile-properties}} goal
+  writes properties of all active profiles to a given file.
 
 ----------------
 <project>

@@ -28,7 +28,9 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 /**
- * Reads property files as Project properties.
+ * The read-project-properties goal reads property files and stores
+ * the properties as project properties.  It serves as an alternate
+ * to specifying properties in pom.xml.
  *
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
  * @version $Id$

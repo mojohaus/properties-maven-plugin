@@ -9,7 +9,7 @@
   <groupId>org.codehaus.mojo</groupId>
   <artifactId>properties-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <name>Maven Properties Plugin</name>
+  <name>Properties Maven Plugin</name>
   <version>1.0-SNAPSHOT</version>
   <description>
     The Properties Maven Plugin is here to make life a little easier when
