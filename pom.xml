@@ -27,6 +27,11 @@
       <email>zarars@gmail.com</email>
       <url>http://arsenalist.com/tech</url>
     </developer>
+    <developer>
+      <id>krystian</id>
+      <name>Krystian Nowak</name>
+      <email>Krystian.Nowak@gmail.com</email>
+    </developer>    
   </developers>
   <licenses>
     <license>

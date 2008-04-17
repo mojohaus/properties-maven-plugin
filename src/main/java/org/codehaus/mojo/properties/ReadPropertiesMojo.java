@@ -23,6 +23,7 @@ import org.codehaus.plexus.util.cli.CommandLineUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -33,6 +34,7 @@ import java.util.Properties;
  * to specifying properties in pom.xml.
  *
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
+ * @author <a href="mailto:Krystian.Nowak@gmail.com">Krystian Nowak</a>
  * @version $Id$
  * @goal read-project-properties
  */
@@ -52,6 +54,14 @@ public class ReadPropertiesMojo extends AbstractMojo
      * @required
      */
     private File[] files;
+
+    /**
+     * If the plugin should be quiet if any of the files was not found
+     *
+     * @parameter default-value="false"
+     */
+    private boolean quiet;
+
 
     public void execute()
         throws MojoExecutionException
@@ -78,6 +88,17 @@ public class ReadPropertiesMojo extends AbstractMojo
                     {
                         stream.close();
                     }
+                }
+            }
+            catch ( FileNotFoundException e )
+            {
+                if(quiet)
+                {
+                    getLog().warn("Cannot load property file: " + file, e);
+                }
+                else
+                {
+                    throw new MojoExecutionException( "Error: ", e );
                 }
             }
             catch ( Exception e )
