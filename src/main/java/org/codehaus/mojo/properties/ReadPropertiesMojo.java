@@ -101,7 +101,7 @@ public class ReadPropertiesMojo extends AbstractMojo
             {
                 if ( quiet )
                 {
-                    getLog().warn( "Ignoring missing properties properties file: " + file.getAbsolutePath() );
+                    getLog().warn( "Ignoring missing properties file: " + file.getAbsolutePath() );
                 }
                 else
                 {
