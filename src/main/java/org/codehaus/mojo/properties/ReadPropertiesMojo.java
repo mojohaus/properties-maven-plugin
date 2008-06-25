@@ -16,17 +16,16 @@ package org.codehaus.mojo.properties;
  * limitations under the License.
  */
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Properties;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Properties;
 
 /**
  * The read-project-properties goal reads property files and stores
@@ -70,42 +69,47 @@ public class ReadPropertiesMojo extends AbstractMojo
         for ( int i = 0; i < files.length; i++ )
         {
             File file = files[i];
-            try
+
+            if ( file.exists() )
             {
-                FileInputStream stream = new FileInputStream( file );
-                if ( getLog().isDebugEnabled() )
-                {
-                    getLog().debug( "Loading property file: " + file );
-                }
-                projectProperties = project.getProperties();
                 try
                 {
-                    projectProperties.load( stream );
-                }
-                finally
-                {
-                    if ( stream != null )
+                    FileInputStream stream = new FileInputStream( file );
+                    if ( getLog().isDebugEnabled() )
                     {
-                        stream.close();
+                        getLog().debug( "Loading property file: " + file );
+                    }
+                    projectProperties = project.getProperties();
+                    try
+                    {
+                        projectProperties.load( stream );
+                    }
+                    finally
+                    {
+                        if ( stream != null )
+                        {
+                            stream.close();
+                        }
                     }
                 }
-            }
-            catch ( FileNotFoundException e )
-            {
-                if(quiet)
+                catch ( IOException e )
                 {
-                    getLog().warn("Cannot load property file: " + file, e);
+                    throw new MojoExecutionException( "Error reading properties file " + file.getAbsolutePath(), e );
+                }
+            }
+            else
+            {
+                if ( quiet )
+                {
+                    getLog().warn( "Ignoring missing properties properties file: " + file.getAbsolutePath() );
                 }
                 else
                 {
-                    throw new MojoExecutionException( "Error: ", e );
+                    throw new MojoExecutionException( "Properties file not found: " + file.getAbsolutePath() );
                 }
             }
-            catch ( Exception e )
-            {
-                throw new MojoExecutionException( "Error: ", e );
-            }
         }
+
         boolean useEnvVariables = false;
         for ( Enumeration n = projectProperties.propertyNames(); n.hasMoreElements(); )
         {
@@ -126,7 +130,7 @@ public class ReadPropertiesMojo extends AbstractMojo
             }
             catch ( IOException e )
             {
-                throw new MojoExecutionException( "Error: ", e );
+                throw new MojoExecutionException( "Error getting system envorinment variables: ", e );
             }
         }
         for ( Enumeration n = projectProperties.propertyNames(); n.hasMoreElements(); )
