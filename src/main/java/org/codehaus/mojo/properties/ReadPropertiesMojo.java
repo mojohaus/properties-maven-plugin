@@ -170,8 +170,10 @@ public class ReadPropertiesMojo extends AbstractMojo
             // strip prefix from original
             v = v.substring( idx + 2 );
 
+            idx2 = v.indexOf( "}" );
+            
             // if no matching } then bail
-            if ( ( idx2 = v.indexOf( "}" ) ) < 0 )
+            if ( idx2 < 0 )
             {
                 break;
             }
