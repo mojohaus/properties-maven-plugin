@@ -1,0 +1,56 @@
+ ------
+ Introduction
+ ------
+ Zarar Siddiqi
+ ------
+ 2007-07-18
+ ------
+
+
+Properties Maven Plugin
+
+  The Properties Maven Plugin is here to make life a little easier when dealing
+  with properties.  It provides goals to read and write properties from and to files.
+  
+  It's main use-case is loading properties from files instead of declaring them in
+  <pom.xml>, something that comes in handy when dealing with different environments.
+  
+  If you have a properties file called <teams.properties> with this content:
+  
+----------------------------------------
+  toronto=raptors
+  miami=heat
+----------------------------------------
+  
+  and invoke the {{{read-project-properties-mojo.html}properties:read-project-properties}}
+  goal, it would be the same as declaring the following in your <pom.xml>:
+  
+----------------------------------------
+  <properties>
+    <toronto>raptors</toronto>
+    <miami>heat</miami>
+  </properties>
+----------------------------------------
+  
+  The properties loaded from files can be used to filter resources
+  differently for different environments.  Those using Spring's 
+  {{{http://www.springframework.org/docs/api/org/springframework/beans/factory/config/PropertyResourceConfigurer.html}PropertyPlaceholderConfigurer}}
+  can see how these goals can be useful.
+
+* Goals Overview
+
+~~  General Information about the goals.
+
+  * {{{read-project-properties-mojo.html}properties:read-project-properties}} Reads property
+    files as Project properties.
+
+  * {{{write-project-properties-mojo.html}properties:write-project-properties}} Writes project
+    properties to a file.
+
+  * {{{write-active-profile-properties-mojo.html}properties:write-active-profile-properties}} Writes
+    properties of all active profiles to a file.
+
+
+* Usage
+
+  Instructions on how to use the Properties Maven Plugin can be found {{{usage.html}here}}.
