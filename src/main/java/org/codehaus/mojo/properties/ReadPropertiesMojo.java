@@ -77,12 +77,11 @@ public class ReadPropertiesMojo extends AbstractMojo
             {
                 try
                 {
+                    getLog().debug( "Loading property file: " + file );
+                    
                     FileInputStream stream = new FileInputStream( file );
-                    if ( getLog().isDebugEnabled() )
-                    {
-                        getLog().debug( "Loading property file: " + file );
-                    }
                     projectProperties = project.getProperties();
+                    
                     try
                     {
                         projectProperties.load( stream );

@@ -26,22 +26,40 @@
   <parent>
     <artifactId>mojo-parent</artifactId>
     <groupId>org.codehaus.mojo</groupId>
-    <version>19</version>
+    <version>20</version>
   </parent>
   
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.codehaus.mojo</groupId>
   <artifactId>properties-maven-plugin</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  
   <packaging>maven-plugin</packaging>
   <name>Properties Maven Plugin</name>
-  <version>1.0-SNAPSHOT</version>
-  <description> The Properties Maven Plugin is here to make life a little easier when dealing
+  <description> 
+    The Properties Maven Plugin is here to make life a little easier when dealing
     with properties. It provides goals to read and write properties from files.
-    </description>
+  </description>
+  <url>http://mojo.codehaus.org/javacc-maven-plugin/</url>
+  <inceptionYear>2006</inceptionYear>
+  
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <prerequisites>
     <maven>2.0.4</maven>
   </prerequisites>
-  <inceptionYear>2006</inceptionYear>
+  
+  <scm>
+    <connection>scm:svn:http://svn.codehaus.org/mojo/trunk/mojo/properties-maven-plugin</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/properties-maven-plugin</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/mojo/trunk/mojo/properties-maven-plugin</url>
+  </scm>
+
   <developers>
     <developer>
       <id>arsenalist</id>
@@ -56,15 +74,12 @@
     </developer>
   </developers>
   
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  
   <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+      <version>2.0.4</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
@@ -72,8 +87,13 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
-      <artifactId>maven-core</artifactId>
+      <artifactId>maven-project</artifactId>
       <version>2.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>1.1</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

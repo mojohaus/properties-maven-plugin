@@ -1,5 +1,5 @@
  ------
- Introduction
+ Usage
  ------
  Zarar Siddiqi
  ------
@@ -20,8 +20,8 @@ Usage
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
-        <artifactId>maven-properties-plugin</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <artifactId>properties-maven-plugin</artifactId>
+        <version>1.0-alpha-1</version>
         <executions>
           <execution>
             <phase>initialize</phase>
@@ -52,8 +52,8 @@ Usage
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
-        <artifactId>maven-properties-plugin</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <artifactId>properties-maven-plugin</artifactId>
+        <version>1.0-alpha-1</version>
         <executions>
           <execution>
             <phase>generate-resources</phase>
@@ -84,8 +84,8 @@ Usage
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
-        <artifactId>maven-properties-plugin</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <artifactId>properties-maven-plugin</artifactId>
+        <version>1.0-alpha-1</version>
         <executions>
           <execution>
             <phase>generate-resources</phase>

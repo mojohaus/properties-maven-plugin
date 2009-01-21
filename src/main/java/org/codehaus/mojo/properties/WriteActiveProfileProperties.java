@@ -42,7 +42,7 @@ public class WriteActiveProfileProperties extends AbstractWritePropertiesMojo
         List list = project.getActiveProfiles();
         if ( getLog().isInfoEnabled() )
         {
-            getLog().info( list.size() + " profile(s) active" );
+            getLog().debug( list.size() + " profile(s) active" );
         }
         Properties properties = new Properties();
         for ( Iterator iter = list.iterator(); iter.hasNext(); )

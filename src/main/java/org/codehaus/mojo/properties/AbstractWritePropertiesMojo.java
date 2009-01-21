@@ -51,27 +51,26 @@ public abstract class AbstractWritePropertiesMojo extends AbstractMojo
      */
     protected File outputFile;
 
-    protected void writeProperties( Properties properties, File file )
+    protected void writeProperties( Properties properties, File file ) 
+        throws MojoExecutionException
     {
         FileOutputStream fos = null;
         try
         {
             fos = new FileOutputStream( file );
+            properties.store( fos, "Properties" );
         }
         catch ( FileNotFoundException e )
         {
             getLog().error( "Could not create FileOutputStream: " + fos );
-            e.printStackTrace();
-        }
-        try
-        {
-            properties.store( fos, "Properties" );
+            throw new MojoExecutionException( e.getMessage(), e );
         }
         catch ( IOException e )
         {
             getLog().error( "Error writing properties: " + fos );
-            e.printStackTrace();
+            throw new MojoExecutionException( e.getMessage(), e );
         }
+        
         try
         {
             fos.close();
@@ -79,7 +78,7 @@ public abstract class AbstractWritePropertiesMojo extends AbstractMojo
         catch ( IOException e )
         {
             getLog().error( "Error closing FileOutputStream: " + fos );
-            e.printStackTrace();
+            throw new MojoExecutionException( e.getMessage(), e );
         }
     }
 
