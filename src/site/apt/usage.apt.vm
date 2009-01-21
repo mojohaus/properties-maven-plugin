@@ -62,7 +62,7 @@ Usage
             </goals>
             <configuration>
               <outputFile>
-                ${project.build.outputDirectory}/app.properties
+                \${project.build.outputDirectory}/app.properties
               </outputFile>
             </configuration>
           </execution>
@@ -94,7 +94,7 @@ Usage
             </goals>
             <configuration>
               <outputFile>
-                ${project.build.outputDirectory}/app.properties
+                \${project.build.outputDirectory}/app.properties
               </outputFile>
             </configuration>
           </execution>
