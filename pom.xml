@@ -19,9 +19,7 @@
   under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   
   <parent>
     <artifactId>mojo-parent</artifactId>
@@ -32,7 +30,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.codehaus.mojo</groupId>
   <artifactId>properties-maven-plugin</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0-alpha-1</version>
   
   <packaging>maven-plugin</packaging>
   <name>Properties Maven Plugin</name>
@@ -55,9 +53,9 @@
   </prerequisites>
   
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/mojo/trunk/mojo/properties-maven-plugin</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/properties-maven-plugin</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/mojo/trunk/mojo/properties-maven-plugin</url>
+    <connection>scm:svn:http://svn.codehaus.org/mojo/tags/properties-maven-plugin-1.0-alpha-1</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/tags/properties-maven-plugin-1.0-alpha-1</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/mojo/tags/properties-maven-plugin-1.0-alpha-1</url>
   </scm>
 
   <developers>
