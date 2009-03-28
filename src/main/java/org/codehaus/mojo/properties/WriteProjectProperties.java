@@ -19,8 +19,8 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
-import java.util.Iterator;
 import java.util.Properties;
+import java.util.Enumeration;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -44,10 +44,10 @@ public class WriteProjectProperties extends AbstractWritePropertiesMojo
         Properties systemProperties = System.getProperties();
         
         //allow system properties to over write key/value found in maven properties
-        Iterator iter = systemProperties.entrySet().iterator();
-        while ( iter.hasNext() )
+        Enumeration enum = systemProperties.keys();
+        while ( enum.hasMoreElements() )
         {
-            String key = (String) iter.next();
+            String key = (String) enum.nextElement();
             String value = systemProperties.getProperty( key );
             if ( projProperties.get( key ) != null )
             {
