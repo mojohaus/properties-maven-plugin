@@ -19,10 +19,11 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
+import java.util.Iterator;
+import java.util.Properties;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-
-import java.util.Properties;
 
 /**
  * Writes project properties to a file.
@@ -37,7 +38,24 @@ public class WriteProjectProperties extends AbstractWritePropertiesMojo
         throws MojoExecutionException, MojoFailureException
     {
         validateOutputFile();
-        Properties properties = project.getProperties();
-        writeProperties( properties, outputFile );
+        Properties projProperties = new Properties();
+        projProperties.putAll( project.getProperties() );
+        
+        Properties systemProperties = System.getProperties();
+        
+        //allow system properties to over write key/value found in maven properties
+        Iterator iter = systemProperties.entrySet().iterator();
+        while ( iter.hasNext() )
+        {
+            String key = (String) iter.next();
+            String value = systemProperties.getProperty( key );
+            if ( projProperties.get( key ) != null )
+            {
+                projProperties.put( key, value );
+            }
+            
+        }
+        
+        writeProperties( projProperties, outputFile );
     }
 }
