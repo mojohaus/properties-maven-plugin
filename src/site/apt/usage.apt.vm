@@ -104,3 +104,37 @@ Usage
   </build>
 </project>
 ----------------
+
+* set-system-properties
+
+  The {{{set-system-properties-mojo.html}properties:set-system-properties}}
+  goal sets the specified system properties.
+
+----------------
+<project>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>properties-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>set-system-properties</goal>
+            </goals>
+            <configuration>
+              <properties>
+                <property>
+                  <name>my.property.name</name>
+                  <value>my.property.value</value>
+                </property>
+              </properties>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+----------------

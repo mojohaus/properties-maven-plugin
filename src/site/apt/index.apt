@@ -10,7 +10,8 @@
 Properties Maven Plugin
 
   The Properties Maven Plugin is here to make life a little easier when dealing
-  with properties.  It provides goals to read and write properties from and to files.
+  with properties.  It provides goals to read and write properties from and to files,
+  and also to set system properties.
   
   It's main use-case is loading properties from files instead of declaring them in
   <pom.xml>, something that comes in handy when dealing with different environments.
@@ -50,6 +51,8 @@ Properties Maven Plugin
   * {{{write-active-profile-properties-mojo.html}properties:write-active-profile-properties}} Writes
     properties of all active profiles to a file.
 
+  * {{{set-system-properties-mojo.html}properties:set-system-properties}} Sets system properties.
+  
 
 * Usage
 
