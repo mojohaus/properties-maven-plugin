@@ -44,10 +44,10 @@ public class WriteProjectProperties extends AbstractWritePropertiesMojo
         Properties systemProperties = System.getProperties();
         
         //allow system properties to over write key/value found in maven properties
-        Enumeration enum = systemProperties.keys();
-        while ( enum.hasMoreElements() )
+        Enumeration enumeration = systemProperties.keys();
+        while ( enumeration.hasMoreElements() )
         {
-            String key = (String) enum.nextElement();
+            String key = (String) enumeration.nextElement();
             String value = systemProperties.getProperty( key );
             if ( projProperties.get( key ) != null )
             {
