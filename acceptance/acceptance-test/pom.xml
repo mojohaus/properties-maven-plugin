@@ -1,0 +1,94 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!--
+        This project show the plugin being used with all its features.
+    -->
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>properties-maven-plugin-acceptance</artifactId>
+        <version>1.0-alpha-3-SNAPSHOT</version>
+    </parent>
+    <artifactId>properties-maven-plugin-acceptance-test</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Maven Properties Plugin :: Acceptance Test</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-alpha-3-SNAPSHOT</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>properties-maven-plugin-acceptance-test-resources</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <!--
+                        Properties can only be defined in either files or URLs this is just to prevent
+                        confusion. If files are still required use the ${project.baseUri} prefix
+                        as shown below.
+
+                        Note that the classpath resources are defined in the jar artifact that is a
+                        dependency of this project.
+                    -->
+                    <urls>
+                        <url>${project.baseUri}/src/test/resources/org/codehaus/mojo/properties/teams.properties</url>
+                        <url>classpath:org/codehaus/mojo/properties/lower-precedence.properties</url>
+                        <url>classpath:org/codehaus/mojo/properties/override.properties</url>
+                    </urls>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <toronto>${toronto}</toronto>
+                        <miami>${miami}</miami>
+                        <overridden.property>${overridden.property}</overridden.property>
+                        <derived.property>${derived.property}</derived.property>
+                        <deferred.property>${deferred.property}</deferred.property>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
+</project>

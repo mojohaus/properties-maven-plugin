@@ -12,7 +12,7 @@ Usage
 * read-project-properties
 
   The {{{read-project-properties-mojo.html}properties:read-project-properties}} goal 
-  reads property files and stores them as project properties.
+  reads property files or URLs and stores them as project properties.
 
 ----------------
 <project>
@@ -39,6 +39,35 @@ Usage
     </plugins>
   </build>
 </project>
+
+or alternatively
+
+<project>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>properties-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <phase>initialize</phase>
+            <goals>
+              <goal>read-project-properties</goal>
+            </goals>
+            <configuration>
+              <urls>
+                <url>classpath:/config/dev.properties</url>
+                <url>file:///${env.HOME}/mydev.properties</file>
+              </urls>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
 ----------------
 
 * write-project-properties
