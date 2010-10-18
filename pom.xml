@@ -76,7 +76,12 @@
       <email>Krystian.Nowak@gmail.com</email>
     </developer>
   </developers>
-  
+    <developer>
+      <id>timothygordon32@gmail.com</id>
+      <name>Tim Gordon</name>
+      <email>timothygordon32@gmail.com</email>
+    </developer>
+  </developers>
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
