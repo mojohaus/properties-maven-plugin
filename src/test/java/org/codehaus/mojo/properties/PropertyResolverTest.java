@@ -21,8 +21,8 @@ package org.codehaus.mojo.properties;
 
 import junit.framework.TestCase;
 import org.apache.maven.plugin.MojoFailureException;
-
 import java.util.Properties;
+import org.junit.matchers.JUnitMatchers;
 
 /**
  * Tests the support class that produces concrete values from a
@@ -100,14 +100,14 @@ public class PropertyResolverTest extends TestCase
             value5 = resolver.getPropertyValue("p5", properties, new Properties());
             fail();
         } catch (IllegalArgumentException e) {
-            assertTrue(Matchers.containsString("p5", e.getMessage()));
+            assertTrue(JUnitMatchers.containsString("p5").matches(e.getMessage()));
         }
         String value6 = null;
         try {
             value6 = resolver.getPropertyValue("p6", properties, new Properties());
             fail();
         } catch (IllegalArgumentException e) {
-            assertTrue(Matchers.containsString("p7", e.getMessage()));
+            assertTrue(JUnitMatchers.containsString("p7").matches(e.getMessage()));
         }
 
         assertEquals("value", value1);
