@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Properties Maven Plugin - Introduction</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+          <meta name="author" content="Zarar Siddiqi" />
+          </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../" id="bannerLeft">
+    
+                                            <img src="../images/mojo_logo.png" alt="" />
+    
+            </a>
+                        <a href="http://codehaus.org/" id="bannerRight">
+    
+                                            <img src="../images/codehaus-small.png" alt="" />
+    
+            </a>
+            <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+            
+  
+    
+            <div class="xleft">
+          
+                <a href="http://codehaus.org/" class="externalLink">Codehaus</a>
+                &gt;
+      
+                <a href="../">Mojo</a>
+                &gt;
+      
+                <a href="http://mojo.codehaus.org/properties-maven-plugin/" class="externalLink">Properties Maven Plugin</a>
+                  </div>
+            <div class="xright">            <a href="http://maven.apache.org/" class="externalLink">Maven</a>
+            
+  
+
+  
+    
+            
+  
+    
+            &nbsp;| Last Published: 2015-06-13
+              &nbsp;| Version: 1.0-alpha-2
+            </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+            
+  
+    
+                   <h5>Overview</h5>
+            <ul>
+              
+    <li class="none">
+              <strong>Introduction</strong>
+        </li>
+              
+    <li class="none">
+                    <a href="plugin-info.html">Goals</a>
+          </li>
+              
+    <li class="none">
+                    <a href="usage.html">Usage</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+            
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+            <li class="expanded">
+                    <a href="project-info.html">Project Information</a>
+                  <ul>
+                  
+    <li class="none">
+              <strong>About</strong>
+        </li>
+                  
+    <li class="none">
+                    <a href="integration.html">Continuous Integration</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="dependencies.html">Dependencies</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="dependency-management.html">Dependency Management</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="issue-tracking.html">Issue Tracking</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="mail-lists.html">Mailing Lists</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="plugin-management.html">Plugin Management</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="license.html">Project License</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="project-summary.html">Project Summary</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="team-list.html">Project Team</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="source-repository.html">Source Repository</a>
+          </li>
+              </ul>
+        </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+            
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2>Properties Maven Plugin</h2>
+<p>The Properties Maven Plugin is here to make life a little easier when dealing with properties. It provides goals to read and write properties from and to files, and also to set system properties.</p>
+<p>It's main use-case is loading properties from files instead of declaring them in <i>pom.xml</i>, something that comes in handy when dealing with different environments.</p>
+<p>If you have a properties file called <i>teams.properties</i> with this content:</p>
+<div class="source"><pre>  toronto=raptors
+  miami=heat</pre>
+</div>
+<p>and invoke the <a href="read-project-properties-mojo.html">properties:read-project-properties</a> goal, it would be the same as declaring the following in your <i>pom.xml</i>:</p>
+<div class="source"><pre>  &lt;properties&gt;
+    &lt;toronto&gt;raptors&lt;/toronto&gt;
+    &lt;miami&gt;heat&lt;/miami&gt;
+  &lt;/properties&gt;</pre>
+</div>
+<p>The properties loaded from files can be used to filter resources differently for different environments. Those using Spring's <a href="http://www.springframework.org/docs/api/org/springframework/beans/factory/config/PropertyResourceConfigurer.html" class="externalLink">PropertyPlaceholderConfigurer</a> can see how these goals can be useful.</p>
+<div class="section"><h3>Goals Overview</h3>
+<ul><li><a href="read-project-properties-mojo.html">properties:read-project-properties</a> Reads property files as Project properties.</li>
+<li><a href="write-project-properties-mojo.html">properties:write-project-properties</a> Writes project properties to a file.</li>
+<li><a href="write-active-profile-properties-mojo.html">properties:write-active-profile-properties</a> Writes properties of all active profiles to a file.</li>
+<li><a href="set-system-properties-mojo.html">properties:set-system-properties</a> Sets system properties.</li>
+</ul>
+</div>
+<div class="section"><h3>Usage</h3>
+<p>Instructions on how to use the Properties Maven Plugin can be found <a href="usage.html">here</a>.</p>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2009-2015
+    
+          Codehaus
+          
+  
+
+  
+    
+            
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>
