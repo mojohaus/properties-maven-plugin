@@ -35,7 +35,7 @@ class ExpansionBuffer
         return prefixPos >= 0 && suffixPos >= 0;
     }
 
-    public String extractPropertyKey()
+    public KeyAndDefaultValue extractPropertyKeyAndDefaultValue()
     {
         advanceToNextPrefix();
 
@@ -43,9 +43,11 @@ class ExpansionBuffer
 
         String key = beforeNextSuffix();
 
+        String defaultValue = defaultValue();
+
         discardToAfterNextSuffix();
 
-        return key;
+        return new KeyAndDefaultValue(key, defaultValue);
     }
 
     public String toString() {
@@ -101,7 +103,27 @@ class ExpansionBuffer
 
     private String beforeNextSuffix()
     {
+        int defValuePos = unresolved.indexOf( ":" );
         int propertySuffixPos = unresolved.indexOf( "}" );
+
+        //check default value separator only if before next suffix
+        if (defValuePos != -1 && propertySuffixPos != -1 && defValuePos < propertySuffixPos)
+        {
+            return unresolved.substring( 0, defValuePos );
+        }
+
         return unresolved.substring( 0, propertySuffixPos );
+    }
+
+    private String defaultValue()
+    {
+        int defValuePos = unresolved.indexOf( ":" );
+        int propertySuffixPos = unresolved.indexOf( "}" );
+        if (defValuePos != -1 && propertySuffixPos != -1 && (defValuePos+1) < propertySuffixPos)
+        {
+            return unresolved.substring( defValuePos+1, propertySuffixPos );
+        }
+
+        return null;
     }
 }

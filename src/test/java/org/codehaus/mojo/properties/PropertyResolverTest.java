@@ -148,4 +148,55 @@ public class PropertyResolverTest extends TestCase
     {
         assertEquals("", resolver.getPropertyValue("non-existent", new Properties(), null));
     }
+
+    public void testDefaultValueForUnresolvedProperty()
+    {
+        Properties properties = new Properties();
+        properties.setProperty("p1", "${unknown:}");
+        properties.setProperty("p2", "${unknown:defaultValue}");
+        properties.setProperty("p3", "http://${uhost:localhost}:${uport:8080}");
+        properties.setProperty("p4", "http://${host:localhost}:${port:8080}");
+        properties.setProperty("p5", "${unknown:${fallback}}");
+        properties.setProperty("p6", "${unknown:${double.unknown}}");
+        properties.setProperty("p7", "${unknown:with space}");
+        properties.setProperty("p8", "${unknown:with extra :}");
+        properties.setProperty("p9", "${malformed:defVal");
+        properties.setProperty("p10", "${malformed:with space");
+        properties.setProperty("p11", "${malformed:with extra :");
+        properties.setProperty("p12", "${unknown::}");
+        properties.setProperty("p13", "${unknown:  }");
+
+        properties.setProperty("host", "example.com");
+        properties.setProperty("port", "9090");
+        properties.setProperty("fallback", "fallback value");
+
+
+        String value1 = resolver.getPropertyValue("p1", properties, new Properties());
+        String value2 = resolver.getPropertyValue("p2", properties, new Properties());
+        String value3 = resolver.getPropertyValue("p3", properties, new Properties());
+        String value4 = resolver.getPropertyValue("p4", properties, new Properties());
+        String value5 = resolver.getPropertyValue("p5", properties, new Properties());
+        String value6 = resolver.getPropertyValue("p6", properties, new Properties());
+        String value7 = resolver.getPropertyValue("p7", properties, new Properties());
+        String value8 = resolver.getPropertyValue("p8", properties, new Properties());
+        String value9 = resolver.getPropertyValue("p9", properties, new Properties());
+        String value10 = resolver.getPropertyValue("p10", properties, new Properties());
+        String value11 = resolver.getPropertyValue("p11", properties, new Properties());
+        String value12 = resolver.getPropertyValue("p12", properties, new Properties());
+        String value13 = resolver.getPropertyValue("p13", properties, new Properties());
+
+        assertEquals("${unknown}", value1);
+        assertEquals("defaultValue", value2);
+        assertEquals("http://localhost:8080", value3);
+        assertEquals("http://example.com:9090", value4);
+        assertEquals("fallback value", value5);
+        assertEquals("${double.unknown}", value6);
+        assertEquals("with space", value7);
+        assertEquals("with extra :", value8);
+        assertEquals("${malformed:defVal", value9);
+        assertEquals("${malformed:with space", value10);
+        assertEquals("${malformed:with extra :", value11);
+        assertEquals(":", value12);
+        assertEquals("  ", value13);
+    }
 }

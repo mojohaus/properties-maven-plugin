@@ -51,8 +51,9 @@ class PropertyResolver {
 
         while ( buffer.hasMoreLegalPlaceholders() )
         {
-            String newKey = buffer.extractPropertyKey();
-            String newValue = fromPropertiesThenSystemThenEnvironment( newKey, properties, environment );
+            KeyAndDefaultValue kv = buffer.extractPropertyKeyAndDefaultValue();
+            String newKey = kv.getKey();
+            String newValue = fromPropertiesThenSystemThenEnvironment( newKey, kv.getDefaultValue(), properties, environment );
 
             circularDefinitionPreventer.visited(newKey, newValue);
 
@@ -62,7 +63,7 @@ class PropertyResolver {
         return buffer.toString();
     }
 
-    private String fromPropertiesThenSystemThenEnvironment(String key, Properties properties, Properties environment)
+    private String fromPropertiesThenSystemThenEnvironment(String key, String defaultValue, Properties properties, Properties environment)
     {
         String value = properties.getProperty( key );
 
@@ -76,6 +77,12 @@ class PropertyResolver {
         if ( value == null && key.startsWith( "env." ) && environment != null )
         {
             value = environment.getProperty( key.substring( 4 ) );
+        }
+
+        // try default value
+        if ( value == null )
+        {
+            value = defaultValue;
         }
 
         return value;
