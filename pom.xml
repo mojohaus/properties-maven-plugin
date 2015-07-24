@@ -54,7 +54,7 @@
   </licenses>
   
   <prerequisites>
-    <maven>2.0.6</maven>
+    <maven>2.2.1</maven>
   </prerequisites>
   
   <scm>
@@ -112,7 +112,7 @@
   
   <properties>
     <maven.scm.version>1.1.1-SNAPSHOT</maven.scm.version>
-    <maven.api.version>2.0.6</maven.api.version>
+    <maven.api.version>2.2.1</maven.api.version>
   </properties>
   
 </project>
