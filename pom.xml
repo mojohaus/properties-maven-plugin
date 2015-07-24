@@ -43,7 +43,7 @@
   
   <packaging>maven-plugin</packaging>
   
-  <url>http://mojo.codehaus.org/properties-maven-plugin/</url>
+  <url>http://www.mojohaus.org/properties-maven-plugin</url>
   
   <licenses>
     <license>
@@ -58,9 +58,9 @@
   </prerequisites>
   
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/mojo/trunk/mojo/properties-maven-plugin</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/properties-maven-plugin</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/mojo/trunk/mojo/properties-maven-plugin</url>
+    <connection>scm:git:git@github.com:mojohaus/properties-maven-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:mojohaus/properties-maven-plugin.git</developerConnection>
+    <url>https://github.com/mojohaus/properties-maven-plugin/</url>
   </scm>
 
   <developers>
