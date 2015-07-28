@@ -20,30 +20,31 @@ package org.codehaus.mojo.properties;
  */
 
 /**
+ * Default implementation of the ExpansionBuffer class
+ *
  * @author tdiamantis
  */
-public class KeyAndDefaultValue {
-    private String key;
-    private String defaultValue;
-
-    public KeyAndDefaultValue(String key, String defaultValue) {
-        this.key = key;
-        this.defaultValue = defaultValue;
+public class ExpansionBufferImpl extends ExpansionBuffer {
+    public ExpansionBufferImpl(String unresolved) {
+        super(unresolved);
     }
 
-    public String getKey() {
-        return key;
+    public KeyAndDefaultValue extractPropertyKeyAndDefaultValue()
+    {
+        advanceToNextPrefix();
+
+        discardPrefix();
+
+        String key = beforeNextSuffix();
+
+        discardToAfterNextSuffix();
+
+        return new KeyAndDefaultValue(key, null);
     }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getDefaultValue() {
-        return defaultValue;
-    }
-
-    public void setDefaultValue(String defaultValue) {
-        this.defaultValue = defaultValue;
+    protected String beforeNextSuffix()
+    {
+        int propertySuffixPos = unresolved.indexOf( "}" );
+        return unresolved.substring( 0, propertySuffixPos );
     }
 }

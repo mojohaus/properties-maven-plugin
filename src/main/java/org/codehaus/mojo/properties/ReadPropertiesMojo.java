@@ -109,6 +109,13 @@ public class ReadPropertiesMojo extends AbstractMojo
     private boolean quiet;
 
     /**
+     * If the plugin should process default values within property placeholders
+     *
+     * @parameter default-value="false"
+     */
+    private boolean useDefaultValues;
+
+    /**
      * Used for resolving property placeholders.
      */
     private final PropertyResolver resolver = new PropertyResolver();
@@ -246,7 +253,7 @@ public class ReadPropertiesMojo extends AbstractMojo
     private String getPropertyValue( String k, Properties p, Properties environment ) throws MojoFailureException
     {
         try {
-            return resolver.getPropertyValue(k, p, environment);
+            return resolver.getPropertyValue(k, p, environment, useDefaultValues);
         } catch (IllegalArgumentException e) {
             throw new MojoFailureException(e.getMessage());
         }
@@ -271,12 +278,28 @@ public class ReadPropertiesMojo extends AbstractMojo
     }
 
     /**
+     * @param useDefaultValues set to <code>true</code> if default values need to be processed within property placeholders
+     */
+    public void setUseDefaultValues(boolean useDefaultValues)
+    {
+        this.useDefaultValues = useDefaultValues;
+    }
+
+    /**
      * Default scope for test access.
      * @param project The test project.
      */
     void setProject(MavenProject project)
     {
         this.project = project;
+    }
+
+    /**
+     * For test access.
+     * @return The test project
+     */
+    public MavenProject getProject() {
+        return project;
     }
 
     private static abstract class Resource

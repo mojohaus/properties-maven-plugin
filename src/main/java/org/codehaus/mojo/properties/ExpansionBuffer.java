@@ -19,7 +19,7 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
-class ExpansionBuffer
+abstract class ExpansionBuffer
 {
     public final StringBuilder resolved = new StringBuilder();
     public String unresolved;
@@ -35,20 +35,7 @@ class ExpansionBuffer
         return prefixPos >= 0 && suffixPos >= 0;
     }
 
-    public KeyAndDefaultValue extractPropertyKeyAndDefaultValue()
-    {
-        advanceToNextPrefix();
-
-        discardPrefix();
-
-        String key = beforeNextSuffix();
-
-        String defaultValue = defaultValue();
-
-        discardToAfterNextSuffix();
-
-        return new KeyAndDefaultValue(key, defaultValue);
-    }
+    public abstract KeyAndDefaultValue extractPropertyKeyAndDefaultValue();
 
     public String toString() {
         return resolved.append(unresolved).toString();
@@ -81,16 +68,16 @@ class ExpansionBuffer
         resolved.append( "${" ).append(newKey).append( "}" );
     }
 
-    private void discardToAfterNextSuffix() {
+    protected void discardToAfterNextSuffix() {
         int propertySuffixPos = unresolved.indexOf( "}" );
         unresolved = unresolved.substring(propertySuffixPos + 1);
     }
 
-    private void advanceToNextPrefix() {
+    protected void advanceToNextPrefix() {
         resolved.append( beforePrefix() );
     }
 
-    private void discardPrefix() {
+    protected void discardPrefix() {
         int propertyPrefixPos = unresolved.indexOf( "${" );
         unresolved = unresolved.substring(propertyPrefixPos + 2);
     }
@@ -101,29 +88,5 @@ class ExpansionBuffer
         return unresolved.substring( 0, propertyPrefixPos );
     }
 
-    private String beforeNextSuffix()
-    {
-        int defValuePos = unresolved.indexOf( ":" );
-        int propertySuffixPos = unresolved.indexOf( "}" );
-
-        //check default value separator only if before next suffix
-        if (defValuePos != -1 && propertySuffixPos != -1 && defValuePos < propertySuffixPos)
-        {
-            return unresolved.substring( 0, defValuePos );
-        }
-
-        return unresolved.substring( 0, propertySuffixPos );
-    }
-
-    private String defaultValue()
-    {
-        int defValuePos = unresolved.indexOf( ":" );
-        int propertySuffixPos = unresolved.indexOf( "}" );
-        if (defValuePos != -1 && propertySuffixPos != -1 && (defValuePos+1) < propertySuffixPos)
-        {
-            return unresolved.substring( defValuePos+1, propertySuffixPos );
-        }
-
-        return null;
-    }
+    protected abstract String beforeNextSuffix();
 }
