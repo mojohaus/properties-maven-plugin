@@ -56,6 +56,12 @@
   <prerequisites>
     <maven>2.2.1</maven>
   </prerequisites>
+
+  <properties>
+    <maven.api.version>2.2.1</maven.api.version>
+    <mojo.java.target>1.5</mojo.java.target>
+  </properties>
+  
   
   <scm>
     <connection>scm:git:https://github.com/mojohaus/properties-maven-plugin.git</connection>
@@ -109,10 +115,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  
-  <properties>
-    <maven.scm.version>1.1.1-SNAPSHOT</maven.scm.version>
-    <maven.api.version>2.2.1</maven.api.version>
-  </properties>
   
 </project>
