@@ -1,5 +1,11 @@
 package org.codehaus.mojo.properties;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file 
@@ -21,37 +27,24 @@ package org.codehaus.mojo.properties;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
 
 /**
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
  * @version $Id$
  */
-public abstract class AbstractWritePropertiesMojo extends AbstractMojo
+public abstract class AbstractWritePropertiesMojo
+    extends AbstractMojo
 {
 
-    /**
-     * @parameter default-value="${project}"
-     * @required
-     * @readonly
-     */
+    @Parameter( defaultValue = "${project}", required = true, readonly = true )
     protected MavenProject project;
 
-    /**
-     * The properties file that will be used when writing properties.
-     *
-     * @parameter
-     * @required
-     */
+    @Parameter( required = true )
     protected File outputFile;
 
-    protected void writeProperties( Properties properties, File file ) 
+    protected void writeProperties( Properties properties, File file )
         throws MojoExecutionException
     {
         FileOutputStream fos = null;
@@ -70,7 +63,7 @@ public abstract class AbstractWritePropertiesMojo extends AbstractMojo
             getLog().error( "Error writing properties: " + fos );
             throw new MojoExecutionException( e.getMessage(), e );
         }
-        
+
         try
         {
             fos.close();

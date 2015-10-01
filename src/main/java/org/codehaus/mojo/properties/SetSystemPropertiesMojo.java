@@ -25,15 +25,17 @@ import java.util.Properties;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * Sets system properties.
  * 
  * @author <a href="mailto:markh@apache.org">Mark Hobson</a>
  * @version $Id$
- * @goal set-system-properties
- * @phase initialize
  */
+@Mojo( name = "set-system-properties", defaultPhase = LifecyclePhase.INITIALIZE, threadSafe = true )
 public class SetSystemPropertiesMojo
     extends AbstractMojo
 {
@@ -41,10 +43,8 @@ public class SetSystemPropertiesMojo
 
     /**
      * The system properties to set.
-     * 
-     * @parameter
-     * @required
      */
+    @Parameter( required = true )
     private Properties properties;
 
     // Mojo methods -----------------------------------------------------------
@@ -64,7 +64,7 @@ public class SetSystemPropertiesMojo
 
         getLog().debug( "Setting system properties:" );
 
-        for ( Enumeration propertyNames = properties.propertyNames(); propertyNames.hasMoreElements(); )
+        for ( Enumeration<?> propertyNames = properties.propertyNames(); propertyNames.hasMoreElements(); )
         {
             String propertyName = propertyNames.nextElement().toString();
             String propertyValue = properties.getProperty( propertyName );

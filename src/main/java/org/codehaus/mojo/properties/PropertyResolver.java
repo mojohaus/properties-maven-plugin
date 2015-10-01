@@ -21,40 +21,38 @@ package org.codehaus.mojo.properties;
 
 import java.util.*;
 
-class PropertyResolver {
+class PropertyResolver
+{
 
     /**
-     * Retrieves a property value, replacing values like ${token}
-     * using the Properties to look them up.
-     * Shamelessly adapted from:
-     * http://maven.apache.org/plugins/maven-war-plugin/xref/org/apache/maven/plugin/war/PropertyUtils.html
+     * Retrieves a property value, replacing values like ${token} using the Properties to look them up. Shamelessly
+     * adapted from:
+     * http://maven.apache.org/plugins/maven-war-plugin/xref/org/apache/maven/plugin/war/PropertyUtils.html It will
+     * leave unresolved properties alone, trying for System properties, and environment variables and implements
+     * reparsing (in the case that the value of a property contains a key), and will not loop endlessly on a pair like
+     * test = ${test}
      *
-     * It will leave unresolved properties alone, trying for System
-     * properties, and environment variables and implements reparsing
-     * (in the case that the value of a property contains a key), and will
-     * not loop endlessly on a pair like test = ${test}
-     *
-     * @param key           property key
-     * @param properties           project properties
+     * @param key property key
+     * @param properties project properties
      * @param environment environment variables
      * @return resolved property value
      * @throws IllegalArgumentException when properties are circularly defined
      */
     public String getPropertyValue( String key, Properties properties, Properties environment )
     {
-        String value = properties.getProperty(key);
+        String value = properties.getProperty( key );
 
-        ExpansionBuffer buffer = new ExpansionBuffer(value);
+        ExpansionBuffer buffer = new ExpansionBuffer( value );
 
         CircularDefinitionPreventer circularDefinitionPreventer =
-                new CircularDefinitionPreventer().visited( key, value);
+            new CircularDefinitionPreventer().visited( key, value );
 
         while ( buffer.hasMoreLegalPlaceholders() )
         {
             String newKey = buffer.extractPropertyKey();
             String newValue = fromPropertiesThenSystemThenEnvironment( newKey, properties, environment );
 
-            circularDefinitionPreventer.visited(newKey, newValue);
+            circularDefinitionPreventer.visited( newKey, newValue );
 
             buffer.add( newKey, newValue );
         }
@@ -62,7 +60,7 @@ class PropertyResolver {
         return buffer.toString();
     }
 
-    private String fromPropertiesThenSystemThenEnvironment(String key, Properties properties, Properties environment)
+    private String fromPropertiesThenSystemThenEnvironment( String key, Properties properties, Properties environment )
     {
         String value = properties.getProperty( key );
 

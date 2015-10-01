@@ -1,5 +1,7 @@
 package org.codehaus.mojo.properties;
 
+import java.util.Enumeration;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file 
@@ -20,19 +22,21 @@ package org.codehaus.mojo.properties;
  */
 
 import java.util.Properties;
-import java.util.Enumeration;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 
 /**
  * Writes project properties to a file.
  *
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
  * @version $Id$
- * @goal write-project-properties
  */
-public class WriteProjectProperties extends AbstractWritePropertiesMojo
+@Mojo( name = "write-project-properties", defaultPhase = LifecyclePhase.NONE, threadSafe = true )
+public class WriteProjectProperties
+    extends AbstractWritePropertiesMojo
 {
     public void execute()
         throws MojoExecutionException, MojoFailureException
@@ -40,11 +44,11 @@ public class WriteProjectProperties extends AbstractWritePropertiesMojo
         validateOutputFile();
         Properties projProperties = new Properties();
         projProperties.putAll( project.getProperties() );
-        
+
         Properties systemProperties = System.getProperties();
-        
-        //allow system properties to over write key/value found in maven properties
-        Enumeration enumeration = systemProperties.keys();
+
+        // allow system properties to over write key/value found in maven properties
+        Enumeration<?> enumeration = systemProperties.keys();
         while ( enumeration.hasMoreElements() )
         {
             String key = (String) enumeration.nextElement();
@@ -53,9 +57,9 @@ public class WriteProjectProperties extends AbstractWritePropertiesMojo
             {
                 projProperties.put( key, value );
             }
-            
+
         }
-        
+
         writeProperties( projProperties, outputFile );
     }
 }
