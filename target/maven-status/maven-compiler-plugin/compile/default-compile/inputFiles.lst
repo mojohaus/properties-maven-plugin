@@ -1,0 +1,9 @@
+/Users/kama/ws-git-codehaus/properties-maven-plugin/src/main/java/org/codehaus/mojo/properties/WriteActiveProfileProperties.java
+/Users/kama/ws-git-codehaus/properties-maven-plugin/src/main/java/org/codehaus/mojo/properties/CircularDefinitionPreventer.java
+/Users/kama/ws-git-codehaus/properties-maven-plugin/src/main/java/org/codehaus/mojo/properties/AbstractWritePropertiesMojo.java
+/Users/kama/ws-git-codehaus/properties-maven-plugin/target/generated-sources/plugin/org/codehaus/mojo/properties/HelpMojo.java
+/Users/kama/ws-git-codehaus/properties-maven-plugin/src/main/java/org/codehaus/mojo/properties/PropertyResolver.java
+/Users/kama/ws-git-codehaus/properties-maven-plugin/src/main/java/org/codehaus/mojo/properties/ReadPropertiesMojo.java
+/Users/kama/ws-git-codehaus/properties-maven-plugin/src/main/java/org/codehaus/mojo/properties/SetSystemPropertiesMojo.java
+/Users/kama/ws-git-codehaus/properties-maven-plugin/src/main/java/org/codehaus/mojo/properties/ExpansionBuffer.java
+/Users/kama/ws-git-codehaus/properties-maven-plugin/src/main/java/org/codehaus/mojo/properties/WriteProjectProperties.java

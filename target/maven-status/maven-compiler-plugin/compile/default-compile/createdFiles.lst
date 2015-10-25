@@ -1,0 +1,15 @@
+org/codehaus/mojo/properties/SetSystemPropertiesMojo.class
+org/codehaus/mojo/properties/WriteActiveProfileProperties.class
+org/codehaus/mojo/properties/ReadPropertiesMojo$Resource.class
+org/codehaus/mojo/properties/PropertyResolver.class
+org/codehaus/mojo/properties/HelpMojo.class
+org/codehaus/mojo/properties/CircularDefinitionPreventer.class
+org/codehaus/mojo/properties/WriteProjectProperties.class
+org/codehaus/mojo/properties/CircularDefinitionPreventer$VisitedProperty.class
+org/codehaus/mojo/properties/ReadPropertiesMojo.class
+org/codehaus/mojo/properties/ReadPropertiesMojo$FileResource.class
+org/codehaus/mojo/properties/ExpansionBuffer.class
+org/codehaus/mojo/properties/ReadPropertiesMojo$UrlResource.class
+org/codehaus/mojo/properties/AbstractWritePropertiesMojo.class
+org/codehaus/mojo/properties/ReadPropertiesMojo$1.class
+org/codehaus/mojo/properties/CircularDefinitionPreventer$1.class

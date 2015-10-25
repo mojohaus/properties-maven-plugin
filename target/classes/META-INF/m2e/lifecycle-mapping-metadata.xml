@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lifecycleMappingMetadata>
+    <pluginExecutions>
+        <pluginExecution>
+            <pluginExecutionFilter>
+                <goals>
+                    <goal>read-project-properties</goal>
+                </goals>
+            </pluginExecutionFilter>
+            <action>
+                <execute>
+                    <runOnIncremental>true</runOnIncremental>
+                    <runOnConfiguration>true</runOnConfiguration>
+                </execute>
+            </action>
+        </pluginExecution>
+        <pluginExecution>
+            <pluginExecutionFilter>
+                <goals>
+                    <goal>write-project-properties</goal>
+                </goals>
+            </pluginExecutionFilter>
+            <action>
+                <execute>
+                    <runOnIncremental>true</runOnIncremental>
+                    <runOnConfiguration>true</runOnConfiguration>
+                </execute>
+            </action>
+        </pluginExecution>
+    </pluginExecutions>
+</lifecycleMappingMetadata>
