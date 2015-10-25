@@ -72,6 +72,14 @@
     <developerConnection>scm:git:ssh://git@github.com/mojohaus/properties-maven-plugin.git</developerConnection>
     <url>https://github.com/mojohaus/properties-maven-plugin/</url>
   </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/mojohaus/properties-maven-plugin/issues/</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Travis-CI</system>
+    <url>https://travis-ci.org/mojohaus/properties-maven-plugin</url>
+  </ciManagement>
 
   <developers>
     <developer>
