@@ -113,6 +113,7 @@ public class ReadPropertiesMojo
      */
     private final PropertyResolver resolver = new PropertyResolver();
 
+    /** {@inheritDoc} */
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
@@ -130,7 +131,8 @@ public class ReadPropertiesMojo
     {
         if ( files.length > 0 && urls.length > 0 )
         {
-            throw new MojoExecutionException( "Set files or URLs but not both - otherwise no order of precedence can be guaranteed" );
+            throw new MojoExecutionException( "Set files or URLs but not both - otherwise "
+                + "no order of precedence can be guaranteed" );
         }
     }
 

@@ -19,7 +19,7 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
-import java.util.*;
+import java.util.Properties;
 
 class PropertyResolver
 {

@@ -33,13 +33,15 @@ import java.util.Properties;
  * @version $Id$
  * @goal write-active-profile-properties
  */
-public class WriteActiveProfileProperties extends AbstractWritePropertiesMojo
+public class WriteActiveProfileProperties
+    extends AbstractWritePropertiesMojo
 {
+    /** {@inheritDoc} */
     public void execute()
         throws MojoExecutionException
     {
         validateOutputFile();
-        List<?> list = project.getActiveProfiles();
+        List<?> list = getProject().getActiveProfiles();
         if ( getLog().isInfoEnabled() )
         {
             getLog().debug( list.size() + " profile(s) active" );
@@ -54,6 +56,6 @@ public class WriteActiveProfileProperties extends AbstractWritePropertiesMojo
             }
         }
 
-        writeProperties( properties, outputFile );
+        writeProperties( properties, getOutputFile() );
     }
 }

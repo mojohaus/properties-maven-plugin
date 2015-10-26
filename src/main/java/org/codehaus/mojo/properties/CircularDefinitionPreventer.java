@@ -18,6 +18,7 @@ package org.codehaus.mojo.properties;
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -28,9 +29,9 @@ class CircularDefinitionPreventer
 {
     private static class VisitedProperty
     {
-        public final String key;
+        private final String key;
 
-        public final String value;
+        private final String value;
 
         private VisitedProperty( String key, String value )
         {
@@ -39,10 +40,15 @@ class CircularDefinitionPreventer
         }
     }
 
-    private final List entriesVisited = new LinkedList();
+    private final List<VisitedProperty> entriesVisited = new LinkedList<VisitedProperty>();
 
-    private final Set keysUsed = new HashSet();
+    private final Set<String> keysUsed = new HashSet<String>();
 
+    /**
+     * @param key The key.
+     * @param value The values.
+     * @return {@link CircularDefinitionPreventer}
+     */
     public CircularDefinitionPreventer visited( String key, String value )
     {
         entriesVisited.add( new VisitedProperty( key, value ) );

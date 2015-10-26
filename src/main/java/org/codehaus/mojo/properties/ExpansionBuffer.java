@@ -21,9 +21,9 @@ package org.codehaus.mojo.properties;
 
 class ExpansionBuffer
 {
-    public final StringBuilder resolved = new StringBuilder();
+    private final StringBuilder resolved = new StringBuilder();
 
-    public String unresolved;
+    private String unresolved;
 
     public ExpansionBuffer( String unresolved )
     {
