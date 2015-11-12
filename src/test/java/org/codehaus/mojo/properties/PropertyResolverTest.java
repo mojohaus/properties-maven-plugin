@@ -19,7 +19,8 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.apache.maven.plugin.MojoFailureException;
 import java.util.Properties;
 import org.junit.matchers.JUnitMatchers;
@@ -28,11 +29,11 @@ import org.junit.matchers.JUnitMatchers;
  * Tests the support class that produces concrete values from a set of properties.
  */
 public class PropertyResolverTest
-    extends TestCase
 {
     private final PropertyResolver resolver = new PropertyResolver();
 
-    public void testValidPlaceholderResolved()
+    @Test
+    public void validPlaceholderIsResolved()
         throws MojoFailureException
     {
         Properties properties = new Properties();
@@ -46,7 +47,8 @@ public class PropertyResolverTest
         assertEquals( "value", value2 );
     }
 
-    public void testUnknownPlaceholderLeftAsIs()
+    @Test
+    public void unknownPlaceholderIsLeftAsIs()
         throws MojoFailureException
     {
         Properties properties = new Properties();
@@ -63,7 +65,8 @@ public class PropertyResolverTest
         assertEquals( "${unknown}", value3 );
     }
 
-    public void testMultipleValuesResolved()
+    @Test
+    public void multipleValuesAreResolved()
         throws MojoFailureException
     {
         Properties properties = new Properties();
@@ -76,7 +79,8 @@ public class PropertyResolverTest
         assertEquals( "http://localhost:8080/", value );
     }
 
-    public void testMalformedPlaceholderLeftAsIs()
+    @Test
+    public void malformedPlaceholderIsLeftAsIs()
         throws MojoFailureException
     {
         Properties properties = new Properties();
@@ -93,7 +97,8 @@ public class PropertyResolverTest
         assertEquals( "${malformed", value4 );
     }
 
-    public void testPropertyDefinedAsItselfIllegal()
+    @Test
+    public void propertyDefinedAsItselfIsIllegal()
         throws MojoFailureException
     {
         Properties properties = new Properties();
@@ -132,7 +137,8 @@ public class PropertyResolverTest
         assertNull( value6 );
     }
 
-    public void testValueObtainedFromSystemProperty()
+    @Test
+    public void valueIsObtainedFromSystemProperty()
         throws MojoFailureException
     {
         Properties saved = System.getProperties();
@@ -153,7 +159,8 @@ public class PropertyResolverTest
         }
     }
 
-    public void testValueObtainedFromEnvironmentProperty()
+    @Test
+    public void valueIsObtainedFromEnvironmentProperty()
         throws MojoFailureException
     {
         Properties environment = new Properties();
@@ -167,7 +174,8 @@ public class PropertyResolverTest
         assertEquals( "env.value", value );
     }
 
-    public void testResolverToleratesMissingProperty()
+    @Test
+    public void missingPropertyIsTolerated()
     {
         assertEquals( "", resolver.getPropertyValue( "non-existent", new Properties(), null ) );
     }
