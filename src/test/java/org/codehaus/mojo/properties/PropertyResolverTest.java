@@ -19,11 +19,12 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.apache.maven.plugin.MojoFailureException;
 import java.util.Properties;
-import org.junit.matchers.JUnitMatchers;
 
 /**
  * Tests the support class that produces concrete values from a set of properties.
@@ -118,7 +119,7 @@ public class PropertyResolverTest
         }
         catch ( IllegalArgumentException e )
         {
-            assertTrue( JUnitMatchers.containsString( "p5" ).matches( e.getMessage() ) );
+            assertThat( e.getMessage(), containsString( "p5" ) );
         }
         String value6 = null;
         try
@@ -128,7 +129,7 @@ public class PropertyResolverTest
         }
         catch ( IllegalArgumentException e )
         {
-            assertTrue( JUnitMatchers.containsString( "p7" ).matches( e.getMessage() ) );
+            assertThat( e.getMessage(), containsString( "p7" ) );
         }
 
         assertEquals( "value", value1 );
