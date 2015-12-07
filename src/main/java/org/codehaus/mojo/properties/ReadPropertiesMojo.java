@@ -109,6 +109,18 @@ public class ReadPropertiesMojo
     private boolean quiet;
 
     /**
+     * Prefix that will be added before name of each property.
+     * Can be useful for separating properties with same name from different files.
+     */
+    @Parameter
+    private String keyPrefix = null;
+
+    public void setKeyPrefix( String keyPrefix )
+    {
+        this.keyPrefix = keyPrefix;
+    }
+
+    /**
      * Used for resolving property placeholders.
      */
     private final PropertyResolver resolver = new PropertyResolver();
@@ -178,7 +190,20 @@ public class ReadPropertiesMojo
 
             try
             {
-                project.getProperties().load( stream );
+                if ( keyPrefix != null )
+                {
+                    Properties properties = new Properties();
+                    properties.load(stream);
+                    Properties projectProperties = project.getProperties();
+                    for(String key: properties.stringPropertyNames())
+                    {
+                        projectProperties.put(keyPrefix + key, properties.get(key));
+                    }
+                }
+                else
+                {
+                    project.getProperties().load( stream );
+                }
             }
             finally
             {
