@@ -152,6 +152,61 @@ public class ReadPropertiesMojoTest
         assertEquals("  ", value13);
     }
 
+    @Test
+    public void readPropertiesOverridingExisting() throws Exception {
+
+    	File testPropertyFile = getPropertyFileForTesting();
+    	// load properties directly for comparison later
+    	Properties testProperties = new Properties();
+    	testProperties.load(new FileReader(testPropertyFile));
+
+    	// Existing property value should be overridden
+    	projectStub.getProperties().put("test.property2", "old-value");
+
+    	// do the work
+    	readPropertiesMojo.setFiles(new File[]{testPropertyFile});
+    	readPropertiesMojo.execute();
+
+    	// check results
+    	Properties projectProperties = projectStub.getProperties();
+    	assertNotNull(projectProperties);
+    	// it should not be empty
+    	assertNotEquals(0, projectProperties.size());
+
+    	// we are not adding prefix, so properties should be same as in file
+    	assertEquals(testProperties.size(), projectProperties.size());
+    	assertEquals(testProperties, projectProperties);
+
+    }
+
+    @Test
+    public void readPropertiesPreserveExisting() throws Exception {
+
+        File testPropertyFile = getPropertyFileForTesting();
+        // load properties directly for comparison later
+        Properties testProperties = new Properties();
+        testProperties.load(new FileReader(testPropertyFile));
+
+        // Existing property should keep the value
+        testProperties.put("test.property2", "old-value");
+    	projectStub.getProperties().put("test.property2", "old-value");
+
+        // do the work
+        readPropertiesMojo.setFiles(new File[]{testPropertyFile});
+        readPropertiesMojo.setOverride(false);
+        readPropertiesMojo.execute();
+
+        // check results
+        Properties projectProperties = projectStub.getProperties();
+        assertNotNull(projectProperties);
+        // it should not be empty
+        assertNotEquals(0, projectProperties.size());
+
+        // we are not adding prefix, so properties should be same as in file
+        assertEquals(testProperties.size(), projectProperties.size());
+        assertEquals(testProperties, projectProperties);
+    }
+
     /**
      * with the flag disabled (default behavior) nothing gets replaced
      * ':' is treated as a regular character and part of the property name
