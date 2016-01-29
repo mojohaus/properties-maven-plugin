@@ -131,6 +131,19 @@ public class ReadPropertiesMojo
     private boolean useDefaultValues;
 
     /**
+     * Determine, whether existing properties should be overridden or not. Default: <code>true</true>.
+     *
+     * @since 1.2.0
+     */
+    @Parameter( defaultValue = "true" )
+    private boolean override = true;
+
+    public void setOverride( boolean override )
+    {
+        this.override = override;
+    }
+
+    /**
      * Used for resolving property placeholders.
      */
     private final PropertyResolver resolver = new PropertyResolver();
@@ -202,19 +215,23 @@ public class ReadPropertiesMojo
 
             try ( InputStream stream = resource.getInputStream() )
             {
+                String effectivePrefix = "";
                 if ( keyPrefix != null )
                 {
-                    Properties properties = new Properties();
-                    properties.load( stream );
-                    Properties projectProperties = project.getProperties();
-                    for ( String key : properties.stringPropertyNames() )
-                    {
-                        projectProperties.put( keyPrefix + key, properties.get( key ) );
-                    }
+                    effectivePrefix = keyPrefix;
                 }
-                else
+
+                Properties properties = new Properties();
+                properties.load( stream );
+                Properties projectProperties = project.getProperties();
+
+                for( String key: properties.stringPropertyNames() )
                 {
-                    project.getProperties().load( stream );
+                    String propertyName = effectivePrefix + key;
+                    if ( override || !projectProperties.containsKey( propertyName ) )
+                    {
+                        projectProperties.put( propertyName, properties.get( key ) );
+                    }
                 }
             }
         }
