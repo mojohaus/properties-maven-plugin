@@ -82,6 +82,29 @@ public class ReadPropertiesMojoTest {
         assertNotEquals(testPropertiesWithoutPrefix, projectProperties);
 
     }
+    
+    @Test
+    public void readCommaSeparatedFiles() throws Exception {
+        File testPropertyFile = getPropertyFileForTesting();
+        // load properties directly for comparison later
+        Properties testProperties = new Properties();
+        testProperties.load(new FileReader(testPropertyFile));
+
+        // do the work
+        readPropertiesMojo.setCommaSeparatedFiles(testPropertyFile.getAbsolutePath());
+        readPropertiesMojo.execute();
+
+        // check results
+        Properties projectProperties = projectStub.getProperties();
+        assertNotNull(projectProperties);
+        // it should not be empty
+        assertNotEquals(0, projectProperties.size());
+
+        // we are not adding prefix, so properties should be same as in file
+        assertEquals(testProperties.size(), projectProperties.size());
+        assertEquals(testProperties, projectProperties);
+
+    }
 
     private File getPropertyFileForTesting() throws IOException {
         return getPropertyFileForTesting(null);

@@ -36,6 +36,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 
 /**
@@ -119,8 +120,16 @@ public class ReadPropertiesMojo
     {
         this.keyPrefix = keyPrefix;
     }
+    
+    @Parameter
+    private String commaSeparatedFiles = null;
+    
+    public void setCommaSeparatedFiles(String commaSeparatedFiles) 
+    {
+		this.commaSeparatedFiles = commaSeparatedFiles;
+	}
 
-    /**
+	/**
      * Used for resolving property placeholders.
      */
     private final PropertyResolver resolver = new PropertyResolver();
@@ -129,6 +138,8 @@ public class ReadPropertiesMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
+    	appendCommaSeparatedFiles();
+    	
         checkParameters();
 
         loadFiles();
@@ -138,7 +149,23 @@ public class ReadPropertiesMojo
         resolveProperties();
     }
 
-    private void checkParameters()
+    private void appendCommaSeparatedFiles() 
+    {
+		if (StringUtils.isNotEmpty(commaSeparatedFiles)) {
+			String[] extraFileNames = commaSeparatedFiles.split(",");
+			File[] extraFiles = new File[extraFileNames.length];
+			for (int i = 0; i < extraFileNames.length; i++) {
+				extraFiles[i] = new File(extraFileNames[i]);
+			}
+			
+			File[] totalFiles = new File[files.length + extraFiles.length];
+            System.arraycopy(files, 0, totalFiles, 0, files.length );
+            System.arraycopy(extraFiles, 0, totalFiles, files.length, extraFiles.length);
+            this.files = totalFiles;
+		}
+	}
+
+	private void checkParameters()
         throws MojoExecutionException
     {
         if ( files.length > 0 && urls.length > 0 )
