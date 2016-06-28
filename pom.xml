@@ -29,8 +29,10 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.codehaus.mojo</groupId>
-  <artifactId>properties-maven-plugin</artifactId>
+  <groupId>io.cotiviti.usurped</groupId>
+ <!--  <groupId>org.codehaus.mojo</groupId> -->
+  <artifactId>cotiviti-properties-maven-plugin</artifactId>
+  <!-- <artifactId>properties-maven-plugin</artifactId> -->
   <version>1.0.1-SNAPSHOT</version>
 
   <name>Properties Maven Plugin</name>

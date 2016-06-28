@@ -31,7 +31,8 @@ public class WriteServerKeysAsJson extends AbstractWritePropertiesMojo {
 		JSONObject servers = new JSONObject();
 		for (Server server : list) {
 			JSONObject o = asJSON(server);
-			getLog().info("Got -> " + o.toString(2));
+			if (getLog().isInfoEnabled())
+				getLog().debug("Got -> " + o.toString(2));
 			servers.put(server.getId(), o);
 		}
 
