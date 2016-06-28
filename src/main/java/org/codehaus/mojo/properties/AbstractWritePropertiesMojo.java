@@ -22,6 +22,7 @@ package org.codehaus.mojo.properties;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -48,6 +49,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.json.JSONObject;
 
 /**
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
@@ -95,6 +97,42 @@ public abstract class AbstractWritePropertiesMojo
         catch ( IOException e )
         {
             getLog().error( "Error closing FileOutputStream: " + fos );
+            throw new MojoExecutionException( e.getMessage(), e );
+        }
+    }
+
+    /**
+     * @param properties {@link Properties}
+     * @param file {@link File}
+     * @throws MojoExecutionException {@link MojoExecutionException}
+     */
+    protected void writeJson( JSONObject properties, File file )
+        throws MojoExecutionException
+    {
+        FileWriter writer = null;
+        try
+        {
+        	writer = new FileWriter(file);
+            properties.write(writer, 2 , 2);
+        }
+        catch ( FileNotFoundException e )
+        {
+            getLog().error( "Could not create Writer: " + writer );
+            throw new MojoExecutionException( e.getMessage(), e );
+        }
+        catch ( IOException e )
+        {
+            getLog().error( "Error writing JSON: " + writer );
+            throw new MojoExecutionException( e.getMessage(), e );
+        }
+
+        try
+        {
+        	writer.close();
+        }
+        catch ( IOException e )
+        {
+            getLog().error( "Error closing FileOutputStream: " + writer );
             throw new MojoExecutionException( e.getMessage(), e );
         }
     }
