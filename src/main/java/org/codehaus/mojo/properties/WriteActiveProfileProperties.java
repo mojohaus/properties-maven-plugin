@@ -21,6 +21,8 @@ package org.codehaus.mojo.properties;
 
 import org.apache.maven.model.Profile;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 
 import java.util.Iterator;
 import java.util.List;
@@ -31,12 +33,11 @@ import java.util.Properties;
  *
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
  * @version $Id$
- * @goal write-active-profile-properties
  */
+@Mojo( name = "write-active-profile-properties", defaultPhase = LifecyclePhase.NONE, threadSafe = true )
 public class WriteActiveProfileProperties
     extends AbstractWritePropertiesMojo
 {
-    /** {@inheritDoc} */
     public void execute()
         throws MojoExecutionException
     {
