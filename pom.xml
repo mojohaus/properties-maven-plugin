@@ -66,39 +66,63 @@
   </properties>
 
 
-  <scm>
-    <connection>scm:git:https://github.com/mojohaus/properties-maven-plugin.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/mojohaus/properties-maven-plugin.git</developerConnection>
-    <url>https://github.com/mojohaus/properties-maven-plugin</url>
-    <tag>HEAD</tag>
-  </scm>
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/mojohaus/properties-maven-plugin/issues/</url>
-  </issueManagement>
-  <ciManagement>
-    <system>Travis-CI</system>
-    <url>https://travis-ci.org/mojohaus/properties-maven-plugin</url>
-  </ciManagement>
+	<scm>
+		<connection>scm:git:https://github.com/cotiviti/cotiviti-properties-maven-plugin.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/cotiviti/cotiviti-properties-maven-plugin.git</developerConnection>
+		<url>https://github.com/cotiviti/cotiviti-properties-maven-plugin</url>
+		<tag>HEAD</tag>
+	</scm>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/cotiviti/cotiviti-properties-maven-plugin/issues/</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Travis-CI</system>
+		<url>https://travis-ci.org/cotiviti/cotiviti-properties-maven-plugin</url>
+	</ciManagement>
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>central</id>
+      <name>Proxy Releases</name>
+      <url>https://ihealthtechnologies.artifactoryonline.com/ihealthtechnologies/libs-releases-local</url>
+    </repository>
+    <snapshotRepository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>snapshots</id>
+      <name>Proxy Snapshots</name>
+      <url>https://ihealthtechnologies.artifactoryonline.com/ihealthtechnologies/libs-snapshots-local</url>
+    </snapshotRepository>
+    <site>
+      <id>internal</id>
+      <name>Internal Server</name>
+      <url>https://TARGET.SITE.URL</url>
+    </site>
+  </distributionManagement>
 
-  <developers>
-    <developer>
-      <id>arsenalist</id>
-      <name>Zarar Siddiqi</name>
-      <email>zarars@gmail.com</email>
-      <url>http://arsenalist.com/tech</url>
-    </developer>
-    <developer>
-      <id>krystian</id>
-      <name>Krystian Nowak</name>
-      <email>Krystian.Nowak@gmail.com</email>
-    </developer>
-    <developer>
-      <id>timothygordon32@gmail.com</id>
-      <name>Tim Gordon</name>
-      <email>timothygordon32@gmail.com</email>
-    </developer>
-  </developers>
+	<developers>
+		<developer>
+			<id>arsenalist</id>
+			<name>Zarar Siddiqi</name>
+			<email>zarars@gmail.com</email>
+			<url>http://arsenalist.com/tech</url>
+		</developer>
+		<developer>
+			<id>krystian</id>
+			<name>Krystian Nowak</name>
+			<email>Krystian.Nowak@gmail.com</email>
+		</developer>
+		<developer>
+			<id>timothygordon32@gmail.com</id>
+			<name>Tim Gordon</name>
+			<email>timothygordon32@gmail.com</email>
+		</developer>
+		<developer>
+			<id>mykelalvis</id>
+			<name>Mykel Alvis</name>
+			<email>mykel.alvis@gmail.com</email>
+		</developer>
+	</developers>
   <dependencies>
   	<dependency>
 	  <groupId>org.json</groupId>
@@ -138,31 +162,65 @@
 
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>mojo-descriptor</id>
-            <goals>
-              <goal>descriptor</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>descriptor</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>mojo-descriptor</id>
+						<goals>
+							<goal>descriptor</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.plexus</groupId>
+				<artifactId>plexus-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>descriptor</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>templating-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<configuration>
+				</configuration>
+				<executions>
+					<execution>
+						<id>filter-src</id>
+						<goals>
+							<goal>filter-sources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.10</version>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/java-templates</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
