@@ -66,12 +66,34 @@
   </properties>
 
 
+    <!-- URL for site gen -->
 	<scm>
-		<connection>scm:git:https://github.com/cotiviti/cotiviti-properties-maven-plugin.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/cotiviti/cotiviti-properties-maven-plugin.git</developerConnection>
-		<url>https://github.com/cotiviti/cotiviti-properties-maven-plugin</url>
-		<tag>cotiviti-properties-maven-plugin-1.0.1</tag>
+		<connection>scm:git:${git.url}</connection>
+		<url>scm:git:${git.url}</url>
+		<developerConnection>scm:git:${git.url}</developerConnection>
+		<tag>HEAD</tag>
 	</scm>
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>central</id>
+			<name>Proxy Releases</name>
+			<url>${proxy.url.base}/libs-releases-local</url>
+			<layout>default</layout>
+		</repository>
+
+		<snapshotRepository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>snapshots</id>
+			<name>Proxy Snapshots</name>
+			<url>${proxy.url.base}/libs-snapshots-local</url>
+		</snapshotRepository>
+		<site>
+			<id>internal</id>
+			<name>Internal Server</name>
+			<url>${target.site.url}</url>
+		</site>
+	</distributionManagement>
 	<issueManagement>
 		<system>GitHub</system>
 		<url>https://github.com/cotiviti/cotiviti-properties-maven-plugin/issues/</url>
@@ -80,25 +102,6 @@
 		<system>Travis-CI</system>
 		<url>https://travis-ci.org/cotiviti/cotiviti-properties-maven-plugin</url>
 	</ciManagement>
-  <distributionManagement>
-    <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>central</id>
-      <name>Proxy Releases</name>
-      <url>https://ihealthtechnologies.artifactoryonline.com/ihealthtechnologies/libs-releases-local</url>
-    </repository>
-    <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>snapshots</id>
-      <name>Proxy Snapshots</name>
-      <url>https://ihealthtechnologies.artifactoryonline.com/ihealthtechnologies/libs-snapshots-local</url>
-    </snapshotRepository>
-    <site>
-      <id>internal</id>
-      <name>Internal Server</name>
-      <url>https://TARGET.SITE.URL</url>
-    </site>
-  </distributionManagement>
 
 	<developers>
 		<developer>
