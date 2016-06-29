@@ -33,7 +33,7 @@
  <!--  <groupId>org.codehaus.mojo</groupId> -->
   <artifactId>cotiviti-properties-maven-plugin</artifactId>
   <!-- <artifactId>properties-maven-plugin</artifactId> -->
-  <version>1.0.1</version>	<!--  TODO Released based on 1.0.1-SNAPSHOT code form the original repo -->
+  <version>1.0.1-SNAPSHOT</version>	<!--  TODO Released based on 1.0.1-SNAPSHOT code form the original repo -->
 
   <name>Properties Maven Plugin</name>
   <description> 
