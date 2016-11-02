@@ -96,6 +96,11 @@
       <name>Tim Gordon</name>
       <email>timothygordon32@gmail.com</email>
     </developer>
+    <developer>
+      <id>okohub</id>
+      <name>Onur Kağan Özcan</name>
+      <email>onurkaganozcan@gmail.com</email>
+    </developer>
   </developers>
   <dependencies>
     <dependency>

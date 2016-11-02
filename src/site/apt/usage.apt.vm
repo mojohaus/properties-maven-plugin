@@ -168,3 +168,39 @@ Usage
   </build>
 </project>
 ----------------
+
+ * write-custom-properties
+
+ The {{{./write-custom-properties-mojo.html}properties:write-custom-properties}}
+ goal writes custom properties to a file.
+
+ ----------------
+ <project>
+    <build>
+       <plugins>
+          <plugin>
+             <groupId>org.codehaus.mojo</groupId>
+             <artifactId>properties-maven-plugin</artifactId>
+             <version>${project.version}</version>
+             <executions>
+                <execution>
+                   <phase>generate-sources</phase>
+                   <goals>
+                      <goal>write-custom-properties</goal>
+                   </goals>
+                   <configuration>
+                      <outputFile>\${project.build.outputDirectory}/META-INF/build.properties</outputFile>
+                      <properties>
+                         <property>
+                            <name>my.property.name</name>
+                            <value>my.property.value</value>
+                         </property>
+                      </properties>
+                   </configuration>
+                </execution>
+             </executions>
+          </plugin>
+       </plugins>
+    </build>
+ </project>
+ ----------------

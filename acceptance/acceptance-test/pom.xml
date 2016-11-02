@@ -73,6 +73,29 @@
                             <goal>read-project-properties</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>write-custom-properties</goal>
+                        </goals>
+                        <configuration>
+                            <outputFile>${project.build.outputDirectory}/META-INF/build.properties</outputFile>
+                            <properties>
+                                <property>
+                                    <name>Application-Name</name>
+                                    <value>${project.build.finalName}</value>
+                                </property>
+                                <property>
+                                    <name>Application.version</name>
+                                    <value>${project.version}</value>
+                                </property>
+                                <property>
+                                    <name>Application-Build-Timestamp</name>
+                                    <value>${maven.build.timestamp}</value>
+                                </property>
+                            </properties>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
