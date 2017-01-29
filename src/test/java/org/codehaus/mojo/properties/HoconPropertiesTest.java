@@ -1,7 +1,11 @@
 package org.codehaus.mojo.properties;
 
 import static org.junit.Assert.assertEquals;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.junit.Test;
+
+import java.io.File;
 import java.util.Properties;
 
 /**
@@ -68,4 +72,40 @@ public class HoconPropertiesTest {
     assertEquals(c.getProperty("d"), "aValue");
   }
 
+  @Test
+  public void testParsingWithUnResolvablePlaceHolder() throws Exception {
+
+    final String hoconf =
+            "a=${aValue}\n"
+            + "b=1\n"
+            + "c=anotherVal\n";
+
+    final Properties properties = HoconProperties.ignoreHierarchy().parse(hoconf);
+
+    final int twoValues = 2;
+
+    assertEquals(properties.size(), twoValues);
+    assertEquals(properties.getProperty("b"), "1");
+    assertEquals(properties.getProperty("c"), "anotherVal");
+  }
+
+  @Test
+  public void testParsingWithResolvablePlaceHolder() throws Exception {
+
+    final String hoconf =
+        "aValue = bValue\n"
+            + "a=${aValue}\n"
+            + "b=1\n"
+            + "c=anotherVal\n";
+
+    final Properties properties = HoconProperties.ignoreHierarchy().parse(hoconf);
+
+    final int fourValues = 4;
+
+    assertEquals(properties.size(), fourValues);
+    assertEquals(properties.getProperty("aValue"), "bValue");
+    assertEquals(properties.getProperty("a"), "bValue");
+    assertEquals(properties.getProperty("b"), "1");
+    assertEquals(properties.getProperty("c"), "anotherVal");
+  }
 }

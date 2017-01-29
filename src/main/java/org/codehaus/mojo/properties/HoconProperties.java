@@ -3,6 +3,7 @@ package org.codehaus.mojo.properties;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigObject;
+import com.typesafe.config.ConfigResolveOptions;
 import com.typesafe.config.ConfigValue;
 import com.typesafe.config.ConfigValueType;
 
@@ -29,14 +30,18 @@ public class HoconProperties {
 
     for (Map.Entry<String, ConfigValue> configEntry : config.entrySet()) {
 
-      final Object value;
+      Object value;
 
-      if (configEntry.getValue().valueType().equals(ConfigValueType.OBJECT)) {
-        value = parse((ConfigObject) configEntry.getValue());
-      } else if (configEntry.getValue().unwrapped() == null) {
+      try {
+        if (configEntry.getValue().valueType().equals(ConfigValueType.OBJECT)) {
+          value = parse((ConfigObject) configEntry.getValue());
+        } else if (configEntry.getValue().unwrapped() == null) {
+          value = null;
+        } else {
+          value = configEntry.getValue().unwrapped().toString();
+        }
+      } catch (Exception e) {
         value = null;
-      } else {
-        value = configEntry.getValue().unwrapped().toString();
       }
 
       if (!respectHierarchy && value != null && value instanceof Properties) {
@@ -62,7 +67,8 @@ public class HoconProperties {
   }
 
   public Properties toProperties(Config conf) {
-    return parse(conf.root());
+    final Config resolved = conf.resolve(ConfigResolveOptions.defaults().setAllowUnresolved(true));
+    return parse(resolved.root());
   }
 
   public static HoconProperties respectHierarchy() {
