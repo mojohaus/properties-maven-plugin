@@ -160,7 +160,7 @@
   </build>
   <profiles>
     <profile>
-      <id>its</id>
+      <id>run-its</id>
       <properties>
         <bob>cat</bob>
       </properties>
