@@ -180,4 +180,37 @@ public class PropertyResolverTest
     {
         assertEquals( "", resolver.getPropertyValue( "non-existent", new Properties(), null ) );
     }
+
+    @Test
+    public void oneKeyTwice()
+        throws MojoFailureException
+    {
+        Properties properties = new Properties();
+        properties.setProperty( "p1", "${p3}${p3}" );
+        properties.setProperty( "p2", "${p3}b${p3}" );
+        properties.setProperty( "p3", "a" );
+        properties.setProperty( "p4", "${p5}${p6}" );
+        properties.setProperty( "p5", "${p6}" );
+        properties.setProperty( "p6", "${p3}" );
+        properties.setProperty( "p7", "a${p3}" );
+        properties.setProperty( "p8", "${p7}" );
+
+        String value1 = resolver.getPropertyValue( "p1", properties, new Properties() );
+        String value2 = resolver.getPropertyValue( "p2", properties, new Properties() );
+        String value3 = resolver.getPropertyValue( "p3", properties, new Properties() );
+        String value4 = resolver.getPropertyValue( "p4", properties, new Properties() );
+        String value5 = resolver.getPropertyValue( "p5", properties, new Properties() );
+        String value6 = resolver.getPropertyValue( "p6", properties, new Properties() );
+        String value7 = resolver.getPropertyValue( "p7", properties, new Properties() );
+        String value8 = resolver.getPropertyValue( "p8", properties, new Properties() );
+
+        assertEquals( "aa", value1 );
+        assertEquals( "aba", value2 );
+        assertEquals( "a", value3 );
+        assertEquals( "aa", value4 );
+        assertEquals( "a", value5 );
+        assertEquals( "a", value6 );
+        assertEquals( "aa", value7 );
+        assertEquals( "aa", value8 );
+    }
 }

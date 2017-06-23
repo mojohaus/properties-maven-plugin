@@ -19,11 +19,9 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 class CircularDefinitionPreventer
 {
@@ -42,8 +40,6 @@ class CircularDefinitionPreventer
 
     private final List<VisitedProperty> entriesVisited = new LinkedList<VisitedProperty>();
 
-    private final Set<String> keysUsed = new HashSet<String>();
-
     /**
      * @param key The key.
      * @param value The values.
@@ -52,13 +48,9 @@ class CircularDefinitionPreventer
     public CircularDefinitionPreventer visited( String key, String value )
     {
         entriesVisited.add( new VisitedProperty( key, value ) );
-        if ( keysUsed.contains( key ) )
+        if( value != null && value.contains( "${" + key + "}" ) )
         {
             circularDefinition();
-        }
-        else
-        {
-            keysUsed.add( key );
         }
 
         return this;
