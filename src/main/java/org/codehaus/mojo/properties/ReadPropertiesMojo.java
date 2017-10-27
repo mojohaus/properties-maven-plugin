@@ -2,20 +2,20 @@ package org.codehaus.mojo.properties;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file 
+ * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, 
+ *
+ * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY 
- * KIND, either express or implied.  See the License for the 
- * specific language governing permissions and limitations 
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
  * under the License.
  */
 
@@ -26,15 +26,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 
@@ -47,7 +51,7 @@ import org.codehaus.plexus.util.cli.CommandLineUtils;
  * @author <a href="mailto:Krystian.Nowak@gmail.com">Krystian Nowak</a>
  * @version $Id$
  */
-@Mojo( name = "read-project-properties", defaultPhase = LifecyclePhase.NONE, requiresProject = true, threadSafe = true )
+@Mojo( name = "read-project-properties", defaultPhase = LifecyclePhase.NONE, requiresProject = true, threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE )
 public class ReadPropertiesMojo
     extends AbstractMojo
 {
@@ -86,7 +90,7 @@ public class ReadPropertiesMojo
 
     /**
      * Default scope for test access.
-     * 
+     *
      * @param urls The URLs to set for tests.
      */
     public void setUrls( String[] urls )
@@ -121,15 +125,34 @@ public class ReadPropertiesMojo
     }
 
     /**
+     * Enable/disable lookup of classpath URLs on the project classpath.
+     */
+    @Parameter
+	private Boolean projectClasspathLookup = false;
+
+    public void setProjectClasspathLookup( Boolean projectClasspathLookup )
+    {
+        this.projectClasspathLookup = projectClasspathLookup;
+    }
+
+    /**
      * Used for resolving property placeholders.
      */
     private final PropertyResolver resolver = new PropertyResolver();
+
+    /**
+     * Classloader used to resolve resources from the project classpath if
+     * projectClasspathLookup is enabled and a resource is not found on the plugin classpath.
+     */
+    private URLClassLoader projectClassLoader;
 
     /** {@inheritDoc} */
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
         checkParameters();
+
+        createProjectClassLoader();
 
         loadFiles();
 
@@ -147,6 +170,34 @@ public class ReadPropertiesMojo
                 + "no order of precedence can be guaranteed" );
         }
     }
+
+	/**
+	 * Create a Classloader that loads classes from the MavenProject classpath.
+	 *
+	 * @throws MojoExecutionException
+	 */
+	@SuppressWarnings("rawtypes")
+	private void createProjectClassLoader() throws MojoExecutionException {
+		try {
+			if (projectClasspathLookup) {
+				List runtimeClasspathElements = project.getCompileClasspathElements();
+				URL[] runtimeUrls = new URL[runtimeClasspathElements.size()];
+				if (runtimeClasspathElements != null) {
+					for (int i = 0; i < runtimeClasspathElements.size(); i++) {
+						String element = (String) runtimeClasspathElements.get(i);
+						if (element != null) {
+							runtimeUrls[i] = new File(element).toURI().toURL();
+						}
+					}
+					this.projectClassLoader = new URLClassLoader(runtimeUrls, Thread.currentThread().getContextClassLoader());
+				}
+			}
+		} catch (MalformedURLException e) {
+			throw new MojoExecutionException("Cannot load project dependencies", e);
+		} catch (DependencyResolutionRequiredException e) {
+			throw new MojoExecutionException("Cannot load project dependencies", e);
+		}
+	}
 
     private void loadFiles()
         throws MojoExecutionException
@@ -288,7 +339,7 @@ public class ReadPropertiesMojo
 
     /**
      * Override-able for test purposes.
-     * 
+     *
      * @return The shell environment variables, can be empty but never <code>null</code>.
      * @throws IOException If the environment variables could not be queried from the shell.
      */
@@ -300,7 +351,7 @@ public class ReadPropertiesMojo
 
     /**
      * Default scope for test access.
-     * 
+     *
      * @param quiet Set to <code>true</code> if missing files can be skipped.
      */
     void setQuiet( boolean quiet )
@@ -310,7 +361,7 @@ public class ReadPropertiesMojo
 
     /**
      * Default scope for test access.
-     * 
+     *
      * @param project The test project.
      */
     void setProject( MavenProject project )
@@ -365,7 +416,7 @@ public class ReadPropertiesMojo
         }
     }
 
-    private static class UrlResource
+    private class UrlResource
         extends Resource
     {
         private static final String CLASSPATH_PREFIX = "classpath:";
@@ -388,7 +439,8 @@ public class ReadPropertiesMojo
                 {
                     resource = resource.substring( 1, resource.length() );
                 }
-                this.url = getClass().getClassLoader().getResource( resource );
+                this.url = gerResourceUrl( resource );
+
                 if ( this.url == null )
                 {
                     isMissingClasspathResouce = true;
@@ -406,6 +458,18 @@ public class ReadPropertiesMojo
                     throw new MojoExecutionException( "Badly formed URL " + url + " - " + e.getMessage() );
                 }
             }
+        }
+
+        private URL gerResourceUrl( String resource )
+        {
+            URL url = getClass().getClassLoader().getResource( resource );
+
+            // Try to load the resource from the project classloader.
+            if (url == null && projectClassLoader != null) {
+            	url = projectClassLoader.getResource(resource);
+            }
+
+            return url;
         }
 
         public boolean canBeOpened()
