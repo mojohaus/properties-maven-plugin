@@ -54,6 +54,13 @@ public class ReadPropertiesMojo
     @Parameter( defaultValue = "${project}", readonly = true, required = true )
     private MavenProject project;
 
+    @Parameter( defaultValue = "false", required = false )
+    private boolean useNestedPropertyResolver;
+
+    public void setUseNestedPropertyResolver(boolean useNestedPropertyResolver) {
+        this.useNestedPropertyResolver = useNestedPropertyResolver;
+    }
+
     /**
      * The properties files that will be used when reading properties.
      */
@@ -123,7 +130,7 @@ public class ReadPropertiesMojo
     /**
      * Used for resolving property placeholders.
      */
-    private final PropertyResolver resolver = new PropertyResolver();
+    private IPropertyResolver resolver;
 
     /** {@inheritDoc} */
     public void execute()
@@ -134,6 +141,12 @@ public class ReadPropertiesMojo
         loadFiles();
 
         loadUrls();
+
+        if(useNestedPropertyResolver) {
+            resolver = new NestedPropertyResolver();
+        } else {
+            resolver = new PropertyResolver();
+        }
 
         resolveProperties();
     }

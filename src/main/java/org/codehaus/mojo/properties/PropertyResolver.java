@@ -21,7 +21,7 @@ package org.codehaus.mojo.properties;
 
 import java.util.Properties;
 
-class PropertyResolver
+class PropertyResolver implements IPropertyResolver
 {
 
     /**
