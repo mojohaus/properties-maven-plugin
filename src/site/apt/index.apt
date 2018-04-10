@@ -54,6 +54,8 @@ Properties Maven Plugin
 
   * {{{./set-system-properties-mojo.html}properties:set-system-properties}} Sets system properties.
 
+  * {{{./write-custom-properties-mojo.html}properties:write-custom-properties}} Writes custom properties.
+
 
 * Usage
 
