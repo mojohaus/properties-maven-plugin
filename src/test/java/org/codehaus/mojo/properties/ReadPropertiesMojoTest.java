@@ -10,9 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class ReadPropertiesMojoTest {
     private static final String NEW_LINE = System.getProperty("line.separator");
@@ -23,6 +21,7 @@ public class ReadPropertiesMojoTest {
     @Before
     public void setUp() {
         projectStub = new MavenProject();
+        projectStub.setBasedir(new File("."));
         readPropertiesMojo = new ReadPropertiesMojo();
         readPropertiesMojo.setProject(projectStub);
     }
