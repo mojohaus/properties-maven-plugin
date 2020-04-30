@@ -20,15 +20,22 @@ package org.codehaus.mojo.properties;
  */
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -179,6 +186,44 @@ public class ReadPropertiesMojo
         }
     }
 
+    // based on https://kodejava.org/how-do-i-convert-inputstream-to-string/
+    private String convertStreamToString(InputStream is) throws IOException {
+        // To convert the InputStream to String we use the
+        // Reader.read(char[] buffer) method. We iterate until the
+        // Reader return -1 which means there's no more data to
+        // read. We use the StringWriter class to produce the string.
+        if (is != null) {
+            Writer writer = new StringWriter();
+
+            char[] buffer = new char[1024];
+            try {
+                Reader reader = new BufferedReader(
+                    new InputStreamReader(is, "UTF-8"));
+                int n;
+                while ((n = reader.read(buffer)) != -1) {
+                    writer.write(buffer, 0, n);
+                }
+            } finally {
+                is.close();
+            }
+            return writer.toString();
+        }
+        return "";
+    }
+
+    private Properties parseProperties(InputStream stream) throws IOException {
+        Properties properties;
+        try {
+            Config config = ConfigFactory.parseString(convertStreamToString(stream));
+            properties = HoconProperties.ignoreHierarchy().toProperties(config);
+        } catch (Exception e) {
+            properties = new Properties();
+            properties.load(stream);
+        }
+        return properties;
+    }
+
+
     private void loadProperties( Resource resource )
         throws MojoExecutionException
     {
@@ -190,10 +235,10 @@ public class ReadPropertiesMojo
 
             try
             {
+                Properties properties = parseProperties(stream);
+
                 if ( keyPrefix != null )
                 {
-                    Properties properties = new Properties();
-                    properties.load(stream);
                     Properties projectProperties = project.getProperties();
                     for(String key: properties.stringPropertyNames())
                     {
@@ -202,7 +247,7 @@ public class ReadPropertiesMojo
                 }
                 else
                 {
-                    project.getProperties().load( stream );
+                    project.getProperties().putAll(properties);
                 }
             }
             finally
