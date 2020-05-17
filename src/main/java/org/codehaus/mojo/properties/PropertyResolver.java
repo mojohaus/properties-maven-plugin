@@ -55,6 +55,10 @@ class PropertyResolver
             circularDefinitionPreventer.visited( newKey, newValue );
 
             buffer.add( newKey, newValue );
+
+            // add (partially) resolved property as a shortcut for next
+            // resolution and to be able to detect circular definition
+            properties.setProperty( key, buffer.toString() );
         }
 
         return buffer.toString();
