@@ -101,7 +101,7 @@ public class ReadPropertiesMojoTest {
             prefix = "";
         }
         try {
-            writer.write(prefix + "test.property1=北京大学生物系主任办公室内部会议" + NEW_LINE);
+            writer.write(prefix + "test.property1=Hello World 😀" + NEW_LINE);
             writer.write(prefix + "test.property2=value2" + NEW_LINE);
             writer.write(prefix + "test.property3=value3" + NEW_LINE);
             writer.flush();
