@@ -8,8 +8,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Properties;
 
+import static java.nio.charset.Charset.defaultCharset;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
@@ -33,7 +37,7 @@ public class ReadPropertiesMojoTest {
         File testPropertyFile = getPropertyFileForTesting();
         // load properties directly for comparison later
         Properties testProperties = new Properties();
-        testProperties.load(new FileReader(testPropertyFile));
+        testProperties.load(Files.newBufferedReader(testPropertyFile.toPath(), StandardCharsets.UTF_8));
 
         // do the work
         readPropertiesMojo.setFiles(new File[]{testPropertyFile});
@@ -57,15 +61,16 @@ public class ReadPropertiesMojoTest {
 
         File testPropertyFileWithoutPrefix = getPropertyFileForTesting();
         Properties testPropertiesWithoutPrefix = new Properties();
-        testPropertiesWithoutPrefix.load(new FileReader(testPropertyFileWithoutPrefix));
-        // do the work
+        testPropertiesWithoutPrefix.load(Files.newBufferedReader(testPropertyFileWithoutPrefix.toPath(), StandardCharsets.UTF_8));
+
+        // do t"he work
         readPropertiesMojo.setKeyPrefix(keyPrefix);
         readPropertiesMojo.setFiles(new File[]{testPropertyFileWithoutPrefix});
         readPropertiesMojo.execute();
 
         // load properties directly and add prefix for comparison later
         Properties testPropertiesPrefix = new Properties();
-        testPropertiesPrefix.load(new FileReader(getPropertyFileForTesting(keyPrefix)));
+        testPropertiesPrefix.load(Files.newBufferedReader(getPropertyFileForTesting(keyPrefix).toPath(), StandardCharsets.UTF_8));
 
         // check results
         Properties projectProperties = projectStub.getProperties();
@@ -96,7 +101,7 @@ public class ReadPropertiesMojoTest {
             prefix = "";
         }
         try {
-            writer.write(prefix + "test.property1=value1" + NEW_LINE);
+            writer.write(prefix + "test.property1=北京大学生物系主任办公室内部会议" + NEW_LINE);
             writer.write(prefix + "test.property2=value2" + NEW_LINE);
             writer.write(prefix + "test.property3=value3" + NEW_LINE);
             writer.flush();

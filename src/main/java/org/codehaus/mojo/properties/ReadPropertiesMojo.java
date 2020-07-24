@@ -24,8 +24,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -187,13 +189,14 @@ public class ReadPropertiesMojo
             getLog().debug( "Loading properties from " + resource );
 
             final InputStream stream = resource.getInputStream();
+            final InputStreamReader inputStreamReader = new InputStreamReader(stream, StandardCharsets.UTF_8);
 
             try
             {
                 if ( keyPrefix != null )
                 {
                     Properties properties = new Properties();
-                    properties.load(stream);
+                    properties.load(inputStreamReader);
                     Properties projectProperties = project.getProperties();
                     for(String key: properties.stringPropertyNames())
                     {
@@ -202,7 +205,7 @@ public class ReadPropertiesMojo
                 }
                 else
                 {
-                    project.getProperties().load( stream );
+                    project.getProperties().load( inputStreamReader );
                 }
             }
             finally
