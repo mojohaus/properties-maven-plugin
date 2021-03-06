@@ -33,7 +33,7 @@
   <version>1.2.0-SNAPSHOT</version>
 
   <name>Properties Maven Plugin</name>
-  <description>
+  <description> 
     The Properties Maven Plugin is here to make life a little easier when dealing
     with properties. It provides goals to read and write properties from files.
   </description>
