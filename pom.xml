@@ -34,7 +34,7 @@
   <version>1.0.1-SNAPSHOT</version>
 
   <name>Properties Maven Plugin</name>
-  <description> 
+  <description>
     The Properties Maven Plugin is here to make life a little easier when dealing
     with properties. It provides goals to read and write properties from files.
   </description>
@@ -164,4 +164,43 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>run-its</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <version>3.2.2</version>
+            <executions>
+              <execution>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>install</goal>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <projectsDirectory>src/it</projectsDirectory>
+                  <addTestClassPath>true</addTestClassPath>
+                  <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                  <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+                  <invokerPropertiesFile>invoke.properties</invokerPropertiesFile>
+                  <preBuildHookScript>prepare</preBuildHookScript>
+                  <postBuildHookScript>verify</postBuildHookScript>
+                  <debug>true</debug>
+                  <environmentVariables>
+                    <testing.versionUnderTest>${project.version}</testing.versionUnderTest>
+                  </environmentVariables>
+                  <scriptVariables>
+                    <resultsBase>${project.build.directory}/itresults</resultsBase>
+                  </scriptVariables>
+                  <settingsFile>src/it/settings.xml</settingsFile>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

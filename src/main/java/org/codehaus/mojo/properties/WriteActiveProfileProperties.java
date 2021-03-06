@@ -1,5 +1,9 @@
 package org.codehaus.mojo.properties;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file 
@@ -21,18 +25,16 @@ package org.codehaus.mojo.properties;
 
 import org.apache.maven.model.Profile;
 import org.apache.maven.plugin.MojoExecutionException;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 
 /**
  * Writes properties of all active profiles to a file.
  *
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
  * @version $Id$
- * @goal write-active-profile-properties
  */
+@Mojo( name = "write-active-profile-properties", defaultPhase = LifecyclePhase.NONE, threadSafe = true )
 public class WriteActiveProfileProperties
     extends AbstractWritePropertiesMojo
 {
@@ -42,7 +44,7 @@ public class WriteActiveProfileProperties
     {
         validateOutputFile();
         List<?> list = getProject().getActiveProfiles();
-        if ( getLog().isInfoEnabled() )
+        if ( getLog().isDebugEnabled() )
         {
             getLog().debug( list.size() + " profile(s) active" );
         }
