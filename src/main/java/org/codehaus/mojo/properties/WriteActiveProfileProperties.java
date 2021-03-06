@@ -42,7 +42,7 @@ public class WriteActiveProfileProperties
     {
         validateOutputFile();
         List<Profile> list = getProject().getActiveProfiles();
-        if ( getLog().isInfoEnabled() )
+        if ( getLog().isDebugEnabled() )
         {
             getLog().debug( list.size() + " profile(s) active" );
         }
