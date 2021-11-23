@@ -120,6 +120,9 @@ public class ReadPropertiesMojo
         this.keyPrefix = keyPrefix;
     }
 
+    @Parameter( defaultValue = "false" , property = "prop.skipLoadProperties")
+    private boolean skipLoadProperties;
+
     /**
      * Used for resolving property placeholders.
      */
@@ -129,13 +132,17 @@ public class ReadPropertiesMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        checkParameters();
+        if ( !this.skipLoadProperties ) {
+            checkParameters();
 
-        loadFiles();
+            loadFiles();
 
-        loadUrls();
+            loadUrls();
 
-        resolveProperties();
+            resolveProperties();
+        } else {
+            getLog().warn("The properties are ignored");
+        }
     }
 
     private void checkParameters()
@@ -306,6 +313,15 @@ public class ReadPropertiesMojo
     void setQuiet( boolean quiet )
     {
         this.quiet = quiet;
+    }
+
+    /**
+     *
+     * @param skipLoadProperties Set to <code>true</code> if you don't want to load properties.
+     */
+    void setSkipLoadProperties( boolean skipLoadProperties )
+    {
+        this.skipLoadProperties = skipLoadProperties;
     }
 
     /**
