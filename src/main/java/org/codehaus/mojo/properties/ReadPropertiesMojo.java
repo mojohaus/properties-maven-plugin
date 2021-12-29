@@ -24,8 +24,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -37,6 +39,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * The read-project-properties goal reads property files and URLs and stores the properties as project properties. It
@@ -320,15 +324,10 @@ public class ReadPropertiesMojo
 
     private static abstract class Resource
     {
-        private InputStream stream;
-
         public abstract boolean canBeOpened();
 
-        protected abstract InputStream openStream()
-            throws IOException;
-
         public InputStream getInputStream()
-            throws IOException
+                throws IOException
         {
             if ( stream == null )
             {
@@ -336,6 +335,13 @@ public class ReadPropertiesMojo
             }
             return stream;
         }
+
+        protected abstract InputStream openStream()
+                throws IOException;
+
+        private InputStream stream;
+
+
     }
 
     private static class FileResource
@@ -428,7 +434,29 @@ public class ReadPropertiesMojo
         protected InputStream openStream()
             throws IOException
         {
-            return new BufferedInputStream( url.openStream() );
+            //NG: added following changes to handle spring web app URLs where user agent as well as credentials needed
+            try {
+                URLConnection conn = url.openConnection();
+
+                if (conn instanceof HttpsURLConnection) {
+                    HttpsURLConnection httpsConn = (HttpsURLConnection) conn;
+                    setUserAgent(httpsConn);
+                    return httpsConn.getInputStream();
+                }else{
+                    HttpURLConnection httpConn = (HttpURLConnection) conn;
+                    setUserAgent(httpConn);
+                    return httpConn.getInputStream();
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+        }
+
+        protected void setUserAgent(HttpURLConnection conn){
+            conn.addRequestProperty("User-Agent", "Mozilla/4.0");
         }
 
         public String toString()

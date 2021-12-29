@@ -31,7 +31,7 @@
 
   <groupId>org.codehaus.mojo</groupId>
   <artifactId>properties-maven-plugin</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.1-NG</version>
 
   <name>Properties Maven Plugin</name>
   <description> 
