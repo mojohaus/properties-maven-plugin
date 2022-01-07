@@ -54,7 +54,7 @@
   </licenses>
 
   <properties>
-    <mavenVersion>3.2.5</mavenVersion>
+    <mavenVersion>3.8.4</mavenVersion>
     <scmpublish.content>target/staging/${project.artifactId}</scmpublish.content>
   </properties>
 
