@@ -19,11 +19,10 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.util.Enumeration;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -63,6 +62,12 @@ public abstract class AbstractWritePropertiesMojo
     @Parameter( required = true )
     private File outputFile;
 
+    @Parameter(required = false)
+    private String exclusionRegex;
+
+    @Parameter(required = false, defaultValue = "true")
+    private boolean generateCommentHeader;
+
     /**
      * @param properties {@link Properties}
      * @param file {@link File}
@@ -71,11 +76,29 @@ public abstract class AbstractWritePropertiesMojo
     protected void writeProperties( Properties properties, File file )
         throws MojoExecutionException
     {
+        // Filter keys and/or the header comment
+        final Properties propertiesToWrite = generateCommentHeader ? new Properties() : new PropertiesWithoutHeader();
+        if (this.exclusionRegex == null) {
+            propertiesToWrite.putAll(properties);
+        } else {
+            final Pattern exclusionPattern = Pattern.compile(exclusionRegex);
+            final Enumeration<?> enumeration = properties.keys();
+            while ( enumeration.hasMoreElements() )
+            {
+                final String key = (String) enumeration.nextElement();
+                if (!exclusionPattern.matcher(key).find()) {
+                    propertiesToWrite.put(key, properties.getProperty(key));
+                }
+            }
+        }
+
+        // Write the properties
         FileOutputStream fos = null;
         try
         {
             fos = new FileOutputStream( file );
-            properties.store( fos, "Properties" );
+            propertiesToWrite.store( fos, "Properties" );
+
         }
         catch ( FileNotFoundException e )
         {
@@ -130,6 +153,20 @@ public abstract class AbstractWritePropertiesMojo
     public File getOutputFile()
     {
         return outputFile;
+    }
+
+    /**
+     * @return {@link #exclusionRegex}
+     */
+    public String getExclusionRegex() {
+        return exclusionRegex;
+    }
+
+    /**
+     * @return {@link #generateCommentHeader}
+     */
+    public boolean getGenerateCommentHeader() {
+        return generateCommentHeader;
     }
 
 }
