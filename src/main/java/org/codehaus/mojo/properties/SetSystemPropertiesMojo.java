@@ -33,7 +33,6 @@ import org.apache.maven.plugins.annotations.Parameter;
  * Sets system properties.
  * 
  * @author <a href="mailto:markh@apache.org">Mark Hobson</a>
- * @version $Id$
  */
 @Mojo( name = "set-system-properties", defaultPhase = LifecyclePhase.INITIALIZE, threadSafe = true )
 public class SetSystemPropertiesMojo
@@ -53,7 +52,6 @@ public class SetSystemPropertiesMojo
      * {@inheritDoc}
      */
     public void execute()
-        throws MojoExecutionException, MojoFailureException
     {
         if ( properties.isEmpty() )
         {

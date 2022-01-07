@@ -51,7 +51,6 @@ import org.apache.maven.project.MavenProject;
 
 /**
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
- * @version $Id$
  */
 public abstract class AbstractWritePropertiesMojo
     extends AbstractMojo
@@ -71,30 +70,18 @@ public abstract class AbstractWritePropertiesMojo
     protected void writeProperties( Properties properties, File file )
         throws MojoExecutionException
     {
-        FileOutputStream fos = null;
-        try
+        try ( FileOutputStream fos = new FileOutputStream( file ) )
         {
-            fos = new FileOutputStream( file );
             properties.store( fos, "Properties" );
         }
         catch ( FileNotFoundException e )
         {
-            getLog().error( "Could not create FileOutputStream: " + fos );
+            getLog().error( "Could not create FileOutputStream: " + file );
             throw new MojoExecutionException( e.getMessage(), e );
         }
         catch ( IOException e )
         {
-            getLog().error( "Error writing properties: " + fos );
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-
-        try
-        {
-            fos.close();
-        }
-        catch ( IOException e )
-        {
-            getLog().error( "Error closing FileOutputStream: " + fos );
+            getLog().error( "Error writing properties: " + file );
             throw new MojoExecutionException( e.getMessage(), e );
         }
     }

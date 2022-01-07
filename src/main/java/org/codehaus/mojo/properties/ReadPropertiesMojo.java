@@ -45,9 +45,8 @@ import org.codehaus.plexus.util.cli.CommandLineUtils;
  *
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
  * @author <a href="mailto:Krystian.Nowak@gmail.com">Krystian Nowak</a>
- * @version $Id$
  */
-@Mojo( name = "read-project-properties", defaultPhase = LifecyclePhase.NONE, requiresProject = true, threadSafe = true )
+@Mojo( name = "read-project-properties", defaultPhase = LifecyclePhase.NONE, threadSafe = true )
 public class ReadPropertiesMojo
     extends AbstractMojo
 {
@@ -151,18 +150,18 @@ public class ReadPropertiesMojo
     private void loadFiles()
         throws MojoExecutionException
     {
-        for ( int i = 0; i < files.length; i++ )
+        for ( File file : files )
         {
-            load( new FileResource( files[i] ) );
+            load( new FileResource( file ) );
         }
     }
 
     private void loadUrls()
         throws MojoExecutionException
     {
-        for ( int i = 0; i < urls.length; i++ )
+        for ( String url : urls )
         {
-            load( new UrlResource( urls[i] ) );
+            load( new UrlResource( url ) );
         }
     }
 
@@ -186,28 +185,22 @@ public class ReadPropertiesMojo
         {
             getLog().debug( "Loading properties from " + resource );
 
-            final InputStream stream = resource.getInputStream();
-
-            try
+            try ( InputStream stream = resource.getInputStream() )
             {
                 if ( keyPrefix != null )
                 {
                     Properties properties = new Properties();
-                    properties.load(stream);
+                    properties.load( stream );
                     Properties projectProperties = project.getProperties();
-                    for(String key: properties.stringPropertyNames())
+                    for ( String key : properties.stringPropertyNames() )
                     {
-                        projectProperties.put(keyPrefix + key, properties.get(key));
+                        projectProperties.put( keyPrefix + key, properties.get( key ) );
                     }
                 }
                 else
                 {
                     project.getProperties().load( stream );
                 }
-            }
-            finally
-            {
-                stream.close();
             }
         }
         catch ( IOException e )
@@ -252,7 +245,7 @@ public class ReadPropertiesMojo
         {
             String k = (String) n.nextElement();
             String p = (String) projectProperties.get( k );
-            if ( p.indexOf( "${env." ) != -1 )
+            if ( p.contains( "${env." ) )
             {
                 useEnvVariables = true;
                 break;
@@ -383,10 +376,10 @@ public class ReadPropertiesMojo
         {
             if ( url.startsWith( CLASSPATH_PREFIX ) )
             {
-                String resource = url.substring( CLASSPATH_PREFIX.length(), url.length() );
+                String resource = url.substring( CLASSPATH_PREFIX.length() );
                 if ( resource.startsWith( SLASH_PREFIX ) )
                 {
-                    resource = resource.substring( 1, resource.length() );
+                    resource = resource.substring( 1 );
                 }
                 this.url = getClass().getClassLoader().getResource( resource );
                 if ( this.url == null )

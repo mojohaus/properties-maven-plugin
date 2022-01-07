@@ -35,7 +35,6 @@ public class PropertyResolverTest
 
     @Test
     public void validPlaceholderIsResolved()
-        throws MojoFailureException
     {
         Properties properties = new Properties();
         properties.setProperty( "p1", "${p2}" );
@@ -50,7 +49,6 @@ public class PropertyResolverTest
 
     @Test
     public void unknownPlaceholderIsLeftAsIs()
-        throws MojoFailureException
     {
         Properties properties = new Properties();
         properties.setProperty( "p1", "${p2}" );
@@ -68,7 +66,6 @@ public class PropertyResolverTest
 
     @Test
     public void multipleValuesAreResolved()
-        throws MojoFailureException
     {
         Properties properties = new Properties();
         properties.setProperty( "hostname", "localhost" );
@@ -82,7 +79,6 @@ public class PropertyResolverTest
 
     @Test
     public void malformedPlaceholderIsLeftAsIs()
-        throws MojoFailureException
     {
         Properties properties = new Properties();
         properties.setProperty( "p1", "${p2}" );
@@ -100,7 +96,6 @@ public class PropertyResolverTest
 
     @Test
     public void propertyDefinedAsItselfIsIllegal()
-        throws MojoFailureException
     {
         Properties properties = new Properties();
         properties.setProperty( "p1", "${p2}" );
@@ -140,7 +135,6 @@ public class PropertyResolverTest
 
     @Test
     public void valueIsObtainedFromSystemProperty()
-        throws MojoFailureException
     {
         Properties saved = System.getProperties();
         System.setProperty( "system.property", "system.value" );
@@ -162,7 +156,6 @@ public class PropertyResolverTest
 
     @Test
     public void valueIsObtainedFromEnvironmentProperty()
-        throws MojoFailureException
     {
         Properties environment = new Properties();
         environment.setProperty( "PROPERTY", "env.value" );

@@ -40,9 +40,9 @@ class CircularDefinitionPreventer
         }
     }
 
-    private final List<VisitedProperty> entriesVisited = new LinkedList<VisitedProperty>();
+    private final List<VisitedProperty> entriesVisited = new LinkedList<>();
 
-    private final Set<String> keysUsed = new HashSet<String>();
+    private final Set<String> keysUsed = new HashSet<>();
 
     /**
      * @param key The key.
