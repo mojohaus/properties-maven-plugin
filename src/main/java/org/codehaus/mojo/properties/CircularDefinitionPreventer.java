@@ -19,35 +19,46 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 class CircularDefinitionPreventer
 {
     private static class VisitedProperty
     {
-        public final String key;
-        public final String value;
+        private final String key;
 
-        private VisitedProperty(String key, String value)
+        private final String value;
+
+        private VisitedProperty( String key, String value )
         {
             this.key = key;
             this.value = value;
         }
     }
 
-    private final List entriesVisited = new LinkedList();
-    private final Set keysUsed = new HashSet();
+    private final List<VisitedProperty> entriesVisited = new LinkedList<>();
 
-    public CircularDefinitionPreventer visited(String key, String value)
+    private final Set<String> keysUsed = new HashSet<>();
+
+    /**
+     * @param key The key.
+     * @param value The values.
+     * @return {@link CircularDefinitionPreventer}
+     */
+    public CircularDefinitionPreventer visited( String key, String value )
     {
-        entriesVisited.add(new VisitedProperty(key, value));
-        if (keysUsed.contains(key))
+        entriesVisited.add( new VisitedProperty( key, value ) );
+        if ( keysUsed.contains( key ) )
         {
             circularDefinition();
         }
         else
         {
-            keysUsed.add(key);
+            keysUsed.add( key );
         }
 
         return this;
@@ -55,16 +66,16 @@ class CircularDefinitionPreventer
 
     private void circularDefinition()
     {
-        StringBuilder buffer = new StringBuilder("Circular property definition: ");
-        for (Iterator iterator = entriesVisited.iterator(); iterator.hasNext();)
+        StringBuilder buffer = new StringBuilder( "Circular property definition: " );
+        for ( Iterator<?> iterator = entriesVisited.iterator(); iterator.hasNext(); )
         {
             VisitedProperty visited = (VisitedProperty) iterator.next();
-            buffer.append(visited.key).append("=").append(visited.value);
-            if (iterator.hasNext())
+            buffer.append( visited.key ).append( "=" ).append( visited.value );
+            if ( iterator.hasNext() )
             {
-                buffer.append(" -> ");
+                buffer.append( " -> " );
             }
         }
-        throw new IllegalArgumentException(buffer.toString());
+        throw new IllegalArgumentException( buffer.toString() );
     }
 }

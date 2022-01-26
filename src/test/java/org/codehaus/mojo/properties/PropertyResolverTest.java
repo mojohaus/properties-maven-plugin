@@ -19,134 +19,159 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
-import junit.framework.TestCase;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.apache.maven.plugin.MojoFailureException;
 import java.util.Properties;
-import org.junit.matchers.JUnitMatchers;
 
 /**
- * Tests the support class that produces concrete values from a
- * set of properties.
+ * Tests the support class that produces concrete values from a set of properties.
  */
-public class PropertyResolverTest extends TestCase
+public class PropertyResolverTest
 {
     private final PropertyResolver resolver = new PropertyResolver();
 
-    public void testValidPlaceholderResolved() throws MojoFailureException {
+    @Test
+    public void validPlaceholderIsResolved()
+    {
         Properties properties = new Properties();
-        properties.setProperty("p1", "${p2}");
-        properties.setProperty("p2", "value");
+        properties.setProperty( "p1", "${p2}" );
+        properties.setProperty( "p2", "value" );
 
-        String value1 = resolver.getPropertyValue("p1", properties, new Properties());
-        String value2 = resolver.getPropertyValue("p2", properties, new Properties());
+        String value1 = resolver.getPropertyValue( "p1", properties, new Properties() );
+        String value2 = resolver.getPropertyValue( "p2", properties, new Properties() );
 
-        assertEquals("value", value1);
-        assertEquals("value", value2);
+        assertEquals( "value", value1 );
+        assertEquals( "value", value2 );
     }
 
-    public void testUnknownPlaceholderLeftAsIs() throws MojoFailureException {
+    @Test
+    public void unknownPlaceholderIsLeftAsIs()
+    {
         Properties properties = new Properties();
-        properties.setProperty("p1", "${p2}");
-        properties.setProperty("p2", "value");
-        properties.setProperty("p3", "${unknown}");
+        properties.setProperty( "p1", "${p2}" );
+        properties.setProperty( "p2", "value" );
+        properties.setProperty( "p3", "${unknown}" );
 
-        String value1 = resolver.getPropertyValue("p1", properties, new Properties());
-        String value2 = resolver.getPropertyValue("p2", properties, new Properties());
-        String value3 = resolver.getPropertyValue("p3", properties, new Properties());
+        String value1 = resolver.getPropertyValue( "p1", properties, new Properties() );
+        String value2 = resolver.getPropertyValue( "p2", properties, new Properties() );
+        String value3 = resolver.getPropertyValue( "p3", properties, new Properties() );
 
-        assertEquals("value", value1);
-        assertEquals("value", value2);
-        assertEquals("${unknown}", value3);
+        assertEquals( "value", value1 );
+        assertEquals( "value", value2 );
+        assertEquals( "${unknown}", value3 );
     }
 
-    public void testMultipleValuesResolved() throws MojoFailureException {
+    @Test
+    public void multipleValuesAreResolved()
+    {
         Properties properties = new Properties();
-        properties.setProperty("hostname", "localhost");
-        properties.setProperty("port", "8080");
-        properties.setProperty("base.url", "http://${hostname}:${port}/");
+        properties.setProperty( "hostname", "localhost" );
+        properties.setProperty( "port", "8080" );
+        properties.setProperty( "base.url", "http://${hostname}:${port}/" );
 
-        String value = resolver.getPropertyValue("base.url", properties, new Properties());
+        String value = resolver.getPropertyValue( "base.url", properties, new Properties() );
 
-        assertEquals("http://localhost:8080/", value);
+        assertEquals( "http://localhost:8080/", value );
     }
 
-    public void testMalformedPlaceholderLeftAsIs() throws MojoFailureException {
+    @Test
+    public void malformedPlaceholderIsLeftAsIs()
+    {
         Properties properties = new Properties();
-        properties.setProperty("p1", "${p2}");
-        properties.setProperty("p2", "value");
-        properties.setProperty("p4", "${malformed");
+        properties.setProperty( "p1", "${p2}" );
+        properties.setProperty( "p2", "value" );
+        properties.setProperty( "p4", "${malformed" );
 
-        String value1 = resolver.getPropertyValue("p1", properties, new Properties());
-        String value2 = resolver.getPropertyValue("p2", properties, new Properties());
-        String value4 = resolver.getPropertyValue("p4", properties, new Properties());
+        String value1 = resolver.getPropertyValue( "p1", properties, new Properties() );
+        String value2 = resolver.getPropertyValue( "p2", properties, new Properties() );
+        String value4 = resolver.getPropertyValue( "p4", properties, new Properties() );
 
-        assertEquals("value", value1);
-        assertEquals("value", value2);
-        assertEquals("${malformed", value4);
+        assertEquals( "value", value1 );
+        assertEquals( "value", value2 );
+        assertEquals( "${malformed", value4 );
     }
 
-    public void testPropertyDefinedAsItselfIllegal() throws MojoFailureException {
+    @Test
+    public void propertyDefinedAsItselfIsIllegal()
+    {
         Properties properties = new Properties();
-        properties.setProperty("p1", "${p2}");
-        properties.setProperty("p2", "value");
-        properties.setProperty("p5", "${p5}");
-        properties.setProperty("p6", "${p7}");
-        properties.setProperty("p7", "${p6}");
+        properties.setProperty( "p1", "${p2}" );
+        properties.setProperty( "p2", "value" );
+        properties.setProperty( "p5", "${p5}" );
+        properties.setProperty( "p6", "${p7}" );
+        properties.setProperty( "p7", "${p6}" );
 
-        String value1 = resolver.getPropertyValue("p1", properties, new Properties());
-        String value2 = resolver.getPropertyValue("p2", properties, new Properties());
+        String value1 = resolver.getPropertyValue( "p1", properties, new Properties() );
+        String value2 = resolver.getPropertyValue( "p2", properties, new Properties() );
         String value5 = null;
-        try {
-            value5 = resolver.getPropertyValue("p5", properties, new Properties());
+        try
+        {
+            value5 = resolver.getPropertyValue( "p5", properties, new Properties() );
             fail();
-        } catch (IllegalArgumentException e) {
-            assertTrue(JUnitMatchers.containsString("p5").matches(e.getMessage()));
+        }
+        catch ( IllegalArgumentException e )
+        {
+            assertThat( e.getMessage(), containsString( "p5" ) );
         }
         String value6 = null;
-        try {
-            value6 = resolver.getPropertyValue("p6", properties, new Properties());
+        try
+        {
+            value6 = resolver.getPropertyValue( "p6", properties, new Properties() );
             fail();
-        } catch (IllegalArgumentException e) {
-            assertTrue(JUnitMatchers.containsString("p7").matches(e.getMessage()));
+        }
+        catch ( IllegalArgumentException e )
+        {
+            assertThat( e.getMessage(), containsString( "p7" ) );
         }
 
-        assertEquals("value", value1);
-        assertEquals("value", value2);
-        assertNull(value5);
-        assertNull(value6);
+        assertEquals( "value", value1 );
+        assertEquals( "value", value2 );
+        assertNull( value5 );
+        assertNull( value6 );
     }
 
-    public void testValueObtainedFromSystemProperty() throws MojoFailureException {
-        Properties saved = System.getProperties();
-        System.setProperty("system.property", "system.value");
-
-        Properties properties = new Properties();
-        properties.setProperty("p1", "${system.property}");
-
-        String value = resolver.getPropertyValue("p1", properties, new Properties());
-
-        try {
-            assertEquals("system.value", value);
-        } finally {
-            System.setProperties(saved);
-        }
-    }
-
-    public void testValueObtainedFromEnvironmentProperty() throws MojoFailureException {
-        Properties environment = new Properties();
-        environment.setProperty("PROPERTY", "env.value");
-
-        Properties properties = new Properties();
-        properties.setProperty("p1", "${env.PROPERTY}");
-
-        String value = resolver.getPropertyValue("p1", properties, environment);
-
-        assertEquals("env.value", value);
-    }
-
-    public void testResolverToleratesMissingProperty()
+    @Test
+    public void valueIsObtainedFromSystemProperty()
     {
-        assertEquals("", resolver.getPropertyValue("non-existent", new Properties(), null));
+        Properties saved = System.getProperties();
+        System.setProperty( "system.property", "system.value" );
+
+        Properties properties = new Properties();
+        properties.setProperty( "p1", "${system.property}" );
+
+        String value = resolver.getPropertyValue( "p1", properties, new Properties() );
+
+        try
+        {
+            assertEquals( "system.value", value );
+        }
+        finally
+        {
+            System.setProperties( saved );
+        }
+    }
+
+    @Test
+    public void valueIsObtainedFromEnvironmentProperty()
+    {
+        Properties environment = new Properties();
+        environment.setProperty( "PROPERTY", "env.value" );
+
+        Properties properties = new Properties();
+        properties.setProperty( "p1", "${env.PROPERTY}" );
+
+        String value = resolver.getPropertyValue( "p1", properties, environment );
+
+        assertEquals( "env.value", value );
+    }
+
+    @Test
+    public void missingPropertyIsTolerated()
+    {
+        assertEquals( "", resolver.getPropertyValue( "non-existent", new Properties(), null ) );
     }
 
     public void testDefaultValueForUnresolvedPropertyWithEnabledFlag()

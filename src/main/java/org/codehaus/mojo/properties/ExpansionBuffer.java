@@ -21,10 +21,12 @@ package org.codehaus.mojo.properties;
 
 abstract class ExpansionBuffer
 {
-    public final StringBuilder resolved = new StringBuilder();
-    public String unresolved;
+    private final StringBuilder resolved = new StringBuilder();
 
-    public ExpansionBuffer(String unresolved) {
+    protected String unresolved;
+
+    public ExpansionBuffer( String unresolved )
+    {
         this.unresolved = unresolved != null ? unresolved : "";
     }
 
@@ -37,49 +39,53 @@ abstract class ExpansionBuffer
 
     public abstract KeyAndDefaultValue extractPropertyKeyAndDefaultValue();
 
-    public String toString() {
-        return resolved.append(unresolved).toString();
+    public String toString()
+    {
+        return resolved.append( unresolved ).toString();
     }
 
-    public void add(String newKey, String newValue)
+    public void add( String newKey, String newValue )
     {
         if ( replaced( newValue ) )
         {
-            expandFurther(newValue);
+            expandFurther( newValue );
         }
         else
         {
-            skipUnresolvedPlaceholder(newKey);
+            skipUnresolvedPlaceholder( newKey );
         }
     }
 
-    private boolean replaced(String value)
+    private boolean replaced( String value )
     {
         return value != null;
     }
 
-    private void expandFurther(String value)
+    private void expandFurther( String value )
     {
         unresolved = value + unresolved;
     }
 
-    private void skipUnresolvedPlaceholder(String newKey)
+    private void skipUnresolvedPlaceholder( String newKey )
     {
-        resolved.append( "${" ).append(newKey).append( "}" );
+        resolved.append( "${" ).append( newKey ).append( "}" );
     }
 
-    protected void discardToAfterNextSuffix() {
+    protected void discardToAfterNextSuffix()
+    {
         int propertySuffixPos = unresolved.indexOf( "}" );
-        unresolved = unresolved.substring(propertySuffixPos + 1);
+        unresolved = unresolved.substring( propertySuffixPos + 1 );
     }
 
-    protected void advanceToNextPrefix() {
+    protected void advanceToNextPrefix()
+    {
         resolved.append( beforePrefix() );
     }
 
-    protected void discardPrefix() {
+    protected void discardPrefix()
+    {
         int propertyPrefixPos = unresolved.indexOf( "${" );
-        unresolved = unresolved.substring(propertyPrefixPos + 2);
+        unresolved = unresolved.substring( propertyPrefixPos + 2 );
     }
 
     private String beforePrefix()

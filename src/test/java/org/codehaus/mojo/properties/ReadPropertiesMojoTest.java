@@ -1,37 +1,92 @@
 package org.codehaus.mojo.properties;
 
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
-import junit.framework.TestCase;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.junit.Before;
+import org.junit.Test;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
-public class ReadPropertiesMojoTest extends TestCase {
-    ReadPropertiesMojo mojo = new ReadPropertiesMojo();
+public class ReadPropertiesMojoTest {
+    private static final String NEW_LINE = System.getProperty("line.separator");
 
+    private MavenProject projectStub;
+    private ReadPropertiesMojo readPropertiesMojo;
+
+    @Before
+    public void setUp() {
+        projectStub = new MavenProject();
+        readPropertiesMojo = new ReadPropertiesMojo();
+        readPropertiesMojo.setProject(projectStub);
+    }
+
+
+    @Test
+    public void readPropertiesWithoutKeyprefix() throws Exception {
+        File testPropertyFile = getPropertyFileForTesting();
+        // load properties directly for comparison later
+        Properties testProperties = new Properties();
+        testProperties.load(new FileReader(testPropertyFile));
+
+        // do the work
+        readPropertiesMojo.setFiles(new File[]{testPropertyFile});
+        readPropertiesMojo.execute();
+
+        // check results
+        Properties projectProperties = projectStub.getProperties();
+        assertNotNull(projectProperties);
+        // it should not be empty
+        assertNotEquals(0, projectProperties.size());
+
+        // we are not adding prefix, so properties should be same as in file
+        assertEquals(testProperties.size(), projectProperties.size());
+        assertEquals(testProperties, projectProperties);
+
+    }
+
+    @Test
+    public void readPropertiesWithKeyprefix() throws Exception {
+        String keyPrefix = "testkey-prefix.";
+
+        File testPropertyFileWithoutPrefix = getPropertyFileForTesting();
+        Properties testPropertiesWithoutPrefix = new Properties();
+        testPropertiesWithoutPrefix.load(new FileReader(testPropertyFileWithoutPrefix));
+        // do the work
+        readPropertiesMojo.setKeyPrefix(keyPrefix);
+        readPropertiesMojo.setFiles(new File[]{testPropertyFileWithoutPrefix});
+        readPropertiesMojo.execute();
+
+        // load properties directly and add prefix for comparison later
+        Properties testPropertiesPrefix = new Properties();
+        testPropertiesPrefix.load(new FileReader(getPropertyFileForTesting(keyPrefix)));
+
+        // check results
+        Properties projectProperties = projectStub.getProperties();
+        assertNotNull(projectProperties);
+        // it should not be empty
+        assertNotEquals(0, projectProperties.size());
+
+        // we are adding prefix, so prefix properties should be same as in projectProperties
+        assertEquals(testPropertiesPrefix.size(), projectProperties.size());
+        assertEquals(testPropertiesPrefix, projectProperties);
+
+        // properties with and without prefix shouldn't be same
+        assertNotEquals(testPropertiesPrefix, testPropertiesWithoutPrefix);
+        assertNotEquals(testPropertiesWithoutPrefix, projectProperties);
+
+    }
+
+    @Test
     public void testDefaultValueForUnresolvedPropertyWithEnabledFlag() throws MojoFailureException, MojoExecutionException, IOException {
         Properties properties = new Properties();
         properties.setProperty("p1", "${unknown:}");
@@ -55,11 +110,11 @@ public class ReadPropertiesMojoTest extends TestCase {
         Model model = new Model();
         model.setProperties(properties);
         MavenProject project = new MavenProject(model);
-        mojo.setProject(project);
-        mojo.setUseDefaultValues(true);
-        mojo.execute();
+        readPropertiesMojo.setProject(project);
+        readPropertiesMojo.setUseDefaultValues(true);
+        readPropertiesMojo.execute();
 
-        Properties processed = mojo.getProject().getProperties();
+        Properties processed = readPropertiesMojo.getProject().getProperties();
 
         String value1 = processed.getProperty("p1");
         String value2 = processed.getProperty("p2");
@@ -94,6 +149,7 @@ public class ReadPropertiesMojoTest extends TestCase {
      * with the flag disabled (default behavior) nothing gets replaced
      * ':' is treated as a regular character and part of the property name
      */
+    @Test
     public void testDefaultValueForUnresolvedPropertyWithDisabledFlag() throws MojoFailureException, MojoExecutionException, IOException {
         Properties properties = new Properties();
         properties.setProperty("p1", "${unknown:}");
@@ -117,10 +173,10 @@ public class ReadPropertiesMojoTest extends TestCase {
         Model model = new Model();
         model.setProperties(properties);
         MavenProject project = new MavenProject(model);
-        mojo.setProject(project);
-        mojo.execute();
+        readPropertiesMojo.setProject(project);
+        readPropertiesMojo.execute();
 
-        Properties processed = mojo.getProject().getProperties();
+        Properties processed = readPropertiesMojo.getProject().getProperties();
 
         String value1 = processed.getProperty("p1");
         String value2 = processed.getProperty("p2");
@@ -150,4 +206,28 @@ public class ReadPropertiesMojoTest extends TestCase {
         assertEquals("${unknown::}", value12);
         assertEquals("${unknown:  }", value13);
     }
+
+    private File getPropertyFileForTesting() throws IOException {
+        return getPropertyFileForTesting(null);
+    }
+
+    private File getPropertyFileForTesting(String keyPrefix) throws IOException {
+        File f = File.createTempFile("prop-test", ".properties");
+        f.deleteOnExit();
+        FileWriter writer = new FileWriter(f);
+        String prefix = keyPrefix;
+        if (prefix == null) {
+            prefix = "";
+        }
+        try {
+            writer.write(prefix + "test.property1=value1" + NEW_LINE);
+            writer.write(prefix + "test.property2=value2" + NEW_LINE);
+            writer.write(prefix + "test.property3=value3" + NEW_LINE);
+            writer.flush();
+        } finally {
+            writer.close();
+        }
+        return f;
+    }
+
 }

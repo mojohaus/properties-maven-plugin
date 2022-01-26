@@ -11,7 +11,7 @@ Usage
 
 * read-project-properties
 
-  The {{{read-project-properties-mojo.html}properties:read-project-properties}} goal 
+  The {{{./read-project-properties-mojo.html}properties:read-project-properties}} goal 
   reads property files or URLs and stores them as project properties.
 
 ----------------
@@ -39,9 +39,11 @@ Usage
     </plugins>
   </build>
 </project>
+----------------
 
-or alternatively
+  or alternatively
 
+----------------
 <project>
   <build>
     <plugins>
@@ -58,7 +60,7 @@ or alternatively
             <configuration>
               <urls>
                 <url>classpath:/config/dev.properties</url>
-                <url>file:///${env.HOME}/mydev.properties</file>
+                <url>file:///${env.HOME}/mydev.properties</url>
               </urls>
             </configuration>
           </execution>
@@ -67,12 +69,11 @@ or alternatively
     </plugins>
   </build>
 </project>
-
 ----------------
 
 * write-project-properties
 
-  The {{{write-project-properties-mojo.html}properties:write-project-properties}} goal
+  The {{{./write-project-properties-mojo.html}properties:write-project-properties}} goal
   writes all project properties to a given file.
 
 ----------------
@@ -104,7 +105,7 @@ or alternatively
 
 * write-active-profile-properties
 
-  The {{{write-active-profile-properties-mojo.html}properties:write-active-profile-properties}} goal
+  The {{{./write-active-profile-properties-mojo.html}properties:write-active-profile-properties}} goal
   writes properties of all active profiles to a given file.
 
 ----------------
@@ -136,7 +137,7 @@ or alternatively
 
 * set-system-properties
 
-  The {{{set-system-properties-mojo.html}properties:set-system-properties}}
+  The {{{./set-system-properties-mojo.html}properties:set-system-properties}}
   goal sets the specified system properties.
 
 ----------------

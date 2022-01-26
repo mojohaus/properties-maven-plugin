@@ -23,7 +23,7 @@ Properties Maven Plugin
   miami=heat
 ----------------------------------------
 
-  and invoke the {{{read-project-properties-mojo.html}properties:read-project-properties}}
+  and invoke the {{{./read-project-properties-mojo.html}properties:read-project-properties}}
   goal, it would be the same as declaring the following in your <pom.xml>:
 
 ----------------------------------------
@@ -87,18 +87,18 @@ Properties Maven Plugin
 
 ~~  General Information about the goals.
 
-  * {{{read-project-properties-mojo.html}properties:read-project-properties}} Reads property
+  * {{{./read-project-properties-mojo.html}properties:read-project-properties}} Reads property
     files or properties from URLs as Project properties.
 
-  * {{{write-project-properties-mojo.html}properties:write-project-properties}} Writes project
+  * {{{./write-project-properties-mojo.html}properties:write-project-properties}} Writes project
     properties to a file.
 
-  * {{{write-active-profile-properties-mojo.html}properties:write-active-profile-properties}} Writes
+  * {{{./write-active-profile-properties-mojo.html}properties:write-active-profile-properties}} Writes
     properties of all active profiles to a file.
 
-  * {{{set-system-properties-mojo.html}properties:set-system-properties}} Sets system properties.
+  * {{{./set-system-properties-mojo.html}properties:set-system-properties}} Sets system properties.
 
 
 * Usage
 
-  Instructions on how to use the Properties Maven Plugin can be found {{{usage.html}here}}.
+  Instructions on how to use the Properties Maven Plugin can be found {{{./usage.html}here}}.
