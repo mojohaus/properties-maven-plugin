@@ -90,6 +90,11 @@
       <name>Tim Gordon</name>
       <email>timothygordon32@gmail.com</email>
     </developer>
+    <developer>
+      <id>peter@verhas.com</id>
+      <name>Peter Verhas</name>
+      <email>peter@verhas.com</email>
+    </developer>
   </developers>
   <dependencies>
     <dependency>
