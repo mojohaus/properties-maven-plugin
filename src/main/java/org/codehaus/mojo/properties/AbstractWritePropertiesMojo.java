@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 /*
@@ -61,6 +62,29 @@ public abstract class AbstractWritePropertiesMojo
 
     @Parameter( required = true )
     private File outputFile;
+
+    @Parameter( )
+    private List<String> excludes;
+
+    /**
+     * Filter the properties out, which are listed in the exclude list.
+     *
+     * @param properties all the properties
+     * @return the filtered properties
+     */
+    // this whole method was written by GitHub CoPilot, I only wrote the method header
+    protected Properties filterProperties(Properties properties ){
+        Properties filteredProperties = new Properties();
+        for ( String key : properties.stringPropertyNames() )
+        {
+            if ( excludes != null && excludes.contains( key ) )
+            {
+                continue;
+            }
+            filteredProperties.put( key, properties.getProperty( key ) );
+        }
+        return filteredProperties;
+    }
 
     /**
      * @param properties {@link Properties}

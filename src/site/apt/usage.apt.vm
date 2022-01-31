@@ -94,6 +94,9 @@ Usage
               <outputFile>
                 \${project.build.outputDirectory}/app.properties
               </outputFile>
+              <excludes>
+                <exclude>gpg.password</exclude>
+              </excludes>
             </configuration>
           </execution>
         </executions>
@@ -126,6 +129,9 @@ Usage
               <outputFile>
                 \${project.build.outputDirectory}/app.properties
               </outputFile>
+              <excludes>
+                <exclude>gpg.password</exclude>
+              </excludes>
             </configuration>
           </execution>
         </executions>
