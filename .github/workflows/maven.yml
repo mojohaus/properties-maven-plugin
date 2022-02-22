@@ -93,4 +93,4 @@ jobs:
 
       - name: Build with Maven
         shell: bash
-        run: ./mvnw --show-version --errors --batch-mode "-Dinvoker.streamLogsOnFailures=true" clean verify
+        run: ./mvnw --show-version --errors --batch-mode "-Dinvoker.streamLogsOnFailures=true" clean verify javadoc:javadoc 
