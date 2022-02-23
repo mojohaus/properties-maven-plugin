@@ -55,6 +55,6 @@ public class WriteActiveProfileProperties
             }
         }
 
-        writeProperties( properties, getOutputFile() );
+        writeProperties( filterProperties(properties), getOutputFile() );
     }
 }

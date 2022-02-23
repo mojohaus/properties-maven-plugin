@@ -79,6 +79,6 @@ public class WriteProjectProperties
 
         }
 
-        writeProperties( projProperties, getOutputFile() );
+        writeProperties( filterProperties(projProperties), getOutputFile() );
     }
 }
