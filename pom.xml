@@ -55,6 +55,7 @@
   <properties>
     <mavenVersion>3.2.5</mavenVersion>
     <scmpublish.content>target/staging/${project.artifactId}</scmpublish.content>
+    <project.build.outputTimestamp>2022-01-18T09:14:02Z</project.build.outputTimestamp>
   </properties>
 
 
