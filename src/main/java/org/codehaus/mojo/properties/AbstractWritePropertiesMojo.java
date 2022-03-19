@@ -1,5 +1,7 @@
 package org.codehaus.mojo.properties;
 
+import java.io.BufferedReader;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,6 +25,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 /*
@@ -70,9 +79,9 @@ public abstract class AbstractWritePropertiesMojo
     protected void writeProperties( Properties properties, File file )
         throws MojoExecutionException
     {
-        try ( FileOutputStream fos = new FileOutputStream( file ) )
+        try
         {
-            properties.store( fos, "Properties" );
+            storeWithoutTimestamp( properties, file, "Properties" );
         }
         catch ( FileNotFoundException e )
         {
@@ -83,6 +92,36 @@ public abstract class AbstractWritePropertiesMojo
         {
             getLog().error( "Error writing properties: " + file );
             throw new MojoExecutionException( e.getMessage(), e );
+        }
+    }
+
+    // https://github.com/apache/maven-archiver/blob/master/src/main/java/org/apache/maven/archiver/PomPropertiesUtil.java#L81
+    private void storeWithoutTimestamp( Properties properties, File outputFile, String comments )
+        throws IOException
+    {
+        try ( PrintWriter pw = new PrintWriter( outputFile, "ISO-8859-1" ); StringWriter sw = new StringWriter() )
+        {
+            properties.store( sw, comments );
+            comments = '#' + comments;
+
+            List<String> lines = new ArrayList<>();
+            try ( BufferedReader r = new BufferedReader( new StringReader( sw.toString() ) ) )
+            {
+                String line;
+                while ( ( line = r.readLine() ) != null )
+                {
+                    if ( !line.startsWith( "#" ) || line.equals( comments ) )
+                    {
+                        lines.add( line );
+                    }
+                }
+            }
+
+            Collections.sort( lines );
+            for ( String l : lines )
+            {
+                pw.println( l );
+            }
         }
     }
 
