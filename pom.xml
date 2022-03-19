@@ -142,4 +142,43 @@
 
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>run-its</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <configuration>
+              <addTestClassPath>true</addTestClassPath>
+              <debug>true</debug>
+              <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+              <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+              <projectsDirectory>src/it</projectsDirectory>
+              <showVersion>true</showVersion>
+              <setupIncludes>
+                <setupInclude>setup/pom.xml</setupInclude>
+              </setupIncludes>
+              <pomIncludes>
+                <pomInclude>*/pom.xml</pomInclude>
+              </pomIncludes>
+              <preBuildHookScript>setup</preBuildHookScript>
+              <postBuildHookScript>verify</postBuildHookScript>
+              <settingsFile>src/it/settings.xml</settingsFile>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>install</goal>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
