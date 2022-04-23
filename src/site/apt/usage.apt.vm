@@ -60,7 +60,7 @@ Usage
             <configuration>
               <urls>
                 <url>classpath:/config/dev.properties</url>
-                <url>file:///${env.HOME}/mydev.properties</url>
+                <file>file:///${env.HOME}/mydev.properties</file>
               </urls>
             </configuration>
           </execution>
