@@ -14,6 +14,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * Fix delete TempFiles
+ *
+ * @author <a href="mailto:belmoujahid.i@gmail.com">Imad BELMOUJAHID</a>
+ */
 public class ReadPropertiesMojoTest {
     private static final String NEW_LINE = System.getProperty("line.separator");
 
@@ -27,60 +32,64 @@ public class ReadPropertiesMojoTest {
         readPropertiesMojo.setProject(projectStub);
     }
 
-
     @Test
     public void readPropertiesWithoutKeyprefix() throws Exception {
-        File testPropertyFile = getPropertyFileForTesting();
-        // load properties directly for comparison later
-        Properties testProperties = new Properties();
-        testProperties.load(new FileReader(testPropertyFile));
 
-        // do the work
-        readPropertiesMojo.setFiles(new File[]{testPropertyFile});
-        readPropertiesMojo.execute();
+        try (FileReader fr = new FileReader(getPropertyFileForTesting())) {
 
-        // check results
-        Properties projectProperties = projectStub.getProperties();
-        assertNotNull(projectProperties);
-        // it should not be empty
-        assertNotEquals(0, projectProperties.size());
+            // load properties directly for comparison later
+            Properties testProperties = new Properties();
+            testProperties.load(fr);
 
-        // we are not adding prefix, so properties should be same as in file
-        assertEquals(testProperties.size(), projectProperties.size());
-        assertEquals(testProperties, projectProperties);
+            // do the work
+            readPropertiesMojo.setFiles(new File[]{getPropertyFileForTesting()});
+            readPropertiesMojo.execute();
 
+            // check results
+            Properties projectProperties = projectStub.getProperties();
+            assertNotNull(projectProperties);
+            // it should not be empty
+            assertNotEquals(0, projectProperties.size());
+
+            // we are not adding prefix, so properties should be same as in file
+            assertEquals(testProperties.size(), projectProperties.size());
+            assertEquals(testProperties, projectProperties);
+        }
     }
 
     @Test
     public void readPropertiesWithKeyprefix() throws Exception {
         String keyPrefix = "testkey-prefix.";
 
-        File testPropertyFileWithoutPrefix = getPropertyFileForTesting();
-        Properties testPropertiesWithoutPrefix = new Properties();
-        testPropertiesWithoutPrefix.load(new FileReader(testPropertyFileWithoutPrefix));
-        // do the work
-        readPropertiesMojo.setKeyPrefix(keyPrefix);
-        readPropertiesMojo.setFiles(new File[]{testPropertyFileWithoutPrefix});
-        readPropertiesMojo.execute();
+        try (FileReader fs1 = new FileReader(getPropertyFileForTesting(keyPrefix));
+             FileReader fs2 = new FileReader(getPropertyFileForTesting())) {
 
-        // load properties directly and add prefix for comparison later
-        Properties testPropertiesPrefix = new Properties();
-        testPropertiesPrefix.load(new FileReader(getPropertyFileForTesting(keyPrefix)));
+            Properties testPropertiesWithoutPrefix = new Properties();
+            testPropertiesWithoutPrefix.load(fs2);
 
-        // check results
-        Properties projectProperties = projectStub.getProperties();
-        assertNotNull(projectProperties);
-        // it should not be empty
-        assertNotEquals(0, projectProperties.size());
+            // do the work
+            readPropertiesMojo.setKeyPrefix(keyPrefix);
+            readPropertiesMojo.setFiles(new File[]{getPropertyFileForTesting()});
+            readPropertiesMojo.execute();
 
-        // we are adding prefix, so prefix properties should be same as in projectProperties
-        assertEquals(testPropertiesPrefix.size(), projectProperties.size());
-        assertEquals(testPropertiesPrefix, projectProperties);
+            // load properties directly and add prefix for comparison later
+            Properties testPropertiesPrefix = new Properties();
+            testPropertiesPrefix.load(fs1);
 
-        // properties with and without prefix shouldn't be same
-        assertNotEquals(testPropertiesPrefix, testPropertiesWithoutPrefix);
-        assertNotEquals(testPropertiesWithoutPrefix, projectProperties);
+            // check results
+            Properties projectProperties = projectStub.getProperties();
+            assertNotNull(projectProperties);
+            // it should not be empty
+            assertNotEquals(0, projectProperties.size());
 
+            // we are adding prefix, so prefix properties should be same as in projectProperties
+            assertEquals(testPropertiesPrefix.size(), projectProperties.size());
+            assertEquals(testPropertiesPrefix, projectProperties);
+
+            // properties with and without prefix shouldn't be same
+            assertNotEquals(testPropertiesPrefix, testPropertiesWithoutPrefix);
+            assertNotEquals(testPropertiesWithoutPrefix, projectProperties);
+        }
     }
 
     private File getPropertyFileForTesting() throws IOException {
@@ -105,5 +114,4 @@ public class ReadPropertiesMojoTest {
         }
         return f;
     }
-
 }
