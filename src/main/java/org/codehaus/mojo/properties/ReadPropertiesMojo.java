@@ -119,6 +119,9 @@ public class ReadPropertiesMojo
         this.keyPrefix = keyPrefix;
     }
 
+    @Parameter( defaultValue = "false", property = "prop.skipLoadProperties" )
+    private boolean skipLoadProperties;
+
     /**
      * If the plugin should process default values within property placeholders
      *
@@ -134,15 +137,19 @@ public class ReadPropertiesMojo
 
     /** {@inheritDoc} */
     public void execute()
-        throws MojoExecutionException, MojoFailureException
+            throws MojoExecutionException, MojoFailureException
     {
-        checkParameters();
-
-        loadFiles();
-
-        loadUrls();
-
-        resolveProperties();
+        if ( !skipLoadProperties )
+        {
+            checkParameters();
+            loadFiles();
+            loadUrls();
+            resolveProperties();
+        }
+        else
+        {
+            getLog().warn( "The properties are ignored" );
+        }
     }
 
     private void checkParameters()
@@ -307,6 +314,15 @@ public class ReadPropertiesMojo
     void setQuiet( boolean quiet )
     {
         this.quiet = quiet;
+    }
+
+    /**
+     *
+     * @param skipLoadProperties Set to <code>true</code> if you don't want to load properties.
+     */
+    void setSkipLoadProperties( boolean skipLoadProperties )
+    {
+        this.skipLoadProperties = skipLoadProperties;
     }
 
     /**
