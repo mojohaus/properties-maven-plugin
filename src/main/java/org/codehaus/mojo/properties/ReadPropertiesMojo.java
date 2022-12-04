@@ -24,8 +24,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -50,6 +52,11 @@ import org.codehaus.plexus.util.cli.CommandLineUtils;
 public class ReadPropertiesMojo
     extends AbstractMojo
 {
+    /**
+     * Default encoding for the input properties file/url. Package private for testing.
+     */
+    static final String DEFAULT_ENCODING = "ISO-8859-1";
+
     @Parameter( defaultValue = "${project}", readonly = true, required = true )
     private MavenProject project;
 
@@ -123,6 +130,16 @@ public class ReadPropertiesMojo
     private boolean skipLoadProperties;
 
     /**
+     * The encoding of the properties files.
+     */
+    @Parameter( required = false, defaultValue = DEFAULT_ENCODING )
+    private String encoding = DEFAULT_ENCODING;
+
+    void setEncoding ( String encoding ) {
+        this.encoding = encoding;
+    }
+
+    /**
      * Used for resolving property placeholders.
      */
     private final PropertyResolver resolver = new PropertyResolver();
@@ -151,6 +168,14 @@ public class ReadPropertiesMojo
         {
             throw new MojoExecutionException( "Set files or URLs but not both - otherwise "
                 + "no order of precedence can be guaranteed" );
+        }
+        try
+        {
+            Charset.forName(this.encoding);
+        }
+        catch(IllegalArgumentException e)
+        {
+            throw new MojoExecutionException(String.format("Invalid encoding '%s'", this.encoding), e);
         }
     }
 
@@ -190,23 +215,26 @@ public class ReadPropertiesMojo
     {
         try
         {
-            getLog().debug( "Loading properties from " + resource );
+            getLog().debug( String.format( "Loading properties from %s using encoding %s", resource.toString(),  this.encoding ) );
 
             try ( InputStream stream = resource.getInputStream() )
             {
-                if ( keyPrefix != null )
+                try (InputStreamReader streamReader = new InputStreamReader( stream, this.encoding ) )
                 {
-                    Properties properties = new Properties();
-                    properties.load( stream );
-                    Properties projectProperties = project.getProperties();
-                    for ( String key : properties.stringPropertyNames() )
+                    if ( keyPrefix != null )
                     {
-                        projectProperties.put( keyPrefix + key, properties.get( key ) );
+                        Properties properties = new Properties();
+                        properties.load( streamReader );
+                        Properties projectProperties = project.getProperties();
+                        for ( String key : properties.stringPropertyNames() )
+                        {
+                            projectProperties.put( keyPrefix + key, properties.get( key ) );
+                        }
                     }
-                }
-                else
-                {
-                    project.getProperties().load( stream );
+                    else
+                    {
+                        project.getProperties().load( streamReader );
+                    }
                 }
             }
         }

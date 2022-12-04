@@ -41,6 +41,7 @@ public class WriteActiveProfileProperties
         throws MojoExecutionException
     {
         validateOutputFile();
+        validateEncoding();
         List<Profile> list = getProject().getActiveProfiles();
         if ( getLog().isInfoEnabled() )
         {

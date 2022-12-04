@@ -60,6 +60,7 @@ public class WriteProjectProperties
         throws MojoExecutionException
     {
         validateOutputFile();
+        validateEncoding();
         Properties projProperties = new Properties();
         projProperties.putAll( getProject().getProperties() );
 
