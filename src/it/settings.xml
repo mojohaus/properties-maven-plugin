@@ -34,6 +34,9 @@ under the License.
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
+      <properties>
+        <bob>dog</bob>
+      </properties>
       <repositories>
         <repository>
           <id>local.central</id>
