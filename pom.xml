@@ -53,7 +53,7 @@
   </licenses>
 
   <properties>
-    <mavenVersion>3.2.5</mavenVersion>
+    <mavenVersion>3.5.4</mavenVersion>
     <scmpublish.content>target/staging/${project.artifactId}</scmpublish.content>
     <project.build.outputTimestamp>2022-03-19T15:53:05Z</project.build.outputTimestamp>
   </properties>
