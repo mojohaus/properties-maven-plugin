@@ -62,7 +62,7 @@
   <scm>
     <connection>scm:git:https://github.com/mojohaus/properties-maven-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mojohaus/properties-maven-plugin.git</developerConnection>
-    <url>https://github.com/mojohaus/properties-maven-plugin/tree/${scm.tag}</url>
+    <url>https://github.com/mojohaus/properties-maven-plugin/tree/master</url>
     <tag>master</tag>
   </scm>
   <issueManagement>
