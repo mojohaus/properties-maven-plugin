@@ -8,9 +8,9 @@
   <version>0.0.1-SNAPSHOT</version>
 
   <properties>
-    <g>${groupId}</g>
-    <a>${artifactId}</a>
-    <v>${version}</v>
+    <g>${project.groupId}</g>
+    <a>${project.artifactId}</a>
+    <v>${project.version}</v>
     <properties-maven-plugin.version>@project.version@</properties-maven-plugin.version>
   </properties>
 
