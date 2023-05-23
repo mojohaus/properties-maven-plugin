@@ -19,11 +19,11 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
-class ExpansionBuffer
+abstract class ExpansionBuffer
 {
     private final StringBuilder resolved = new StringBuilder();
 
-    private String unresolved;
+    protected String unresolved;
 
     public ExpansionBuffer( String unresolved )
     {
@@ -37,18 +37,7 @@ class ExpansionBuffer
         return prefixPos >= 0 && suffixPos >= 0;
     }
 
-    public String extractPropertyKey()
-    {
-        advanceToNextPrefix();
-
-        discardPrefix();
-
-        String key = beforeNextSuffix();
-
-        discardToAfterNextSuffix();
-
-        return key;
-    }
+    public abstract KeyAndDefaultValue extractPropertyKeyAndDefaultValue();
 
     public String toString()
     {
@@ -82,18 +71,18 @@ class ExpansionBuffer
         resolved.append( "${" ).append( newKey ).append( "}" );
     }
 
-    private void discardToAfterNextSuffix()
+    protected void discardToAfterNextSuffix()
     {
         int propertySuffixPos = unresolved.indexOf( "}" );
         unresolved = unresolved.substring( propertySuffixPos + 1 );
     }
 
-    private void advanceToNextPrefix()
+    protected void advanceToNextPrefix()
     {
         resolved.append( beforePrefix() );
     }
 
-    private void discardPrefix()
+    protected void discardPrefix()
     {
         int propertyPrefixPos = unresolved.indexOf( "${" );
         unresolved = unresolved.substring( propertyPrefixPos + 2 );
@@ -105,9 +94,5 @@ class ExpansionBuffer
         return unresolved.substring( 0, propertyPrefixPos );
     }
 
-    private String beforeNextSuffix()
-    {
-        int propertySuffixPos = unresolved.indexOf( "}" );
-        return unresolved.substring( 0, propertySuffixPos );
-    }
+    protected abstract String beforeNextSuffix();
 }

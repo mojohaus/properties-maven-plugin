@@ -38,19 +38,40 @@ class PropertyResolver
      * @return resolved property value
      * @throws IllegalArgumentException when properties are circularly defined
      */
-    public String getPropertyValue( String key, Properties properties, Properties environment )
+    public String getPropertyValue( String key, Properties properties, Properties environment ) {
+        return getPropertyValue(key, properties, environment, false);
+    }
+
+    /**
+     * Same as the previous method. Accepts an extra flag to indicate whether default values should be
+     * processed within property placeholders or not.
+     *
+     * @param key           property key
+     * @param properties           project properties
+     * @param environment environment variables
+     * @param useDefaultValues    process default values flag
+     * @return resolved property value
+     * @throws IllegalArgumentException when properties are circularly defined
+     */
+    public String getPropertyValue( String key, Properties properties, Properties environment, boolean useDefaultValues )
     {
         String value = properties.getProperty( key );
 
-        ExpansionBuffer buffer = new ExpansionBuffer( value );
+        ExpansionBuffer buffer;
+        if ( useDefaultValues ) {
+            buffer = new DefaultValuesAwareExpansionBufferImpl(value);
+        } else {
+            buffer = new ExpansionBufferImpl( value );
+        }
 
         CircularDefinitionPreventer circularDefinitionPreventer =
             new CircularDefinitionPreventer().visited( key, value );
 
         while ( buffer.hasMoreLegalPlaceholders() )
         {
-            String newKey = buffer.extractPropertyKey();
-            String newValue = fromPropertiesThenSystemThenEnvironment( newKey, properties, environment );
+            KeyAndDefaultValue kv = buffer.extractPropertyKeyAndDefaultValue();
+            String newKey = kv.getKey();
+            String newValue = fromPropertiesThenSystemThenEnvironment( newKey, kv.getDefaultValue(), properties, environment );
 
             circularDefinitionPreventer.visited( newKey, newValue );
 
@@ -60,7 +81,7 @@ class PropertyResolver
         return buffer.toString();
     }
 
-    private String fromPropertiesThenSystemThenEnvironment( String key, Properties properties, Properties environment )
+    private String fromPropertiesThenSystemThenEnvironment( String key, String defaultValue, Properties properties, Properties environment )
     {
         String value = properties.getProperty( key );
 
@@ -74,6 +95,12 @@ class PropertyResolver
         if ( value == null && key.startsWith( "env." ) && environment != null )
         {
             value = environment.getProperty( key.substring( 4 ) );
+        }
+
+        // try default value
+        if ( value == null )
+        {
+            value = defaultValue;
         }
 
         return value;

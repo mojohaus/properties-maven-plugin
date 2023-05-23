@@ -39,6 +39,50 @@ Properties Maven Plugin
   can see how these goals can be useful. Note that the URL format accepts
   Spring's classpath: style pseudo-URL syntax.
 
+  Optionally, the plugin can process default values within property placeholders.
+
+  Property name is separated from the default value with <<<':'>>>.
+
+  For example, given these initial values
+
+----------------------------------------
+  host=example.com
+  port=9090
+  fallback=fallback value
+----------------------------------------
+
+  the following replacements will happen:
+
+*---------+-------------+----------------+
+||<<Raw value>> || <<Replacement>> (<<<useDefaultValues>>> flag enabled) || <<Replacement>> (<<<useDefaultValues>>> flag disabled)
+*---------*-------------*----------------*
+|<<<$\{unknown:\}>>> | <<<$\{unknown\}>>> | <<<$\{unknown:\}>>> |
+*---------*-------------*----------------*
+<<<$\{unknown:defaultValue\}>>> | <<<defaultValue>>> | <<<$\{unknown:defaultValue\}>>> |
+*---------*-------------*----------------*
+<<<http://$\{uhost:localhost\}:$\{uport:8080\}>>> | <<<http://localhost:8080>>> | <<<http://$\{uhost:localhost\}:$\{uport:8080\}>>> |
+*---------*-------------*----------------*
+<<<http://$\{host:localhost\}:$\{port:8080\}>>> | <<<http://example.com:9090>>> | <<<http://$\{host:localhost\}:$\{port:8080\}>>> |
+*---------*-------------*----------------*
+<<<$\{unknown:$\{fallback\}\}>>> | <<<fallback value>>> | <<<$\{unknown:$\{fallback\}\}>>> |
+*---------*-------------*----------------*
+<<<$\{unknown:$\{double.unknown\}\}>>> | <<<$\{double.unknown\}>>> | <<<$\{unknown:$\{double.unknown\}\}>>> |
+*---------*-------------*----------------*
+<<<$\{unknown:with space\}>>> | <<<with space>>> | <<<$\{unknown:with space\}>>> |
+*---------*-------------*----------------*
+<<<$\{unknown:with extra :\}>>> | <<<with extra :>>> | <<<$\{unknown:with extra :\}>>> |
+*---------*-------------*----------------*
+<<<$\{malformed:defVal>>> | <<<$\{malformed:defVal>>> | <<<$\{malformed:defVal>>> |
+*---------*-------------*----------------*
+<<<$\{malformed:with space>>> | <<<$\{malformed:with space>>> | <<<$\{malformed:with space>>> |
+*---------*-------------*----------------*
+<<<$\{malformed:with extra :>>> | <<<$\{malformed:with extra :>>> | <<<$\{malformed:with extra :>>> |
+*---------*-------------*----------------*
+<<<$\{unknown::\}>>> | <<<:>>> | <<<$\{unknown::\}>>> |
+*---------*-------------*----------------*
+<<<$\{host\}>>> | <<<example.com>>> | <<<example.com>>> |
+*---------*-------------*----------------*
+
 * Goals Overview
 
 ~~  General Information about the goals.

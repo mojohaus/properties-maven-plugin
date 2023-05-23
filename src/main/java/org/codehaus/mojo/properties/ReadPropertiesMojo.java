@@ -85,7 +85,7 @@ public class ReadPropertiesMojo
 
     /**
      * Default scope for test access.
-     * 
+     *
      * @param urls The URLs to set for tests.
      */
     public void setUrls( String[] urls )
@@ -121,6 +121,14 @@ public class ReadPropertiesMojo
 
     @Parameter( defaultValue = "false", property = "prop.skipLoadProperties" )
     private boolean skipLoadProperties;
+
+    /**
+     * If the plugin should process default values within property placeholders
+     *
+     * @parameter default-value="false"
+     */
+    @Parameter( defaultValue = "false" )
+    private boolean useDefaultValues;
 
     /**
      * Used for resolving property placeholders.
@@ -278,7 +286,7 @@ public class ReadPropertiesMojo
     {
         try
         {
-            return resolver.getPropertyValue( k, p, environment );
+            return resolver.getPropertyValue( k, p, environment , useDefaultValues);
         }
         catch ( IllegalArgumentException e )
         {
@@ -288,7 +296,7 @@ public class ReadPropertiesMojo
 
     /**
      * Override-able for test purposes.
-     * 
+     *
      * @return The shell environment variables, can be empty but never <code>null</code>.
      * @throws IOException If the environment variables could not be queried from the shell.
      */
@@ -300,7 +308,7 @@ public class ReadPropertiesMojo
 
     /**
      * Default scope for test access.
-     * 
+     *
      * @param quiet Set to <code>true</code> if missing files can be skipped.
      */
     void setQuiet( boolean quiet )
@@ -318,13 +326,29 @@ public class ReadPropertiesMojo
     }
 
     /**
+     * @param useDefaultValues set to <code>true</code> if default values need to be processed within property placeholders
+     */
+    public void setUseDefaultValues(boolean useDefaultValues)
+    {
+        this.useDefaultValues = useDefaultValues;
+    }
+
+    /**
      * Default scope for test access.
-     * 
+     *
      * @param project The test project.
      */
     void setProject( MavenProject project )
     {
         this.project = project;
+    }
+
+    /**
+     * For test access.
+     * @return The test project
+     */
+    public MavenProject getProject() {
+        return project;
     }
 
     private static abstract class Resource
