@@ -41,7 +41,8 @@ abstract class ExpansionBuffer
 
     public String toString()
     {
-        return resolved.append( unresolved ).toString();
+        StringBuilder sb = new StringBuilder(resolved);
+        return sb.append( unresolved ).toString();
     }
 
     public void add( String newKey, String newValue )
