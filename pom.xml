@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>mojo-parent</artifactId>
-    <version>72</version>
+    <version>76</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -42,12 +42,12 @@
 
   <packaging>maven-plugin</packaging>
 
-  <url>http://www.mojohaus.org/properties-maven-plugin</url>
+  <url>https://www.mojohaus.org/properties-maven-plugin</url>
 
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -92,22 +92,11 @@
       <email>timothygordon32@gmail.com</email>
     </developer>
   </developers>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
-      <version>${mavenVersion}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-model-builder</artifactId>
-      <version>${mavenVersion}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-artifact</artifactId>
       <version>${mavenVersion}</version>
       <scope>provided</scope>
     </dependency>
