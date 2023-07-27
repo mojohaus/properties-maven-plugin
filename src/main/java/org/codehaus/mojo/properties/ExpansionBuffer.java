@@ -19,80 +19,65 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
-abstract class ExpansionBuffer
-{
+abstract class ExpansionBuffer {
     private final StringBuilder resolved = new StringBuilder();
 
     protected String unresolved;
 
-    public ExpansionBuffer( String unresolved )
-    {
+    protected ExpansionBuffer(String unresolved) {
         this.unresolved = unresolved != null ? unresolved : "";
     }
 
-    public boolean hasMoreLegalPlaceholders()
-    {
-        int prefixPos = unresolved.indexOf( "${" );
-        int suffixPos = unresolved.indexOf( "}", prefixPos + 2 );
+    public boolean hasMoreLegalPlaceholders() {
+        int prefixPos = unresolved.indexOf("${");
+        int suffixPos = unresolved.indexOf("}", prefixPos + 2);
         return prefixPos >= 0 && suffixPos >= 0;
     }
 
     public abstract KeyAndDefaultValue extractPropertyKeyAndDefaultValue();
 
-    public String toString()
-    {
+    public String toString() {
         StringBuilder sb = new StringBuilder(resolved);
-        return sb.append( unresolved ).toString();
+        return sb.append(unresolved).toString();
     }
 
-    public void add( String newKey, String newValue )
-    {
-        if ( replaced( newValue ) )
-        {
-            expandFurther( newValue );
-        }
-        else
-        {
-            skipUnresolvedPlaceholder( newKey );
+    public void add(String newKey, String newValue) {
+        if (replaced(newValue)) {
+            expandFurther(newValue);
+        } else {
+            skipUnresolvedPlaceholder(newKey);
         }
     }
 
-    private boolean replaced( String value )
-    {
+    private boolean replaced(String value) {
         return value != null;
     }
 
-    private void expandFurther( String value )
-    {
+    private void expandFurther(String value) {
         unresolved = value + unresolved;
     }
 
-    private void skipUnresolvedPlaceholder( String newKey )
-    {
-        resolved.append( "${" ).append( newKey ).append( "}" );
+    private void skipUnresolvedPlaceholder(String newKey) {
+        resolved.append("${").append(newKey).append("}");
     }
 
-    protected void discardToAfterNextSuffix()
-    {
-        int propertySuffixPos = unresolved.indexOf( "}" );
-        unresolved = unresolved.substring( propertySuffixPos + 1 );
+    protected void discardToAfterNextSuffix() {
+        int propertySuffixPos = unresolved.indexOf("}");
+        unresolved = unresolved.substring(propertySuffixPos + 1);
     }
 
-    protected void advanceToNextPrefix()
-    {
-        resolved.append( beforePrefix() );
+    protected void advanceToNextPrefix() {
+        resolved.append(beforePrefix());
     }
 
-    protected void discardPrefix()
-    {
-        int propertyPrefixPos = unresolved.indexOf( "${" );
-        unresolved = unresolved.substring( propertyPrefixPos + 2 );
+    protected void discardPrefix() {
+        int propertyPrefixPos = unresolved.indexOf("${");
+        unresolved = unresolved.substring(propertyPrefixPos + 2);
     }
 
-    private String beforePrefix()
-    {
-        int propertyPrefixPos = unresolved.indexOf( "${" );
-        return unresolved.substring( 0, propertyPrefixPos );
+    private String beforePrefix() {
+        int propertyPrefixPos = unresolved.indexOf("${");
+        return unresolved.substring(0, propertyPrefixPos);
     }
 
     protected abstract String beforeNextSuffix();

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements. See the NOTICE file
@@ -18,8 +17,9 @@
   specific language governing permissions and limitations
   under the License.
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.codehaus.mojo</groupId>
@@ -27,22 +27,18 @@
     <version>76</version>
   </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-
   <artifactId>properties-maven-plugin</artifactId>
   <version>1.2.0-SNAPSHOT</version>
 
-  <name>Properties Maven Plugin</name>
-  <description> 
-    The Properties Maven Plugin is here to make life a little easier when dealing
-    with properties. It provides goals to read and write properties from files.
-  </description>
-
-  <inceptionYear>2009</inceptionYear>
-
   <packaging>maven-plugin</packaging>
 
+  <name>Properties Maven Plugin</name>
+  <description>The Properties Maven Plugin is here to make life a little easier when dealing
+    with properties. It provides goals to read and write properties from files.</description>
+
   <url>https://www.mojohaus.org/properties-maven-plugin</url>
+
+  <inceptionYear>2009</inceptionYear>
 
   <licenses>
     <license>
@@ -51,29 +47,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
-  <properties>
-    <mavenVersion>3.5.4</mavenVersion>
-    <recommendedJavaBuildVersion>11</recommendedJavaBuildVersion>
-    <scmpublish.content>target/staging/${project.artifactId}</scmpublish.content>
-    <project.build.outputTimestamp>2022-03-19T15:53:05Z</project.build.outputTimestamp>
-  </properties>
-
-
-  <scm>
-    <connection>scm:git:https://github.com/mojohaus/properties-maven-plugin.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/mojohaus/properties-maven-plugin.git</developerConnection>
-    <url>https://github.com/mojohaus/properties-maven-plugin/tree/master</url>
-    <tag>master</tag>
-  </scm>
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/mojohaus/properties-maven-plugin/issues/</url>
-  </issueManagement>
-  <ciManagement>
-    <system>GitHub</system>
-    <url>https://github.com/mojohaus/properties-maven-plugin/actions/</url>
-  </ciManagement>
 
   <developers>
     <developer>
@@ -93,6 +66,28 @@
       <email>timothygordon32@gmail.com</email>
     </developer>
   </developers>
+
+  <scm>
+    <connection>scm:git:https://github.com/mojohaus/properties-maven-plugin.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/mojohaus/properties-maven-plugin.git</developerConnection>
+    <tag>master</tag>
+    <url>https://github.com/mojohaus/properties-maven-plugin/tree/master</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/mojohaus/properties-maven-plugin/issues/</url>
+  </issueManagement>
+  <ciManagement>
+    <system>GitHub</system>
+    <url>https://github.com/mojohaus/properties-maven-plugin/actions/</url>
+  </ciManagement>
+
+  <properties>
+    <mavenVersion>3.5.4</mavenVersion>
+    <recommendedJavaBuildVersion>11</recommendedJavaBuildVersion>
+    <scmpublish.content>target/staging/${project.artifactId}</scmpublish.content>
+    <project.build.outputTimestamp>2022-03-19T15:53:05Z</project.build.outputTimestamp>
+  </properties>
 
   <dependencies>
     <dependency>

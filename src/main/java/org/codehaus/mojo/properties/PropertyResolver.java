@@ -21,8 +21,7 @@ package org.codehaus.mojo.properties;
 
 import java.util.Properties;
 
-class PropertyResolver
-{
+class PropertyResolver {
 
     /**
      * Retrieves a property value, replacing values like ${token} using the Properties to look them up. Shamelessly
@@ -38,7 +37,7 @@ class PropertyResolver
      * @return resolved property value
      * @throws IllegalArgumentException when properties are circularly defined
      */
-    public String getPropertyValue( String key, Properties properties, Properties environment ) {
+    public String getPropertyValue(String key, Properties properties, Properties environment) {
         return getPropertyValue(key, properties, environment, false);
     }
 
@@ -53,53 +52,49 @@ class PropertyResolver
      * @return resolved property value
      * @throws IllegalArgumentException when properties are circularly defined
      */
-    public String getPropertyValue( String key, Properties properties, Properties environment, boolean useDefaultValues )
-    {
-        String value = properties.getProperty( key );
+    public String getPropertyValue(
+            String key, Properties properties, Properties environment, boolean useDefaultValues) {
+        String value = properties.getProperty(key);
 
         ExpansionBuffer buffer;
-        if ( useDefaultValues ) {
+        if (useDefaultValues) {
             buffer = new DefaultValuesAwareExpansionBufferImpl(value);
         } else {
-            buffer = new ExpansionBufferImpl( value );
+            buffer = new ExpansionBufferImpl(value);
         }
 
-        CircularDefinitionPreventer circularDefinitionPreventer =
-            new CircularDefinitionPreventer().visited( key, value );
+        CircularDefinitionPreventer circularDefinitionPreventer = new CircularDefinitionPreventer().visited(key, value);
 
-        while ( buffer.hasMoreLegalPlaceholders() )
-        {
+        while (buffer.hasMoreLegalPlaceholders()) {
             KeyAndDefaultValue kv = buffer.extractPropertyKeyAndDefaultValue();
             String newKey = kv.getKey();
-            String newValue = fromPropertiesThenSystemThenEnvironment( newKey, kv.getDefaultValue(), properties, environment );
+            String newValue =
+                    fromPropertiesThenSystemThenEnvironment(newKey, kv.getDefaultValue(), properties, environment);
 
-            circularDefinitionPreventer.visited( newKey, newValue );
+            circularDefinitionPreventer.visited(newKey, newValue);
 
-            buffer.add( newKey, newValue );
+            buffer.add(newKey, newValue);
         }
 
         return buffer.toString();
     }
 
-    private String fromPropertiesThenSystemThenEnvironment( String key, String defaultValue, Properties properties, Properties environment )
-    {
-        String value = properties.getProperty( key );
+    private String fromPropertiesThenSystemThenEnvironment(
+            String key, String defaultValue, Properties properties, Properties environment) {
+        String value = properties.getProperty(key);
 
         // try global environment
-        if ( value == null )
-        {
-            value = System.getProperty( key );
+        if (value == null) {
+            value = System.getProperty(key);
         }
 
         // try environment variable
-        if ( value == null && key.startsWith( "env." ) && environment != null )
-        {
-            value = environment.getProperty( key.substring( 4 ) );
+        if (value == null && key.startsWith("env.") && environment != null) {
+            value = environment.getProperty(key.substring(4));
         }
 
         // try default value
-        if ( value == null )
-        {
+        if (value == null) {
             value = defaultValue;
         }
 

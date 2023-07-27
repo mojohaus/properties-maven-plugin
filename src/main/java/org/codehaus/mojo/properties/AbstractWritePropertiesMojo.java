@@ -19,16 +19,10 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
-
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -36,19 +30,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.io.BufferedReader;
+
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 
 /**
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
  */
-public abstract class AbstractWritePropertiesMojo
-    extends AbstractMojo
-{
+public abstract class AbstractWritePropertiesMojo extends AbstractMojo {
 
-    @Parameter( defaultValue = "${project}", required = true, readonly = true )
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
 
-    @Parameter( required = true, property = "properties.outputFile" )
+    @Parameter(required = true, property = "properties.outputFile")
     private File outputFile;
 
     /**
@@ -56,51 +52,38 @@ public abstract class AbstractWritePropertiesMojo
      * @param file {@link File}
      * @throws MojoExecutionException {@link MojoExecutionException}
      */
-    protected void writeProperties( Properties properties, File file )
-        throws MojoExecutionException
-    {
-        try
-        {
-            storeWithoutTimestamp( properties, file, "Properties" );
-        }
-        catch ( FileNotFoundException e )
-        {
-            getLog().error( "Could not create FileOutputStream: " + file );
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        catch ( IOException e )
-        {
-            getLog().error( "Error writing properties: " + file );
-            throw new MojoExecutionException( e.getMessage(), e );
+    protected void writeProperties(Properties properties, File file) throws MojoExecutionException {
+        try {
+            storeWithoutTimestamp(properties, file, "Properties");
+        } catch (FileNotFoundException e) {
+            getLog().error("Could not create FileOutputStream: " + file);
+            throw new MojoExecutionException(e.getMessage(), e);
+        } catch (IOException e) {
+            getLog().error("Error writing properties: " + file);
+            throw new MojoExecutionException(e.getMessage(), e);
         }
     }
 
     // https://github.com/apache/maven-archiver/blob/master/src/main/java/org/apache/maven/archiver/PomPropertiesUtil.java#L81
-    private void storeWithoutTimestamp( Properties properties, File outputFile, String comments )
-        throws IOException
-    {
-        try ( PrintWriter pw = new PrintWriter( outputFile, "ISO-8859-1" ); StringWriter sw = new StringWriter() )
-        {
-            properties.store( sw, comments );
+    private void storeWithoutTimestamp(Properties properties, File outputFile, String comments) throws IOException {
+        try (PrintWriter pw = new PrintWriter(outputFile, "ISO-8859-1");
+                StringWriter sw = new StringWriter()) {
+            properties.store(sw, comments);
             comments = '#' + comments;
 
             List<String> lines = new ArrayList<>();
-            try ( BufferedReader r = new BufferedReader( new StringReader( sw.toString() ) ) )
-            {
+            try (BufferedReader r = new BufferedReader(new StringReader(sw.toString()))) {
                 String line;
-                while ( ( line = r.readLine() ) != null )
-                {
-                    if ( !line.startsWith( "#" ) || line.equals( comments ) )
-                    {
-                        lines.add( line );
+                while ((line = r.readLine()) != null) {
+                    if (!line.startsWith("#") || line.equals(comments)) {
+                        lines.add(line);
                     }
                 }
             }
 
-            Collections.sort( lines );
-            for ( String l : lines )
-            {
-                pw.println( l );
+            Collections.sort(lines);
+            for (String l : lines) {
+                pw.println(l);
             }
         }
     }
@@ -108,16 +91,12 @@ public abstract class AbstractWritePropertiesMojo
     /**
      * @throws MojoExecutionException {@link MojoExecutionException}
      */
-    protected void validateOutputFile()
-        throws MojoExecutionException
-    {
-        if ( outputFile.isDirectory() )
-        {
-            throw new MojoExecutionException( "outputFile must be a file and not a directory" );
+    protected void validateOutputFile() throws MojoExecutionException {
+        if (outputFile.isDirectory()) {
+            throw new MojoExecutionException("outputFile must be a file and not a directory");
         }
         // ensure path exists
-        if ( outputFile.getParentFile() != null )
-        {
+        if (outputFile.getParentFile() != null) {
             outputFile.getParentFile().mkdirs();
         }
     }
@@ -125,17 +104,14 @@ public abstract class AbstractWritePropertiesMojo
     /**
      * @return {@link MavenProject}
      */
-    public MavenProject getProject()
-    {
+    public MavenProject getProject() {
         return project;
     }
 
     /**
      * @return {@link #outputFile}
      */
-    public File getOutputFile()
-    {
+    public File getOutputFile() {
         return outputFile;
     }
-
 }
