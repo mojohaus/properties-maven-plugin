@@ -25,16 +25,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-class CircularDefinitionPreventer
-{
-    private static class VisitedProperty
-    {
+class CircularDefinitionPreventer {
+    private static class VisitedProperty {
         private final String key;
 
         private final String value;
 
-        private VisitedProperty( String key, String value )
-        {
+        private VisitedProperty(String key, String value) {
             this.key = key;
             this.value = value;
         }
@@ -49,39 +46,32 @@ class CircularDefinitionPreventer
      * @param value The values.
      * @return {@link CircularDefinitionPreventer}
      */
-    public CircularDefinitionPreventer visited( String key, String value )
-    {
-        entriesVisited.add( new VisitedProperty( key, value ) );
-        if ( keysUsed.contains( key ) && !isValueResolved(value) )
-        {
+    public CircularDefinitionPreventer visited(String key, String value) {
+        entriesVisited.add(new VisitedProperty(key, value));
+        if (keysUsed.contains(key) && !isValueResolved(value)) {
             circularDefinition();
-        }
-        else
-        {
-            keysUsed.add( key );
+        } else {
+            keysUsed.add(key);
         }
 
         return this;
     }
 
-    private void circularDefinition()
-    {
-        StringBuilder buffer = new StringBuilder( "Circular property definition: " );
-        for ( Iterator<?> iterator = entriesVisited.iterator(); iterator.hasNext(); )
-        {
+    private void circularDefinition() {
+        StringBuilder buffer = new StringBuilder("Circular property definition: ");
+        for (Iterator<?> iterator = entriesVisited.iterator(); iterator.hasNext(); ) {
             VisitedProperty visited = (VisitedProperty) iterator.next();
-            buffer.append( visited.key ).append( "=" ).append( visited.value );
-            if ( iterator.hasNext() )
-            {
-                buffer.append( " -> " );
+            buffer.append(visited.key).append("=").append(visited.value);
+            if (iterator.hasNext()) {
+                buffer.append(" -> ");
             }
         }
-        throw new IllegalArgumentException( buffer.toString() );
+        throw new IllegalArgumentException(buffer.toString());
     }
 
     private boolean isValueResolved(String value) {
-        int prefixPos = value.indexOf( "${" );
-        int suffixPos = value.indexOf( "}" );
+        int prefixPos = value.indexOf("${");
+        int suffixPos = value.indexOf("}");
         return !(prefixPos >= 0 && suffixPos > prefixPos);
     }
 }
