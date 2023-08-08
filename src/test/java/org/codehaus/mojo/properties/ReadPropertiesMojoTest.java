@@ -12,6 +12,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
+import org.yaml.snakeyaml.Yaml;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -264,6 +265,36 @@ public class ReadPropertiesMojoTest {
         assertEquals("${unknown:  }", value13);
     }
 
+    @Test
+    public void readYamlWithKeyprefix() throws Exception {
+        String keyPrefix = "testkey-prefix.";
+
+        try (FileReader fs1 = new FileReader(geYamlFileForTesting(keyPrefix));
+                FileReader fs2 = new FileReader(geYamlFileForTesting(""))) {
+            // Object testYamlWithoutPrefix = new Yaml().load(fs2);
+
+            // do the work
+            readPropertiesMojo.setKeyPrefix(keyPrefix);
+            readPropertiesMojo.setFiles(new File[] { geYamlFileForTesting("") });
+            readPropertiesMojo.execute();
+
+            // load properties directly and add prefix for comparison later
+            // Properties testPropertiesPrefix = new Properties();
+            // testPropertiesPrefix.load(fs1);
+
+            // check results
+            Properties projectProperties = projectStub.getProperties();
+            assertNotNull(projectProperties);
+            // it should not be empty
+            assertNotEquals(0, projectProperties.size());
+
+            assertEquals("31", projectProperties.get(keyPrefix + "age"));
+            assertEquals("123456789", projectProperties.get(keyPrefix + "contactDetails[0].number"));
+            assertEquals("12312341235", projectProperties.get(keyPrefix + "phones[1]"));
+            assertEquals("Xyz, DEF Street", projectProperties.get(keyPrefix + "homeAddress.line"));
+        }
+    }
+
     private File getPropertyFileForTesting() throws IOException {
         return getPropertyFileForTesting(null);
     }
@@ -280,6 +311,41 @@ public class ReadPropertiesMojoTest {
             writer.write(prefix + "test.property1=value1" + NEW_LINE);
             writer.write(prefix + "test.property2=value2" + NEW_LINE);
             writer.write(prefix + "test.property3=value3" + NEW_LINE);
+            writer.flush();
+        } finally {
+            writer.close();
+        }
+        return f;
+    }
+
+    private File geYamlFileForTesting(String keyPrefix) throws IOException {
+        File f = File.createTempFile("yaml-test", ".yaml");
+        f.deleteOnExit();
+        FileWriter writer = new FileWriter(f);
+        String prefix = keyPrefix;
+        if (prefix == null) {
+            prefix = "";
+        }
+        try {
+            Yaml yaml = new Yaml();
+            Object data = yaml.load(
+                    "firstName: \"John\"\n" +
+                            "lastName: \"Doe\"\n" +
+                            "age: 31\n" +
+                            "phones:\n" +
+                            "   - 12312341234\n" +
+                            "   - 12312341235\n" +
+                            "contactDetails:\n" +
+                            "   - type: \"mobile\"\n" +
+                            "     number: 123456789\n" +
+                            "   - type: \"landline\"\n" +
+                            "     number: 456786868\n" +
+                            "homeAddress:\n" +
+                            "   line: \"Xyz, DEF Street\"\n" +
+                            "   city: \"City Y\"\n"
+
+            );
+            yaml.dump(data, writer);
             writer.flush();
         } finally {
             writer.close();

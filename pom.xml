@@ -124,6 +124,12 @@
       <artifactId>maven-plugin-annotations</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>2.1</version>
+    </dependency>
   </dependencies>
 
   <profiles>

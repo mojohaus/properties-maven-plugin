@@ -19,16 +19,6 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.Properties;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -37,6 +27,12 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
+import org.yaml.snakeyaml.Yaml;
+
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * The read-project-properties goal reads property files and URLs and stores the properties as project properties. It
@@ -169,7 +165,10 @@ public class ReadPropertiesMojo extends AbstractMojo {
 
     private void load(Resource resource) throws MojoExecutionException {
         if (resource.canBeOpened()) {
-            loadProperties(resource);
+            if (resource.isYaml())
+                loadYaml(resource);
+            else
+                loadProperties(resource);
         } else {
             missing(resource);
         }
@@ -199,6 +198,64 @@ public class ReadPropertiesMojo extends AbstractMojo {
         } catch (IOException e) {
             throw new MojoExecutionException("Error reading properties from " + resource, e);
         }
+    }
+
+    private void loadYaml(Resource resource) throws MojoExecutionException {
+        try {
+            getLog().debug("Loading properties from " + resource);
+
+            try (InputStream stream = resource.getInputStream()) {
+                String effectivePrefix = "";
+                if (keyPrefix != null) {
+                    effectivePrefix = keyPrefix;
+                }
+
+                Properties projectProperties = project.getProperties();
+                Map yamlMap = flattenYamlMap(effectivePrefix, new Yaml().load(stream));
+
+                if(override){
+                    projectProperties.putAll(yamlMap);
+                }else{
+                    for (Object o : yamlMap.entrySet()) {
+                        Map.Entry entry = (Map.Entry) o;
+                        if(!projectProperties.containsKey(entry.getKey())){
+                            projectProperties.put(entry.getKey(), entry.getValue());
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new MojoExecutionException("Error reading Yaml from " + resource, e);
+        }
+    }
+
+    private Map<String, Object> flattenYamlMap(String key, Map map) {
+        if (!key.endsWith(".") && !"".equals(key.trim())) {
+            key = key.trim() + ".";
+        }
+        Map<String, Object> result = new HashMap<String, Object>();
+        for (Object o : map.entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
+            Object value = entry.getValue();
+            if (value instanceof Map) {
+                result.putAll( flattenYamlMap(String.format("%s%s", key, entry.getKey()),
+                        (Map) value));
+            } else if (value instanceof Collection) {
+                Object[] values = ((Collection) value).toArray();
+                for (int i = 0; i < values.length; i++) {
+                    if (values[i] instanceof Map) {
+                        result.putAll( flattenYamlMap(
+                                String.format("%s%s[%d]", key, entry.getKey(), i), (Map) values[i]));
+                    } else {
+                        result.put(String.format("%s%s[%d]", key, entry.getKey(), i), String.valueOf(values[i]));
+                    }
+
+                }
+            } else {
+                result.put(key + "" + entry.getKey(), String.valueOf(value));
+            }
+        }
+        return result;
     }
 
     private void missing(Resource resource) throws MojoExecutionException {
@@ -308,6 +365,8 @@ public class ReadPropertiesMojo extends AbstractMojo {
 
         protected abstract InputStream openStream() throws IOException;
 
+        public abstract boolean isYaml();
+
         public InputStream getInputStream() throws IOException {
             if (stream == null) {
                 stream = openStream();
@@ -325,6 +384,12 @@ public class ReadPropertiesMojo extends AbstractMojo {
 
         public boolean canBeOpened() {
             return file.exists();
+        }
+
+        public boolean isYaml() {
+            return this.file.getName().matches("(?i).*\\.yaml$")
+                    || this.file.getName().matches("(?i).*\\.yml$");
+
         }
 
         protected InputStream openStream() throws IOException {
@@ -377,6 +442,12 @@ public class ReadPropertiesMojo extends AbstractMojo {
                 return false;
             }
             return true;
+        }
+
+        public boolean isYaml() {
+            return this.url.toString().matches("(?i).*\\.yaml$")
+                    || this.url.toString().matches("(?i).*\\.yml$");
+
         }
 
         protected InputStream openStream() throws IOException {
