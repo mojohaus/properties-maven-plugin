@@ -19,6 +19,11 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -28,11 +33,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.yaml.snakeyaml.Yaml;
-
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
 
 /**
  * The read-project-properties goal reads property files and URLs and stores the properties as project properties. It
@@ -165,10 +165,8 @@ public class ReadPropertiesMojo extends AbstractMojo {
 
     private void load(Resource resource) throws MojoExecutionException {
         if (resource.canBeOpened()) {
-            if (resource.isYaml())
-                loadYaml(resource);
-            else
-                loadProperties(resource);
+            if (resource.isYaml()) loadYaml(resource);
+            else loadProperties(resource);
         } else {
             missing(resource);
         }
@@ -213,12 +211,12 @@ public class ReadPropertiesMojo extends AbstractMojo {
                 Properties projectProperties = project.getProperties();
                 Map yamlMap = flattenYamlMap(effectivePrefix, new Yaml().load(stream));
 
-                if(override){
+                if (override) {
                     projectProperties.putAll(yamlMap);
-                }else{
+                } else {
                     for (Object o : yamlMap.entrySet()) {
                         Map.Entry entry = (Map.Entry) o;
-                        if(!projectProperties.containsKey(entry.getKey())){
+                        if (!projectProperties.containsKey(entry.getKey())) {
                             projectProperties.put(entry.getKey(), entry.getValue());
                         }
                     }
@@ -238,18 +236,16 @@ public class ReadPropertiesMojo extends AbstractMojo {
             Map.Entry entry = (Map.Entry) o;
             Object value = entry.getValue();
             if (value instanceof Map) {
-                result.putAll( flattenYamlMap(String.format("%s%s", key, entry.getKey()),
-                        (Map) value));
+                result.putAll(flattenYamlMap(String.format("%s%s", key, entry.getKey()), (Map) value));
             } else if (value instanceof Collection) {
                 Object[] values = ((Collection) value).toArray();
                 for (int i = 0; i < values.length; i++) {
                     if (values[i] instanceof Map) {
-                        result.putAll( flattenYamlMap(
-                                String.format("%s%s[%d]", key, entry.getKey(), i), (Map) values[i]));
+                        result.putAll(
+                                flattenYamlMap(String.format("%s%s[%d]", key, entry.getKey(), i), (Map) values[i]));
                     } else {
                         result.put(String.format("%s%s[%d]", key, entry.getKey(), i), String.valueOf(values[i]));
                     }
-
                 }
             } else {
                 result.put(key + "" + entry.getKey(), String.valueOf(value));
@@ -389,7 +385,6 @@ public class ReadPropertiesMojo extends AbstractMojo {
         public boolean isYaml() {
             return this.file.getName().matches("(?i).*\\.yaml$")
                     || this.file.getName().matches("(?i).*\\.yml$");
-
         }
 
         protected InputStream openStream() throws IOException {
@@ -447,7 +442,6 @@ public class ReadPropertiesMojo extends AbstractMojo {
         public boolean isYaml() {
             return this.url.toString().matches("(?i).*\\.yaml$")
                     || this.url.toString().matches("(?i).*\\.yml$");
-
         }
 
         protected InputStream openStream() throws IOException {

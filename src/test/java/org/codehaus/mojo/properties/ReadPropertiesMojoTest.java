@@ -275,7 +275,7 @@ public class ReadPropertiesMojoTest {
 
             // do the work
             readPropertiesMojo.setKeyPrefix(keyPrefix);
-            readPropertiesMojo.setFiles(new File[] { geYamlFileForTesting("") });
+            readPropertiesMojo.setFiles(new File[] {geYamlFileForTesting("")});
             readPropertiesMojo.execute();
 
             // load properties directly and add prefix for comparison later
@@ -328,23 +328,19 @@ public class ReadPropertiesMojoTest {
         }
         try {
             Yaml yaml = new Yaml();
-            Object data = yaml.load(
-                    "firstName: \"John\"\n" +
-                            "lastName: \"Doe\"\n" +
-                            "age: 31\n" +
-                            "phones:\n" +
-                            "   - 12312341234\n" +
-                            "   - 12312341235\n" +
-                            "contactDetails:\n" +
-                            "   - type: \"mobile\"\n" +
-                            "     number: 123456789\n" +
-                            "   - type: \"landline\"\n" +
-                            "     number: 456786868\n" +
-                            "homeAddress:\n" +
-                            "   line: \"Xyz, DEF Street\"\n" +
-                            "   city: \"City Y\"\n"
-
-            );
+            Object data = yaml.load("firstName: \"John\"\n" + "lastName: \"Doe\"\n"
+                    + "age: 31\n"
+                    + "phones:\n"
+                    + "   - 12312341234\n"
+                    + "   - 12312341235\n"
+                    + "contactDetails:\n"
+                    + "   - type: \"mobile\"\n"
+                    + "     number: 123456789\n"
+                    + "   - type: \"landline\"\n"
+                    + "     number: 456786868\n"
+                    + "homeAddress:\n"
+                    + "   line: \"Xyz, DEF Street\"\n"
+                    + "   city: \"City Y\"\n");
             yaml.dump(data, writer);
             writer.flush();
         } finally {
