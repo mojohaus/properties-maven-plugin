@@ -120,7 +120,7 @@ public class ReadPropertiesMojo extends AbstractMojo {
     private boolean useDefaultValues;
 
     /**
-     * Determine, whether existing properties should be overridden or not. Default: <code>true</true>.
+     * Determine, whether existing properties should be overridden or not. Default: <code>true</code>.
      *
      * @since 1.2.0
      */
