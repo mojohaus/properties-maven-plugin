@@ -19,11 +19,11 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 class CircularDefinitionPreventer {
     private static class VisitedProperty {
@@ -39,7 +39,8 @@ class CircularDefinitionPreventer {
 
     private final List<VisitedProperty> entriesVisited = new LinkedList<>();
 
-    private final Set<String> keysUsed = new HashSet<>();
+    // boolean value denoted whether or not the property is deemed "resolvable"
+    private final Map<String, Boolean> keysUsed = new HashMap<>();
 
     /**
      * @param key The key.
@@ -48,11 +49,13 @@ class CircularDefinitionPreventer {
      */
     public CircularDefinitionPreventer visited(String key, String value) {
         entriesVisited.add(new VisitedProperty(key, value));
-        if (keysUsed.contains(key) && !isValueResolved(value)) {
+
+        if (value != null && isValueResolved(value)) {
+            keysUsed.replaceAll((k, resolvable) -> true);
+        } else if (keysUsed.containsKey(key) && Boolean.FALSE.equals(keysUsed.get(key))) {
             circularDefinition();
-        } else {
-            keysUsed.add(key);
         }
+        keysUsed.putIfAbsent(key, false);
 
         return this;
     }

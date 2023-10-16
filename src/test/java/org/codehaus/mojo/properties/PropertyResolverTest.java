@@ -87,6 +87,21 @@ public class PropertyResolverTest {
     }
 
     @Test
+    public void propertyIncludesAnotherPropertyMoreThanOnceWithIntermediaries() throws MojoFailureException {
+        Properties properties = new Properties();
+        properties.setProperty("p1", "value");
+        properties.setProperty("p2", "${p1}");
+        properties.setProperty("p3", "${p2} ${p2}");
+        properties.setProperty("p4", "${p1} ${p2} ${p3}");
+
+        String value3 = resolver.getPropertyValue("p3", properties, new Properties());
+        String value4 = resolver.getPropertyValue("p4", properties, new Properties());
+
+        assertEquals("value value", value3);
+        assertEquals("value value value value", value4);
+    }
+
+    @Test
     public void malformedPlaceholderIsLeftAsIs() {
         Properties properties = new Properties();
         properties.setProperty("p1", "${p2}");
@@ -138,7 +153,7 @@ public class PropertyResolverTest {
     public void circularReferenceIsIllegal() throws MojoFailureException {
         Properties properties = new Properties();
         properties.setProperty("p1", "${p2}");
-        properties.setProperty("p2", "${p1}}");
+        properties.setProperty("p2", "${p1}");
 
         String value = null;
         try {
@@ -146,6 +161,27 @@ public class PropertyResolverTest {
         } catch (IllegalArgumentException e) {
             assertThat(e.getMessage(), containsString("p1"));
             assertThat(e.getMessage(), containsString("p2"));
+        }
+
+        assertNull(value);
+    }
+
+    @Test
+    public void circularReferenceWithIntermediariesIsIllegal() throws MojoFailureException {
+        Properties properties = new Properties();
+        properties.setProperty("p1", "${p4}");
+        properties.setProperty("p2", "${p1}");
+        properties.setProperty("p3", "${p2}");
+        properties.setProperty("p4", "${p3}");
+
+        String value = null;
+        try {
+            value = resolver.getPropertyValue("p2", properties, new Properties());
+        } catch (IllegalArgumentException e) {
+            assertThat(e.getMessage(), containsString("p1"));
+            assertThat(e.getMessage(), containsString("p2"));
+            assertThat(e.getMessage(), containsString("p3"));
+            assertThat(e.getMessage(), containsString("p4"));
         }
 
         assertNull(value);
@@ -186,6 +222,7 @@ public class PropertyResolverTest {
         assertEquals("", resolver.getPropertyValue("non-existent", new Properties(), null));
     }
 
+    @Test
     public void testDefaultValueForUnresolvedPropertyWithEnabledFlag() {
         Properties properties = new Properties();
         properties.setProperty("p1", "${unknown:}");
@@ -239,6 +276,7 @@ public class PropertyResolverTest {
      * with the flag disabled (default behavior) nothing gets replaced
      * ':' is treated as a regular character and part of the property name
      */
+    @Test
     public void testDefaultValueForUnresolvedPropertyWithDisabledFlag() {
         Properties properties = new Properties();
         properties.setProperty("p1", "${unknown:}");
