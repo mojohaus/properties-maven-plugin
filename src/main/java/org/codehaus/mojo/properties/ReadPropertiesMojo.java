@@ -27,6 +27,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -188,13 +191,17 @@ public class ReadPropertiesMojo extends AbstractMojo {
                 Properties properties = new Properties();
                 properties.load(stream);
                 Properties projectProperties = project.getProperties();
+                Map<String, String> newProperties = new HashMap<>();
 
                 for (String key : properties.stringPropertyNames()) {
                     String propertyName = effectivePrefix + key;
                     if (override || !projectProperties.containsKey(propertyName)) {
-                        projectProperties.put(propertyName, properties.get(key));
+                        newProperties.put(propertyName, properties.getProperty(key));
                     }
                 }
+                // change project properties at one call
+                projectProperties.putAll(newProperties);
+                getLog().info("Loading " + newProperties.size() + " properties from " + resource);
             }
         } catch (IOException e) {
             throw new MojoExecutionException("Error reading properties from " + resource, e);
@@ -210,13 +217,28 @@ public class ReadPropertiesMojo extends AbstractMojo {
     }
 
     private void resolveProperties() throws MojoExecutionException, MojoFailureException {
+        getLog().debug("resolve properties");
         Properties environment = loadSystemEnvironmentPropertiesWhenDefined();
         Properties projectProperties = project.getProperties();
 
-        for (Enumeration<?> n = projectProperties.propertyNames(); n.hasMoreElements(); ) {
-            String k = (String) n.nextElement();
-            projectProperties.setProperty(k, getPropertyValue(k, projectProperties, environment));
+        Map<String, String> newProperties = new HashMap<>();
+
+        for (String key : projectProperties.stringPropertyNames()) {
+            String newValue = getPropertyValue(key, projectProperties, environment);
+            String oldValue = projectProperties.getProperty(key);
+            if (!Objects.equals(newValue, oldValue)) {
+                newProperties.put(key, newValue);
+            }
         }
+
+        if (!newProperties.isEmpty()) {
+            getLog().debug("resolve " + newProperties.size() + " properties");
+            // change project properties at one call
+            projectProperties.putAll(newProperties);
+        } else {
+            getLog().debug("all properties was resolved");
+        }
+        getLog().debug("resolve properties - done");
     }
 
     private Properties loadSystemEnvironmentPropertiesWhenDefined() throws MojoExecutionException {
