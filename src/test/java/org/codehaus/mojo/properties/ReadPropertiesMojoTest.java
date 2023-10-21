@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Properties;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mojo.properties.managers.JdkPropertiesManager;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +28,7 @@ public class ReadPropertiesMojoTest {
     @Before
     public void setUp() {
         projectStub = new MavenProject();
-        readPropertiesMojo = new ReadPropertiesMojo();
+        readPropertiesMojo = new ReadPropertiesMojo(Collections.singletonList(new JdkPropertiesManager()));
         readPropertiesMojo.setProject(projectStub);
     }
 

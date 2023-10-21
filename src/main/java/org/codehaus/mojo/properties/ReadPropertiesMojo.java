@@ -19,26 +19,30 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
+import javax.inject.Inject;
+
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mojo.properties.managers.PropertiesManager;
+import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 
 /**
@@ -48,17 +52,88 @@ import org.codehaus.plexus.util.cli.CommandLineUtils;
  *
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
  * @author <a href="mailto:Krystian.Nowak@gmail.com">Krystian Nowak</a>
+ *
+ * @since 1.0.0
  */
 @Mojo(name = "read-project-properties", defaultPhase = LifecyclePhase.NONE, threadSafe = true)
-public class ReadPropertiesMojo extends AbstractMojo {
+public class ReadPropertiesMojo extends AbstractPropertiesMojo {
+
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
     /**
      * The properties files that will be used when reading properties.
+     *
+     * @since 1.0.0
      */
     @Parameter
     private File[] files = new File[0];
+
+    /**
+     * The URLs that will be used when reading properties. These may be non-standard URLs of the form
+     * <code>classpath:com/company/resource.properties</code>. Note that the type is not <code>URL</code> for this
+     * reason and therefore will be explicitly checked by this Mojo.
+     *
+     * @since 1.0.0
+     */
+    @Parameter
+    private String[] urls = new String[0];
+
+    /**
+     * If the plugin should be quiet if any of the files was not found
+     *
+     * @since 1.0.0
+     */
+    @Parameter(defaultValue = "false")
+    private boolean quiet;
+
+    /**
+     * Prefix that will be added before name of each property.
+     * Can be useful for separating properties with same name from different files.
+     *
+     * @since 1.1.0
+     */
+    @Parameter
+    private String keyPrefix = null;
+
+    /**
+     * Skip plugin execution.
+     *
+     * @since 1.2.0
+     */
+    @Parameter(defaultValue = "false", property = "prop.skipLoadProperties")
+    private boolean skipLoadProperties;
+
+    /**
+     * If the plugin should process default values within property placeholders
+     *
+     * @since 1.2.0
+     */
+    @Parameter(defaultValue = "false")
+    private boolean useDefaultValues;
+
+    /**
+     * Determine, whether existing properties should be overridden or not. Default: <code>true</code>.
+     *
+     * @since 1.2.0
+     */
+    @Parameter(defaultValue = "true")
+    private boolean override = true;
+
+    /**
+     * Used for resolving property placeholders.
+     */
+    private final PropertyResolver resolver = new PropertyResolver();
+
+    /**
+     * Default constructor
+     *
+     * @param propertiesManagers list of properties managers
+     */
+    @Inject
+    public ReadPropertiesMojo(List<PropertiesManager> propertiesManagers) {
+        super(propertiesManagers);
+    }
 
     /**
      * @param files The files to set for tests.
@@ -73,14 +148,6 @@ public class ReadPropertiesMojo extends AbstractMojo {
     }
 
     /**
-     * The URLs that will be used when reading properties. These may be non-standard URLs of the form
-     * <code>classpath:com/company/resource.properties</code>. Note that the type is not <code>URL</code> for this
-     * reason and therefore will be explicitly checked by this Mojo.
-     */
-    @Parameter
-    private String[] urls = new String[0];
-
-    /**
      * Default scope for test access.
      *
      * @param urls The URLs to set for tests.
@@ -93,51 +160,6 @@ public class ReadPropertiesMojo extends AbstractMojo {
             System.arraycopy(urls, 0, this.urls, 0, urls.length);
         }
     }
-
-    /**
-     * If the plugin should be quiet if any of the files was not found
-     */
-    @Parameter(defaultValue = "false")
-    private boolean quiet;
-
-    /**
-     * Prefix that will be added before name of each property.
-     * Can be useful for separating properties with same name from different files.
-     */
-    @Parameter
-    private String keyPrefix = null;
-
-    public void setKeyPrefix(String keyPrefix) {
-        this.keyPrefix = keyPrefix;
-    }
-
-    @Parameter(defaultValue = "false", property = "prop.skipLoadProperties")
-    private boolean skipLoadProperties;
-
-    /**
-     * If the plugin should process default values within property placeholders
-     *
-     * @parameter default-value="false"
-     */
-    @Parameter(defaultValue = "false")
-    private boolean useDefaultValues;
-
-    /**
-     * Determine, whether existing properties should be overridden or not. Default: <code>true</code>.
-     *
-     * @since 1.2.0
-     */
-    @Parameter(defaultValue = "true")
-    private boolean override = true;
-
-    public void setOverride(boolean override) {
-        this.override = override;
-    }
-
-    /**
-     * Used for resolving property placeholders.
-     */
-    private final PropertyResolver resolver = new PropertyResolver();
 
     /** {@inheritDoc} */
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -188,8 +210,9 @@ public class ReadPropertiesMojo extends AbstractMojo {
                     effectivePrefix = keyPrefix;
                 }
 
-                Properties properties = new Properties();
-                properties.load(stream);
+                PropertiesManager manager = getPropertiesManager(resource.getResourceExtension());
+                Properties properties = manager.load(stream);
+
                 Properties projectProperties = project.getProperties();
                 Map<String, String> newProperties = new HashMap<>();
 
@@ -283,27 +306,18 @@ public class ReadPropertiesMojo extends AbstractMojo {
     }
 
     /**
-     * Default scope for test access.
-     *
-     * @param quiet Set to <code>true</code> if missing files can be skipped.
-     */
-    void setQuiet(boolean quiet) {
-        this.quiet = quiet;
-    }
-
-    /**
-     *
-     * @param skipLoadProperties Set to <code>true</code> if you don't want to load properties.
-     */
-    void setSkipLoadProperties(boolean skipLoadProperties) {
-        this.skipLoadProperties = skipLoadProperties;
-    }
-
-    /**
      * @param useDefaultValues set to <code>true</code> if default values need to be processed within property placeholders
      */
     public void setUseDefaultValues(boolean useDefaultValues) {
         this.useDefaultValues = useDefaultValues;
+    }
+
+    void setKeyPrefix(String keyPrefix) {
+        this.keyPrefix = keyPrefix;
+    }
+
+    void setOverride(boolean override) {
+        this.override = override;
     }
 
     /**
@@ -326,6 +340,8 @@ public class ReadPropertiesMojo extends AbstractMojo {
     private abstract static class Resource {
         private InputStream stream;
 
+        public abstract String getResourceExtension();
+
         public abstract boolean canBeOpened();
 
         protected abstract InputStream openStream() throws IOException;
@@ -345,14 +361,22 @@ public class ReadPropertiesMojo extends AbstractMojo {
             this.file = file;
         }
 
+        @Override
+        public String getResourceExtension() {
+            return FileUtils.extension(file.getName());
+        }
+
+        @Override
         public boolean canBeOpened() {
             return file.exists();
         }
 
+        @Override
         protected InputStream openStream() throws IOException {
-            return new BufferedInputStream(new FileInputStream(file));
+            return new BufferedInputStream(Files.newInputStream(file.toPath()));
         }
 
+        @Override
         public String toString() {
             return "File: " + file;
         }
@@ -389,6 +413,12 @@ public class ReadPropertiesMojo extends AbstractMojo {
             }
         }
 
+        @Override
+        public String getResourceExtension() {
+            return FileUtils.extension(url.getFile());
+        }
+
+        @Override
         public boolean canBeOpened() {
             if (isMissingClasspathResouce) {
                 return false;
@@ -401,10 +431,12 @@ public class ReadPropertiesMojo extends AbstractMojo {
             return true;
         }
 
+        @Override
         protected InputStream openStream() throws IOException {
             return new BufferedInputStream(url.openStream());
         }
 
+        @Override
         public String toString() {
             if (!isMissingClasspathResouce) {
                 return "URL " + url.toString();

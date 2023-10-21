@@ -1,0 +1,5 @@
+Test resource using properties from external files
+
+props1 has value ${props1}
+props2 has value ${props2}
+props3 has value ${props3}
