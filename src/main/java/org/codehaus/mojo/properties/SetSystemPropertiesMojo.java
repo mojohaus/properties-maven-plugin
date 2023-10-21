@@ -31,6 +31,8 @@ import org.apache.maven.plugins.annotations.Parameter;
  * Sets system properties.
  *
  * @author <a href="mailto:markh@apache.org">Mark Hobson</a>
+ *
+ * @since 1.0.0
  */
 @Mojo(name = "set-system-properties", defaultPhase = LifecyclePhase.INITIALIZE, threadSafe = true)
 public class SetSystemPropertiesMojo extends AbstractMojo {
@@ -38,15 +40,15 @@ public class SetSystemPropertiesMojo extends AbstractMojo {
 
     /**
      * The system properties to set.
+     *
+     * @since 1.0.0
      */
     @Parameter(required = true)
     private Properties properties;
 
     // Mojo methods -----------------------------------------------------------
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void execute() {
         if (properties.isEmpty()) {
             getLog().debug("No system properties found");

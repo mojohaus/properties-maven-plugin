@@ -19,21 +19,38 @@ package org.codehaus.mojo.properties;
  * under the License.
  */
 
+import javax.inject.Inject;
+
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.codehaus.mojo.properties.managers.PropertiesManager;
 
 /**
  * Writes project properties to a file.
  *
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
+ *
+ * @since 1.0.0
  */
 @Mojo(name = "write-project-properties", defaultPhase = LifecyclePhase.NONE, threadSafe = true)
 public class WriteProjectProperties extends AbstractWritePropertiesMojo {
-    /** {@inheritDoc} */
+
+    /**
+     * Default constructor
+     *
+     * @param propertiesManagers list of properties managers
+     */
+    @Inject
+    protected WriteProjectProperties(List<PropertiesManager> propertiesManagers) {
+        super(propertiesManagers);
+    }
+
+    @Override
     public void execute() throws MojoExecutionException {
         validateOutputFile();
         Properties projProperties = new Properties();
@@ -51,6 +68,6 @@ public class WriteProjectProperties extends AbstractWritePropertiesMojo {
             }
         }
 
-        writeProperties(projProperties, getOutputFile());
+        writeProperties(projProperties);
     }
 }
