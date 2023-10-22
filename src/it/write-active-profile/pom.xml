@@ -4,18 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.codehaus.mojo.properties.it</groupId>
-  <artifactId>read-project</artifactId>
+  <artifactId>write-active-profilet</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
   <build>
-
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -25,18 +17,28 @@
           <execution>
             <phase>generate-resources</phase>
             <goals>
-              <goal>read-project-properties</goal>
+              <goal>write-active-profile-properties</goal>
             </goals>
             <configuration>
-              <files>
-                <file>main.properties</file>
-                <!-- default manager for properties should be used -->
-                <file>main2.txt</file>
-              </files>
+              <outputFile>${project.build.outputDirectory}/project.properties</outputFile>
             </configuration>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>test-profile</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <project-properties-test1>value21</project-properties-test1>
+        <project-properties-test2>value22</project-properties-test2>
+      </properties>
+    </profile>
+  </profiles>
+
 </project>

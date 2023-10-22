@@ -47,7 +47,14 @@ under the License.
           </snapshots>
         </pluginRepository>
       </pluginRepositories>
+
+      <properties>
+        <!-- properties for IT write-active-profile -->
+        <settings-properties-test1>value1</settings-properties-test1>
+        <settings-properties-test2>value2</settings-properties-test2>
+      </properties>
     </profile>
+
   </profiles>
   <activeProfiles>
     <activeProfile>it-repo</activeProfile>
