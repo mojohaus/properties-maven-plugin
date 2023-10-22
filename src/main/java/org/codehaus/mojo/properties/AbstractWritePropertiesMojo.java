@@ -73,6 +73,10 @@ public abstract class AbstractWritePropertiesMojo extends AbstractPropertiesMojo
      * @throws MojoExecutionException {@link MojoExecutionException}
      */
     protected void validateOutputFile() throws MojoExecutionException {
+        if (outputFile == null) {
+            throw new MojoExecutionException("outputFile parameter is missing");
+        }
+
         if (outputFile.isDirectory()) {
             throw new MojoExecutionException("outputFile must be a file and not a directory");
         }

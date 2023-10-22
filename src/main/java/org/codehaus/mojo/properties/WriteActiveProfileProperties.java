@@ -53,12 +53,12 @@ public class WriteActiveProfileProperties extends AbstractWritePropertiesMojo {
     @Override
     public void execute() throws MojoExecutionException {
         validateOutputFile();
-        List<Profile> list = getProject().getActiveProfiles();
-        if (getLog().isInfoEnabled()) {
-            getLog().debug(list.size() + " profile(s) active");
-        }
+
+        List<Profile> profiles = getProject().getActiveProfiles();
+        getLog().debug("Active profile: " + profiles);
+
         Properties properties = new Properties();
-        for (Profile profile : list) {
+        for (Profile profile : profiles) {
             if (profile.getProperties() != null) {
                 properties.putAll(profile.getProperties());
             }
