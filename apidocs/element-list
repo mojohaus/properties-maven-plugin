@@ -1,2 +1,3 @@
 org.codehaus.mojo.properties
 org.codehaus.mojo.properties_maven_plugin
+org.codehaus.mojo.properties.managers
