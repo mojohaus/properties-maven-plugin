@@ -238,9 +238,11 @@ public class PropertyResolverTest {
         properties.setProperty("p11", "${malformed:with extra :");
         properties.setProperty("p12", "${unknown::}");
         properties.setProperty("p13", "${unknown:  }");
+        properties.setProperty("p14", "${knownValue:${fallback}}");
 
         properties.setProperty("host", "example.com");
         properties.setProperty("port", "9090");
+        properties.setProperty("knownValue", "known value");
         properties.setProperty("fallback", "fallback value");
 
         String value1 = resolver.getPropertyValue("p1", properties, new Properties(), true);
@@ -256,6 +258,7 @@ public class PropertyResolverTest {
         String value11 = resolver.getPropertyValue("p11", properties, new Properties(), true);
         String value12 = resolver.getPropertyValue("p12", properties, new Properties(), true);
         String value13 = resolver.getPropertyValue("p13", properties, new Properties(), true);
+        String value14 = resolver.getPropertyValue("p14", properties, new Properties(), true);
 
         assertEquals("${unknown}", value1);
         assertEquals("defaultValue", value2);
@@ -270,6 +273,7 @@ public class PropertyResolverTest {
         assertEquals("${malformed:with extra :", value11);
         assertEquals(":", value12);
         assertEquals("  ", value13);
+        assertEquals("known value", value14);
     }
 
     /**
