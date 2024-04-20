@@ -21,13 +21,17 @@ package org.codehaus.mojo.properties;
 
 import javax.inject.Inject;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.mojo.properties.managers.PropertiesManager;
 
 /**
@@ -39,6 +43,18 @@ import org.codehaus.mojo.properties.managers.PropertiesManager;
  */
 @Mojo(name = "write-project-properties", defaultPhase = LifecyclePhase.NONE, threadSafe = true)
 public class WriteProjectProperties extends AbstractWritePropertiesMojo {
+
+    /**
+     * Property keys to exclude.
+     */
+    @Parameter(property = "properties.excludedPropertyKeys")
+    private Set<String> excludedPropertyKeys;
+
+    /**
+     * Property keys to include.
+     */
+    @Parameter(property = "properties.includedPropertyKeys")
+    private Set<String> includedPropertyKeys;
 
     /**
      * Default constructor
@@ -66,6 +82,14 @@ public class WriteProjectProperties extends AbstractWritePropertiesMojo {
             if (projProperties.get(key) != null) {
                 projProperties.put(key, value);
             }
+        }
+
+        Optional.ofNullable(excludedPropertyKeys)
+                .orElseGet(Collections::emptySet)
+                .forEach(projProperties::remove);
+
+        if (includedPropertyKeys != null && !includedPropertyKeys.isEmpty()) {
+            projProperties.keySet().removeIf(key -> !includedPropertyKeys.contains(String.valueOf(key)));
         }
 
         writeProperties(projProperties);
