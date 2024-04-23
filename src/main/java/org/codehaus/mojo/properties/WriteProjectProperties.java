@@ -94,4 +94,18 @@ public class WriteProjectProperties extends AbstractWritePropertiesMojo {
 
         writeProperties(projProperties);
     }
+
+    /**
+     * Default scope for test access.
+     */
+    void setExcludedPropertyKeys(Set<String> excludedPropertyKeys) {
+        this.excludedPropertyKeys = excludedPropertyKeys;
+    }
+
+    /**
+     * Default scope for test access.
+     */
+    void setIncludedPropertyKeys(Set<String> includedPropertyKeys) {
+        this.includedPropertyKeys = includedPropertyKeys;
+    }
 }
