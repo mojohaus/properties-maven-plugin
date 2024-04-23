@@ -17,7 +17,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class WritePropertiesMojoTest {
-    private static final String NEW_LINE = System.getProperty("line.separator");
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -87,5 +86,4 @@ public class WritePropertiesMojoTest {
             assertFalse(writtenProperties.contains(excludedKey));
         }
     }
-
 }
