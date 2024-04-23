@@ -46,12 +46,14 @@ public class WriteProjectProperties extends AbstractWritePropertiesMojo {
 
     /**
      * Property keys to exclude.
+     * @since 1.3.0
      */
     @Parameter(property = "properties.excludedPropertyKeys")
     private Set<String> excludedPropertyKeys;
 
     /**
      * Property keys to include.
+     * @since 1.3.0
      */
     @Parameter(property = "properties.includedPropertyKeys")
     private Set<String> includedPropertyKeys;
