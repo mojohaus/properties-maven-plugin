@@ -1,20 +1,21 @@
 package org.codehaus.mojo.properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.UUID;
+
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.properties.managers.JdkPropertiesManager;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class WritePropertiesMojoTest {
 
