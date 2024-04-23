@@ -6,3 +6,6 @@ jobs:
   build:
     name: Verify
     uses: apache/maven-gh-actions-shared/.github/workflows/maven-verify.yml@v4
+    with:
+      jdk-distribution-matrix: ' ["zulu"] '
+      ff-jdk-distribution: 'zulu'
