@@ -92,4 +92,20 @@ public abstract class AbstractWritePropertiesMojo extends AbstractPropertiesMojo
     public MavenProject getProject() {
         return project;
     }
+
+    /**
+     * Default scope for test access.
+     *
+     * @param project The test project.
+     */
+    void setProject(MavenProject project) {
+        this.project = project;
+    }
+
+    /**
+     * Default scope for test access.
+     */
+    void setOutputFile(File outputFile) {
+        this.outputFile = outputFile;
+    }
 }
