@@ -12,7 +12,6 @@ import static org.junit.Assert.assertEquals;
 public class JdkPropertiesManagerTest {
 
     private static final String NL = System.lineSeparator();
-    ;
 
     private final JdkPropertiesManager manager = new JdkPropertiesManager();
 
