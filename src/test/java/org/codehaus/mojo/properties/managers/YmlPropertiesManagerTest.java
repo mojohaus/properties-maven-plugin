@@ -1,13 +1,13 @@
 package org.codehaus.mojo.properties.managers;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class YmlPropertiesManagerTest {
 
@@ -19,9 +19,8 @@ public class YmlPropertiesManagerTest {
     public void testLoad() throws IOException {
 
         // given
-        final String props =
-                "# comments" + NL + NL + "key1:" + NL + "  key2: value1" + NL + "key3: value2" + NL + "key4: " + NL
-                        + "  - A" + NL + "  - B" + NL + "  - C" + NL;
+        final String props = "# comments" + NL + NL + "key1:" + NL + "  key2: value1" + NL + "key3: value2" + NL
+                + "key4: " + NL + "  - A" + NL + "  - B" + NL + "  - C" + NL;
 
         final ByteArrayInputStream inputStream = new ByteArrayInputStream(props.getBytes());
 

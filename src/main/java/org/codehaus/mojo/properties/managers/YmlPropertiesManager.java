@@ -1,5 +1,8 @@
 package org.codehaus.mojo.properties.managers;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,9 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -61,8 +61,8 @@ public class YmlPropertiesManager implements PropertiesManager {
                 final Object[] values = ((Collection<?>) value).toArray();
                 for (int i = 0; i < values.length; i++) {
                     if (values[i] instanceof Map) {
-                        result.putAll(flattenYamlToMap(String.format("%s%s[%d]", parentKey, entry.getKey(), i),
-                                (Map) values[i]));
+                        result.putAll(flattenYamlToMap(
+                                String.format("%s%s[%d]", parentKey, entry.getKey(), i), (Map) values[i]));
                     } else {
                         result.put(String.format("%s%s[%d]", parentKey, entry.getKey(), i), String.valueOf(values[i]));
                     }
@@ -79,12 +79,13 @@ public class YmlPropertiesManager implements PropertiesManager {
 
         final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, StandardCharsets.ISO_8859_1);
 
-        try (final PrintWriter pw = new PrintWriter(outputStreamWriter); final StringWriter sw = new StringWriter()) {
+        try (PrintWriter pw = new PrintWriter(outputStreamWriter);
+                StringWriter sw = new StringWriter()) {
             properties.store(sw, comments);
             comments = '#' + comments;
 
             final List<String> lines = new ArrayList<>();
-            try (final BufferedReader r = new BufferedReader(new StringReader(sw.toString()))) {
+            try (BufferedReader r = new BufferedReader(new StringReader(sw.toString()))) {
                 String line;
                 while ((line = r.readLine()) != null) {
                     if (!line.startsWith("#") || line.equals(comments)) {
