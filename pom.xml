@@ -83,7 +83,7 @@
   </ciManagement>
 
   <properties>
-    <mavenVersion>3.5.4</mavenVersion>
+    <mavenVersion>3.6.3</mavenVersion>
     <recommendedJavaBuildVersion>11</recommendedJavaBuildVersion>
     <scmpublish.content>target/staging/${project.artifactId}</scmpublish.content>
     <project.build.outputTimestamp>2023-10-24T21:41:19Z</project.build.outputTimestamp>
