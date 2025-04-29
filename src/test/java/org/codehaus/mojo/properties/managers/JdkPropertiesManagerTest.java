@@ -5,18 +5,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JdkPropertiesManagerTest {
+class JdkPropertiesManagerTest {
 
     private static final String NL = System.lineSeparator();
 
     private final JdkPropertiesManager manager = new JdkPropertiesManager();
 
     @Test
-    public void testLoad() throws IOException {
+    void load() throws IOException {
 
         // given
         String props = "# comments" + NL + NL + "key1=value1" + NL + "key2 = value2";
@@ -33,7 +33,7 @@ public class JdkPropertiesManagerTest {
     }
 
     @Test
-    public void testSave() throws IOException {
+    void save() throws IOException {
 
         // given
         Properties properties = new Properties();

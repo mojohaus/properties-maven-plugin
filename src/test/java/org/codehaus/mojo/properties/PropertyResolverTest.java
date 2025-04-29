@@ -22,22 +22,21 @@ package org.codehaus.mojo.properties;
 import java.util.Properties;
 
 import org.apache.maven.plugin.MojoFailureException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests the support class that produces concrete values from a set of properties.
  */
-public class PropertyResolverTest {
+class PropertyResolverTest {
     private final PropertyResolver resolver = new PropertyResolver();
 
     @Test
-    public void validPlaceholderIsResolved() {
+    void validPlaceholderIsResolved() {
         Properties properties = new Properties();
         properties.setProperty("p1", "${p2}");
         properties.setProperty("p2", "value");
@@ -50,7 +49,7 @@ public class PropertyResolverTest {
     }
 
     @Test
-    public void unknownPlaceholderIsLeftAsIs() {
+    void unknownPlaceholderIsLeftAsIs() {
         Properties properties = new Properties();
         properties.setProperty("p1", "${p2}");
         properties.setProperty("p2", "value");
@@ -66,7 +65,7 @@ public class PropertyResolverTest {
     }
 
     @Test
-    public void multipleValuesAreResolved() {
+    void multipleValuesAreResolved() {
         Properties properties = new Properties();
         properties.setProperty("hostname", "localhost");
         properties.setProperty("port", "8080");
@@ -78,7 +77,7 @@ public class PropertyResolverTest {
     }
 
     @Test
-    public void propertyIncludesAnotherPropertyMoreThanOnce() throws MojoFailureException {
+    void propertyIncludesAnotherPropertyMoreThanOnce() throws MojoFailureException {
         Properties properties = new Properties();
         properties.setProperty("p1", "value");
         properties.setProperty("p2", "${p1} ${p1}");
@@ -89,7 +88,7 @@ public class PropertyResolverTest {
     }
 
     @Test
-    public void propertyIncludesAnotherPropertyMoreThanOnceWithIntermediaries() throws MojoFailureException {
+    void propertyIncludesAnotherPropertyMoreThanOnceWithIntermediaries() throws MojoFailureException {
         Properties properties = new Properties();
         properties.setProperty("p1", "value");
         properties.setProperty("p2", "${p1}");
@@ -104,7 +103,7 @@ public class PropertyResolverTest {
     }
 
     @Test
-    public void malformedPlaceholderIsLeftAsIs() {
+    void malformedPlaceholderIsLeftAsIs() {
         Properties properties = new Properties();
         properties.setProperty("p1", "${p2}");
         properties.setProperty("p2", "value");
@@ -120,7 +119,7 @@ public class PropertyResolverTest {
     }
 
     @Test
-    public void propertyDefinedAsItselfIsIllegal() {
+    void propertyDefinedAsItselfIsIllegal() {
         Properties properties = new Properties();
         properties.setProperty("p1", "${p2}");
         properties.setProperty("p2", "value");
@@ -135,14 +134,14 @@ public class PropertyResolverTest {
             value5 = resolver.getPropertyValue("p5", properties, new Properties());
             fail();
         } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), containsString("p5"));
+            assertThat(e).hasMessageContaining("p5");
         }
         String value6 = null;
         try {
             value6 = resolver.getPropertyValue("p6", properties, new Properties());
             fail();
         } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), containsString("p7"));
+            assertThat(e).hasMessageContaining("p7");
         }
 
         assertEquals("value", value1);
@@ -152,7 +151,7 @@ public class PropertyResolverTest {
     }
 
     @Test
-    public void circularReferenceIsIllegal() throws MojoFailureException {
+    void circularReferenceIsIllegal() throws MojoFailureException {
         Properties properties = new Properties();
         properties.setProperty("p1", "${p2}");
         properties.setProperty("p2", "${p1}");
@@ -161,15 +160,15 @@ public class PropertyResolverTest {
         try {
             value = resolver.getPropertyValue("p2", properties, new Properties());
         } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), containsString("p1"));
-            assertThat(e.getMessage(), containsString("p2"));
+            assertThat(e).hasMessageContaining("p1");
+            assertThat(e).hasMessageContaining("p2");
         }
 
         assertNull(value);
     }
 
     @Test
-    public void circularReferenceWithIntermediariesIsIllegal() throws MojoFailureException {
+    void circularReferenceWithIntermediariesIsIllegal() throws MojoFailureException {
         Properties properties = new Properties();
         properties.setProperty("p1", "${p4}");
         properties.setProperty("p2", "${p1}");
@@ -180,17 +179,17 @@ public class PropertyResolverTest {
         try {
             value = resolver.getPropertyValue("p2", properties, new Properties());
         } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), containsString("p1"));
-            assertThat(e.getMessage(), containsString("p2"));
-            assertThat(e.getMessage(), containsString("p3"));
-            assertThat(e.getMessage(), containsString("p4"));
+            assertThat(e).hasMessageContaining("p1");
+            assertThat(e).hasMessageContaining("p2");
+            assertThat(e).hasMessageContaining("p3");
+            assertThat(e).hasMessageContaining("p4");
         }
 
         assertNull(value);
     }
 
     @Test
-    public void valueIsObtainedFromSystemProperty() {
+    void valueIsObtainedFromSystemProperty() {
         Properties saved = System.getProperties();
         System.setProperty("system.property", "system.value");
 
@@ -207,7 +206,7 @@ public class PropertyResolverTest {
     }
 
     @Test
-    public void valueIsObtainedFromEnvironmentProperty() {
+    void valueIsObtainedFromEnvironmentProperty() {
         Properties environment = new Properties();
         environment.setProperty("PROPERTY", "env.value");
 
@@ -220,12 +219,12 @@ public class PropertyResolverTest {
     }
 
     @Test
-    public void missingPropertyIsTolerated() {
+    void missingPropertyIsTolerated() {
         assertEquals("", resolver.getPropertyValue("non-existent", new Properties(), null));
     }
 
     @Test
-    public void testDefaultValueForUnresolvedPropertyWithEnabledFlag() {
+    void defaultValueForUnresolvedPropertyWithEnabledFlag() {
         Properties properties = new Properties();
         properties.setProperty("p1", "${unknown:}");
         properties.setProperty("p2", "${unknown:defaultValue}");
@@ -279,7 +278,7 @@ public class PropertyResolverTest {
      * ':' is treated as a regular character and part of the property name
      */
     @Test
-    public void testDefaultValueForUnresolvedPropertyWithDisabledFlag() {
+    void defaultValueForUnresolvedPropertyWithDisabledFlag() {
         Properties properties = new Properties();
         properties.setProperty("p1", "${unknown:}");
         properties.setProperty("p2", "${unknown:defaultValue}");

@@ -12,28 +12,28 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.properties.managers.JdkPropertiesManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ReadPropertiesMojoTest {
+class ReadPropertiesMojoTest {
     private static final String NEW_LINE = System.getProperty("line.separator");
 
     private MavenProject projectStub;
     private ReadPropertiesMojo readPropertiesMojo;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         projectStub = new MavenProject();
         readPropertiesMojo = new ReadPropertiesMojo(Collections.singletonList(new JdkPropertiesManager()));
         readPropertiesMojo.setProject(projectStub);
     }
 
     @Test
-    public void readPropertiesWithoutKeyprefix() throws Exception {
+    void readPropertiesWithoutKeyprefix() throws Exception {
         try (FileReader fr = new FileReader(getPropertyFileForTesting())) {
             // load properties directly for comparison later
             Properties testProperties = new Properties();
@@ -56,7 +56,7 @@ public class ReadPropertiesMojoTest {
     }
 
     @Test
-    public void readPropertiesWithKeyprefix() throws Exception {
+    void readPropertiesWithKeyprefix() throws Exception {
         String keyPrefix = "testkey-prefix.";
 
         try (FileReader fs1 = new FileReader(getPropertyFileForTesting(keyPrefix));
@@ -90,7 +90,7 @@ public class ReadPropertiesMojoTest {
     }
 
     @Test
-    public void testDefaultValueForUnresolvedPropertyWithEnabledFlag()
+    void defaultValueForUnresolvedPropertyWithEnabledFlag()
             throws MojoFailureException, MojoExecutionException, IOException {
         Properties properties = new Properties();
         properties.setProperty("p1", "${unknown:}");
@@ -150,7 +150,7 @@ public class ReadPropertiesMojoTest {
     }
 
     @Test
-    public void readPropertiesOverridingExisting() throws Exception {
+    void readPropertiesOverridingExisting() throws Exception {
 
         File testPropertyFile = getPropertyFileForTesting();
         // load properties directly for comparison later
@@ -176,7 +176,7 @@ public class ReadPropertiesMojoTest {
     }
 
     @Test
-    public void readPropertiesPreserveExisting() throws Exception {
+    void readPropertiesPreserveExisting() throws Exception {
 
         File testPropertyFile = getPropertyFileForTesting();
         // load properties directly for comparison later
@@ -208,7 +208,7 @@ public class ReadPropertiesMojoTest {
      * ':' is treated as a regular character and part of the property name
      */
     @Test
-    public void testDefaultValueForUnresolvedPropertyWithDisabledFlag()
+    void defaultValueForUnresolvedPropertyWithDisabledFlag()
             throws MojoFailureException, MojoExecutionException, IOException {
         Properties properties = new Properties();
         properties.setProperty("p1", "${unknown:}");
