@@ -80,10 +80,7 @@ public class WriteProjectProperties extends AbstractWritePropertiesMojo {
         Enumeration<?> enumeration = systemProperties.keys();
         while (enumeration.hasMoreElements()) {
             String key = (String) enumeration.nextElement();
-            String value = systemProperties.getProperty(key);
-            if (projProperties.get(key) != null) {
-                projProperties.put(key, value);
-            }
+            projProperties.computeIfPresent(key, (k, v) -> systemProperties.getProperty(key));
         }
 
         Optional.ofNullable(excludedPropertyKeys)
