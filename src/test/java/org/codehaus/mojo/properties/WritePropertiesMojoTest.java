@@ -9,34 +9,33 @@ import java.util.UUID;
 
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.properties.managers.JdkPropertiesManager;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class WritePropertiesMojoTest {
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    @TempDir
+    public File temporaryFolder;
 
     private MavenProject projectStub;
     private WriteProjectProperties writeProjectProperties;
     private File outputFile;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         projectStub = new MavenProject();
         writeProjectProperties = new WriteProjectProperties(Collections.singletonList(new JdkPropertiesManager()));
         writeProjectProperties.setProject(projectStub);
-        outputFile = temporaryFolder.newFile();
+        outputFile = File.createTempFile("junit", null, temporaryFolder);
         writeProjectProperties.setOutputFile(outputFile);
     }
 
     @Test
-    public void projectPropertiesAreWritten() throws Exception {
+    void projectPropertiesAreWritten() throws Exception {
         String propertyKey = UUID.randomUUID().toString();
         projectStub.getProperties().put(propertyKey, "foo");
 
@@ -51,7 +50,7 @@ public class WritePropertiesMojoTest {
     }
 
     @Test
-    public void onlyIncludedPropertiesAreWritten() throws Exception {
+    void onlyIncludedPropertiesAreWritten() throws Exception {
         String includedKey = UUID.randomUUID().toString();
         projectStub.getProperties().put(includedKey, "foo");
         String excludedKey = UUID.randomUUID().toString();
@@ -70,7 +69,7 @@ public class WritePropertiesMojoTest {
     }
 
     @Test
-    public void onlyNonExcludedPropertiesAreWritten() throws Exception {
+    void onlyNonExcludedPropertiesAreWritten() throws Exception {
         String includedKey = UUID.randomUUID().toString();
         projectStub.getProperties().put(includedKey, "foo");
         String excludedKey = UUID.randomUUID().toString();

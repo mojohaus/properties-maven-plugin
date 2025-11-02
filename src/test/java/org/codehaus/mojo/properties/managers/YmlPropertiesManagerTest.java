@@ -2,21 +2,20 @@ package org.codehaus.mojo.properties.managers;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class YmlPropertiesManagerTest {
+class YmlPropertiesManagerTest {
 
     private static final String NL = System.lineSeparator();
 
     private final YmlPropertiesManager manager = new YmlPropertiesManager();
 
     @Test
-    public void testLoad() throws IOException {
+    void load() throws Exception {
 
         // given
         final String props = "# comments" + NL + NL + "key1:" + NL + "  key2: value1" + NL + "key3: value2" + NL
@@ -35,7 +34,7 @@ public class YmlPropertiesManagerTest {
     }
 
     @Test
-    public void testSave() throws IOException {
+    void save() throws Exception {
 
         // given
         final Properties properties = new Properties();
