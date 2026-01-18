@@ -28,7 +28,7 @@
   </parent>
 
   <artifactId>properties-maven-plugin</artifactId>
-  <version>1.3.0</version>
+  <version>1.3.1-SNAPSHOT</version>
 
   <packaging>maven-plugin</packaging>
 
@@ -74,7 +74,7 @@
   <scm>
     <connection>scm:git:https://github.com/mojohaus/properties-maven-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mojohaus/properties-maven-plugin.git</developerConnection>
-    <tag>properties-maven-plugin-1.3.0</tag>
+    <tag>master</tag>
     <url>https://github.com/mojohaus/properties-maven-plugin/tree/master</url>
   </scm>
   <issueManagement>
@@ -90,7 +90,7 @@
     <mavenVersion>3.6.3</mavenVersion>
     <recommendedJavaBuildVersion>11</recommendedJavaBuildVersion>
     <scmpublish.content>target/staging/${project.artifactId}</scmpublish.content>
-    <project.build.outputTimestamp>2026-01-18T22:13:39Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-01-18T22:13:51Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
