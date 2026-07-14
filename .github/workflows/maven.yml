@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
     name: Verify
-    uses: apache/maven-gh-actions-shared/.github/workflows/maven-verify.yml@v4
+    uses: apache/maven-gh-actions-shared/.github/workflows/maven-verify.yml@v5
     with:
       jdk-distribution-matrix: ' ["zulu"] '
       ff-jdk-distribution: 'zulu'
