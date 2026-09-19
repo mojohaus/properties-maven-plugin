@@ -24,10 +24,9 @@ import java.util.Properties;
 import org.apache.maven.plugin.MojoFailureException;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -135,14 +134,18 @@ public class PropertyResolverTest {
             value5 = resolver.getPropertyValue("p5", properties, new Properties());
             fail();
         } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), containsString("p5"));
+            assertTrue(
+                    "expected message to contain 'p5': " + e.getMessage(),
+                    e.getMessage().contains("p5"));
         }
         String value6 = null;
         try {
             value6 = resolver.getPropertyValue("p6", properties, new Properties());
             fail();
         } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), containsString("p7"));
+            assertTrue(
+                    "expected message to contain 'p7': " + e.getMessage(),
+                    e.getMessage().contains("p7"));
         }
 
         assertEquals("value", value1);
@@ -161,8 +164,12 @@ public class PropertyResolverTest {
         try {
             value = resolver.getPropertyValue("p2", properties, new Properties());
         } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), containsString("p1"));
-            assertThat(e.getMessage(), containsString("p2"));
+            assertTrue(
+                    "expected message to contain 'p1': " + e.getMessage(),
+                    e.getMessage().contains("p1"));
+            assertTrue(
+                    "expected message to contain 'p2': " + e.getMessage(),
+                    e.getMessage().contains("p2"));
         }
 
         assertNull(value);
@@ -180,10 +187,18 @@ public class PropertyResolverTest {
         try {
             value = resolver.getPropertyValue("p2", properties, new Properties());
         } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), containsString("p1"));
-            assertThat(e.getMessage(), containsString("p2"));
-            assertThat(e.getMessage(), containsString("p3"));
-            assertThat(e.getMessage(), containsString("p4"));
+            assertTrue(
+                    "expected message to contain 'p1': " + e.getMessage(),
+                    e.getMessage().contains("p1"));
+            assertTrue(
+                    "expected message to contain 'p2': " + e.getMessage(),
+                    e.getMessage().contains("p2"));
+            assertTrue(
+                    "expected message to contain 'p3': " + e.getMessage(),
+                    e.getMessage().contains("p3"));
+            assertTrue(
+                    "expected message to contain 'p4': " + e.getMessage(),
+                    e.getMessage().contains("p4"));
         }
 
         assertNull(value);
