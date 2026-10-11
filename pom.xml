@@ -68,7 +68,7 @@
   </developers>
 
   <prerequisites>
-    <maven>3.6.3</maven>
+    <maven>3.9.0</maven>
   </prerequisites>
 
   <scm>
@@ -87,7 +87,8 @@
   </ciManagement>
 
   <properties>
-    <mavenVersion>3.6.3</mavenVersion>
+    <mavenVersion>3.9.16</mavenVersion>
+    <minimalMavenBuildVersion>3.9.0</minimalMavenBuildVersion>
     <recommendedJavaBuildVersion>11</recommendedJavaBuildVersion>
     <scmpublish.content>target/staging/${project.artifactId}</scmpublish.content>
     <project.build.outputTimestamp>2026-09-11T21:16:00Z</project.build.outputTimestamp>
