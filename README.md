@@ -17,3 +17,4 @@ cd target/checkout
 mvn verify site site:stage scm-publish:publish-scm
 ```
 
+See [AGENTS.md](AGENTS.md) for build, test and pull request conventions.
