@@ -16,7 +16,7 @@ import org.junit.jupiter.api.io.TempDir;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class WritePropertiesMojoTest {
+class WritePropertiesMojoTest {
 
     @TempDir
     File temporaryFolder;
