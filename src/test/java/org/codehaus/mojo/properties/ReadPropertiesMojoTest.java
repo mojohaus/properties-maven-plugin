@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.Properties;
 
 import org.apache.maven.model.Model;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.properties.managers.JdkPropertiesManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ReadPropertiesMojoTest {
+class ReadPropertiesMojoTest {
     private static final String NEW_LINE = System.getProperty("line.separator");
 
     private MavenProject projectStub;
@@ -90,8 +88,7 @@ public class ReadPropertiesMojoTest {
     }
 
     @Test
-    void testDefaultValueForUnresolvedPropertyWithEnabledFlag()
-            throws MojoFailureException, MojoExecutionException, IOException {
+    void defaultValueForUnresolvedPropertyWithEnabledFlag() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("p1", "${unknown:}");
         properties.setProperty("p2", "${unknown:defaultValue}");
@@ -208,8 +205,7 @@ public class ReadPropertiesMojoTest {
      * ':' is treated as a regular character and part of the property name
      */
     @Test
-    void testDefaultValueForUnresolvedPropertyWithDisabledFlag()
-            throws MojoFailureException, MojoExecutionException, IOException {
+    void defaultValueForUnresolvedPropertyWithDisabledFlag() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("p1", "${unknown:}");
         properties.setProperty("p2", "${unknown:defaultValue}");

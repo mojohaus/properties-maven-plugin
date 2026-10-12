@@ -21,7 +21,6 @@ package org.codehaus.mojo.properties;
 
 import java.util.Properties;
 
-import org.apache.maven.plugin.MojoFailureException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 /**
  * Tests the support class that produces concrete values from a set of properties.
  */
-public class PropertyResolverTest {
+class PropertyResolverTest {
     private final PropertyResolver resolver = new PropertyResolver();
 
     @Test
@@ -77,7 +76,7 @@ public class PropertyResolverTest {
     }
 
     @Test
-    void propertyIncludesAnotherPropertyMoreThanOnce() throws MojoFailureException {
+    void propertyIncludesAnotherPropertyMoreThanOnce() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("p1", "value");
         properties.setProperty("p2", "${p1} ${p1}");
@@ -88,7 +87,7 @@ public class PropertyResolverTest {
     }
 
     @Test
-    void propertyIncludesAnotherPropertyMoreThanOnceWithIntermediaries() throws MojoFailureException {
+    void propertyIncludesAnotherPropertyMoreThanOnceWithIntermediaries() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("p1", "value");
         properties.setProperty("p2", "${p1}");
@@ -151,7 +150,7 @@ public class PropertyResolverTest {
     }
 
     @Test
-    void circularReferenceIsIllegal() throws MojoFailureException {
+    void circularReferenceIsIllegal() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("p1", "${p2}");
         properties.setProperty("p2", "${p1}");
@@ -168,7 +167,7 @@ public class PropertyResolverTest {
     }
 
     @Test
-    void circularReferenceWithIntermediariesIsIllegal() throws MojoFailureException {
+    void circularReferenceWithIntermediariesIsIllegal() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("p1", "${p4}");
         properties.setProperty("p2", "${p1}");
@@ -224,7 +223,7 @@ public class PropertyResolverTest {
     }
 
     @Test
-    void testDefaultValueForUnresolvedPropertyWithEnabledFlag() {
+    void defaultValueForUnresolvedPropertyWithEnabledFlag() {
         Properties properties = new Properties();
         properties.setProperty("p1", "${unknown:}");
         properties.setProperty("p2", "${unknown:defaultValue}");
@@ -278,7 +277,7 @@ public class PropertyResolverTest {
      * ':' is treated as a regular character and part of the property name
      */
     @Test
-    void testDefaultValueForUnresolvedPropertyWithDisabledFlag() {
+    void defaultValueForUnresolvedPropertyWithDisabledFlag() {
         Properties properties = new Properties();
         properties.setProperty("p1", "${unknown:}");
         properties.setProperty("p2", "${unknown:defaultValue}");
