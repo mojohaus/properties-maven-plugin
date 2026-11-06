@@ -1,20 +1,20 @@
- ------
- Usage
- ------
- Zarar Siddiqi
- ------
- 2007-07-18
- ------
-
+---
+title: Usage
+author:
+  - Zarar Siddiqi
+date: 2007-07-18
+---
 
 Usage
+=====
 
-* read-project-properties
+read-project-properties
+-----------------------
 
-  The {{{./read-project-properties-mojo.html}properties:read-project-properties}} goal 
-  reads property files or URLs and stores them as project properties.
+The [properties:read-project-properties](./read-project-properties-mojo.html) goal
+reads property files or URLs and stores them as project properties.
 
-----------------
+```xml
 <project>
   <build>
     <plugins>
@@ -39,11 +39,11 @@ Usage
     </plugins>
   </build>
 </project>
-----------------
+```
 
-  or alternatively
+or alternatively
 
-----------------
+```xml
 <project>
   <build>
     <plugins>
@@ -69,14 +69,15 @@ Usage
     </plugins>
   </build>
 </project>
-----------------
+```
 
-* write-project-properties
+write-project-properties
+------------------------
 
-  The {{{./write-project-properties-mojo.html}properties:write-project-properties}} goal
-  writes all project properties to a given file.
+The [properties:write-project-properties](./write-project-properties-mojo.html) goal
+writes all project properties to a given file.
 
-----------------
+```xml
 <project>
   <build>
     <plugins>
@@ -101,14 +102,15 @@ Usage
     </plugins>
   </build>
 </project>
-----------------
+```
 
-* write-active-profile-properties
+write-active-profile-properties
+-------------------------------
 
-  The {{{./write-active-profile-properties-mojo.html}properties:write-active-profile-properties}} goal
-  writes properties of all active profiles to a given file.
+The [properties:write-active-profile-properties](./write-active-profile-properties-mojo.html) goal
+writes properties of all active profiles to a given file.
 
-----------------
+```xml
 <project>
   <build>
     <plugins>
@@ -133,14 +135,15 @@ Usage
     </plugins>
   </build>
 </project>
-----------------
+```
 
-* set-system-properties
+set-system-properties
+---------------------
 
-  The {{{./set-system-properties-mojo.html}properties:set-system-properties}}
-  goal sets the specified system properties.
+The [properties:set-system-properties](./set-system-properties-mojo.html)
+goal sets the specified system properties.
 
-----------------
+```xml
 <project>
   <build>
     <plugins>
@@ -167,4 +170,4 @@ Usage
     </plugins>
   </build>
 </project>
-----------------
+```
