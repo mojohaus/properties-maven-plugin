@@ -45,7 +45,7 @@ public class DefaultValuesAwareExpansionBufferImpl extends ExpansionBuffer {
 
     protected String beforeNextSuffix() {
         int defValuePos = unresolved.indexOf(":");
-        int propertySuffixPos = unresolved.indexOf("}");
+        int propertySuffixPos = matchingSuffixPos();
 
         // check default value separator only if before next suffix
         if (defValuePos != -1 && propertySuffixPos != -1 && defValuePos < propertySuffixPos) {
@@ -55,9 +55,33 @@ public class DefaultValuesAwareExpansionBufferImpl extends ExpansionBuffer {
         return unresolved.substring(0, propertySuffixPos);
     }
 
+    @Override
+    protected void discardToAfterNextSuffix() {
+        unresolved = unresolved.substring(matchingSuffixPos() + 1);
+    }
+
+    /**
+     * Position of the {@code }} closing the placeholder whose prefix was already discarded. Nested
+     * {@code ${...}} inside a default value are skipped as a unit. Falls back to the first {@code }} when the
+     * braces are unbalanced.
+     */
+    private int matchingSuffixPos() {
+        int depth = 1;
+        for (int i = 0; i < unresolved.length(); i++) {
+            char c = unresolved.charAt(i);
+            if (c == '$' && i + 1 < unresolved.length() && unresolved.charAt(i + 1) == '{') {
+                depth++;
+                i++;
+            } else if (c == '}' && --depth == 0) {
+                return i;
+            }
+        }
+        return unresolved.indexOf("}");
+    }
+
     private String defaultValue() {
         int defValuePos = unresolved.indexOf(":");
-        int propertySuffixPos = unresolved.indexOf("}");
+        int propertySuffixPos = matchingSuffixPos();
         if (defValuePos != -1 && propertySuffixPos != -1 && (defValuePos + 1) < propertySuffixPos) {
             return unresolved.substring(defValuePos + 1, propertySuffixPos);
         }

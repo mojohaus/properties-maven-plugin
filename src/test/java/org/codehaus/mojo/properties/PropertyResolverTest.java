@@ -223,6 +223,20 @@ class PropertyResolverTest {
     }
 
     @Test
+    void nestedPropertyInDefaultValueIsSkippedAsUnit() {
+        Properties properties = new Properties();
+        properties.setProperty("p1", "${defined:${undefined:x}}");
+        properties.setProperty("p2", "${unknown:${a:${b}}}-end");
+        properties.setProperty("p3", "${unknown:${a}}");
+        properties.setProperty("defined", "myValue");
+        properties.setProperty("a", "A");
+
+        assertEquals("myValue", resolver.getPropertyValue("p1", properties, new Properties(), true));
+        assertEquals("A-end", resolver.getPropertyValue("p2", properties, new Properties(), true));
+        assertEquals("A", resolver.getPropertyValue("p3", properties, new Properties(), true));
+    }
+
+    @Test
     void defaultValueForUnresolvedPropertyWithEnabledFlag() {
         Properties properties = new Properties();
         properties.setProperty("p1", "${unknown:}");
