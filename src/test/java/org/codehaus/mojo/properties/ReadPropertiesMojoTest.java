@@ -6,7 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Properties;
 
 import org.apache.maven.model.Model;
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -265,6 +268,61 @@ class ReadPropertiesMojoTest {
         assertEquals("${malformed:with extra :", value11);
         assertEquals("${unknown::}", value12);
         assertEquals("${unknown:  }", value13);
+    }
+
+    @Test
+    void onlyIncludedPropertiesAreRead() throws Exception {
+        readPropertiesMojo.setIncludedPropertyKeys(Collections.singleton("test.property2"));
+        readPropertiesMojo.setFiles(new File[] {getPropertyFileForTesting()});
+        readPropertiesMojo.execute();
+
+        Properties projectProperties = projectStub.getProperties();
+        assertEquals(1, projectProperties.size());
+        assertEquals("value2", projectProperties.getProperty("test.property2"));
+    }
+
+    @Test
+    void excludedPropertiesAreNotRead() throws Exception {
+        readPropertiesMojo.setExcludedPropertyKeys(Collections.singleton("test.property2"));
+        readPropertiesMojo.setFiles(new File[] {getPropertyFileForTesting()});
+        readPropertiesMojo.execute();
+
+        Properties projectProperties = projectStub.getProperties();
+        assertEquals(2, projectProperties.size());
+        assertNull(projectProperties.getProperty("test.property2"));
+    }
+
+    @Test
+    void excludeWinsOverInclude() throws Exception {
+        readPropertiesMojo.setIncludedPropertyKeys(new HashSet<>(Arrays.asList("test.property1", "test.property2")));
+        readPropertiesMojo.setExcludedPropertyKeys(Collections.singleton("test.property2"));
+        readPropertiesMojo.setFiles(new File[] {getPropertyFileForTesting()});
+        readPropertiesMojo.execute();
+
+        Properties projectProperties = projectStub.getProperties();
+        assertEquals(1, projectProperties.size());
+        assertEquals("value1", projectProperties.getProperty("test.property1"));
+    }
+
+    @Test
+    void keysAreMatchedBeforeThePrefixIsApplied() throws Exception {
+        readPropertiesMojo.setKeyPrefix("pre.");
+        readPropertiesMojo.setIncludedPropertyKeys(Collections.singleton("test.property3"));
+        readPropertiesMojo.setFiles(new File[] {getPropertyFileForTesting()});
+        readPropertiesMojo.execute();
+
+        Properties projectProperties = projectStub.getProperties();
+        assertEquals(1, projectProperties.size());
+        assertEquals("value3", projectProperties.getProperty("pre.test.property3"));
+    }
+
+    @Test
+    void emptyIncludeSetReadsEverything() throws Exception {
+        readPropertiesMojo.setIncludedPropertyKeys(Collections.emptySet());
+        readPropertiesMojo.setFiles(new File[] {getPropertyFileForTesting()});
+        readPropertiesMojo.execute();
+
+        assertEquals(3, projectStub.getProperties().size());
     }
 
     private File getPropertyFileForTesting() throws IOException {
