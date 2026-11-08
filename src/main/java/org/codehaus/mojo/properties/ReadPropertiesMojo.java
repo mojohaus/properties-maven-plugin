@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -134,6 +135,25 @@ public class ReadPropertiesMojo extends AbstractPropertiesMojo {
     private Charset charset;
 
     /**
+     * Property keys to exclude. The keys are matched as written in the properties file or URL, before
+     * <code>keyPrefix</code> is applied.
+     *
+     * @since 1.4.0
+     */
+    @Parameter(property = "properties.excludedPropertyKeys")
+    private Set<String> excludedPropertyKeys;
+
+    /**
+     * Property keys to include; when set and not empty, no other property is read. The keys are matched as written in
+     * the properties file or URL, before <code>keyPrefix</code> is applied. Applied after
+     * <code>excludedPropertyKeys</code>.
+     *
+     * @since 1.4.0
+     */
+    @Parameter(property = "properties.includedPropertyKeys")
+    private Set<String> includedPropertyKeys;
+
+    /**
      * Used for resolving property placeholders.
      */
     private final PropertyResolver resolver = new PropertyResolver();
@@ -231,6 +251,9 @@ public class ReadPropertiesMojo extends AbstractPropertiesMojo {
                 Map<String, String> newProperties = new HashMap<>();
 
                 for (String key : properties.stringPropertyNames()) {
+                    if (!isWanted(key)) {
+                        continue;
+                    }
                     String propertyName = effectivePrefix + key;
                     if (override || !projectProperties.containsKey(propertyName)) {
                         newProperties.put(propertyName, properties.getProperty(key));
@@ -243,6 +266,13 @@ public class ReadPropertiesMojo extends AbstractPropertiesMojo {
         } catch (IOException e) {
             throw new MojoExecutionException("Error reading properties from " + resource, e);
         }
+    }
+
+    private boolean isWanted(String key) {
+        if (excludedPropertyKeys != null && excludedPropertyKeys.contains(key)) {
+            return false;
+        }
+        return includedPropertyKeys == null || includedPropertyKeys.isEmpty() || includedPropertyKeys.contains(key);
     }
 
     private void missing(Resource resource) throws MojoExecutionException {
@@ -328,6 +358,14 @@ public class ReadPropertiesMojo extends AbstractPropertiesMojo {
 
     void setEncoding(String encoding) {
         this.encoding = encoding;
+    }
+
+    void setExcludedPropertyKeys(Set<String> excludedPropertyKeys) {
+        this.excludedPropertyKeys = excludedPropertyKeys;
+    }
+
+    void setIncludedPropertyKeys(Set<String> includedPropertyKeys) {
+        this.includedPropertyKeys = includedPropertyKeys;
     }
 
     void setKeyPrefix(String keyPrefix) {
