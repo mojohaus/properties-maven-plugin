@@ -104,6 +104,20 @@ writes all project properties to a given file.
 </project>
 ```
 
+By default only the project properties are written. Set `includeUserProperties` to `true` to also write the user
+properties of the Maven session, that is the values given with `-D` on the command line, for example `-Dbuild.id=42`.
+Other JVM system properties are not written, and `includedPropertyKeys` and `excludedPropertyKeys` apply to the
+user properties too.
+
+```xml
+<configuration>
+  <includeUserProperties>true</includeUserProperties>
+  <outputFile>
+    \${project.build.outputDirectory}/app.properties
+  </outputFile>
+</configuration>
+```
+
 write-active-profile-properties
 -------------------------------
 

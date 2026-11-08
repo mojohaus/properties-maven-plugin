@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -59,6 +60,18 @@ public class WriteProjectProperties extends AbstractWritePropertiesMojo {
     private Set<String> includedPropertyKeys;
 
     /**
+     * Also write the user properties of the Maven session, that is the values given with {@code -D} on the command
+     * line. Other JVM system properties are not written. They override project properties of the same name and are
+     * subject to {@code includedPropertyKeys} and {@code excludedPropertyKeys}.
+     * @since 1.4.0
+     */
+    @Parameter(property = "properties.includeUserProperties", defaultValue = "false")
+    private boolean includeUserProperties;
+
+    @Parameter(defaultValue = "${session}", required = true, readonly = true)
+    private MavenSession session;
+
+    /**
      * Default constructor
      *
      * @param propertiesManagers list of properties managers
@@ -86,6 +99,10 @@ public class WriteProjectProperties extends AbstractWritePropertiesMojo {
             }
         }
 
+        if (includeUserProperties) {
+            projProperties.putAll(session.getUserProperties());
+        }
+
         Optional.ofNullable(excludedPropertyKeys)
                 .orElseGet(Collections::emptySet)
                 .forEach(projProperties::remove);
@@ -95,6 +112,20 @@ public class WriteProjectProperties extends AbstractWritePropertiesMojo {
         }
 
         writeProperties(projProperties);
+    }
+
+    /**
+     * Default scope for test access.
+     */
+    void setIncludeUserProperties(boolean includeUserProperties) {
+        this.includeUserProperties = includeUserProperties;
+    }
+
+    /**
+     * Default scope for test access.
+     */
+    void setSession(MavenSession session) {
+        this.session = session;
     }
 
     /**
