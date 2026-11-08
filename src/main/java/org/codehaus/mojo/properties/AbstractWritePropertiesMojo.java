@@ -22,6 +22,7 @@ package org.codehaus.mojo.properties;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Properties;
@@ -48,6 +49,15 @@ public abstract class AbstractWritePropertiesMojo extends AbstractPropertiesMojo
     @Parameter(required = true, property = "properties.outputFile")
     private File outputFile;
 
+    /**
+     * Encoding of the output file, for example <code>UTF-8</code>. When not set, <code>.properties</code> files are
+     * written as ISO-8859-1, as the JDK does.
+     *
+     * @since 1.4.0
+     */
+    @Parameter
+    private String encoding;
+
     protected AbstractWritePropertiesMojo(List<PropertiesManager> propertiesManagers) {
         super(propertiesManagers);
     }
@@ -57,9 +67,14 @@ public abstract class AbstractWritePropertiesMojo extends AbstractPropertiesMojo
      * @throws MojoExecutionException {@link MojoExecutionException}
      */
     protected void writeProperties(Properties properties) throws MojoExecutionException {
+        Charset charset = toCharset(encoding);
         try {
             PropertiesManager manager = getPropertiesManager(FileUtils.extension(outputFile.getName()));
-            manager.save(properties, Files.newOutputStream(outputFile.toPath()), "Properties");
+            if (charset == null) {
+                manager.save(properties, Files.newOutputStream(outputFile.toPath()), "Properties");
+            } else {
+                manager.save(properties, Files.newOutputStream(outputFile.toPath()), "Properties", charset);
+            }
         } catch (FileNotFoundException e) {
             getLog().error("Could not create FileOutputStream: " + outputFile);
             throw new MojoExecutionException(e.getMessage(), e);
@@ -107,5 +122,12 @@ public abstract class AbstractWritePropertiesMojo extends AbstractPropertiesMojo
      */
     void setOutputFile(File outputFile) {
         this.outputFile = outputFile;
+    }
+
+    /**
+     * Default scope for test access.
+     */
+    void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 }

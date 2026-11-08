@@ -2,6 +2,7 @@ package org.codehaus.mojo.properties.managers;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
@@ -48,5 +49,20 @@ class JdkPropertiesManagerTest {
         String expected = "#Test comments" + NL + "key1=value1" + NL + "key2=value2" + NL;
 
         assertEquals(expected, outputStream.toString());
+    }
+
+    @Test
+    void loadAndSaveWithCharset() throws Exception {
+        Properties properties = new Properties();
+        properties.setProperty("key", "Gr\u00fc\u00dfe \u20ac");
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        manager.save(properties, outputStream, "Test comments", StandardCharsets.UTF_8);
+        assertEquals(
+                "#Test comments" + NL + "key=Gr\u00fc\u00dfe \u20ac" + NL,
+                new String(outputStream.toByteArray(), StandardCharsets.UTF_8));
+
+        Properties loaded = manager.load(new ByteArrayInputStream(outputStream.toByteArray()), StandardCharsets.UTF_8);
+        assertEquals("Gr\u00fc\u00dfe \u20ac", loaded.getProperty("key"));
     }
 }

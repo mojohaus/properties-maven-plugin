@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Properties;
 
 import org.apache.maven.model.Model;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.properties.managers.JdkPropertiesManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +19,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ReadPropertiesMojoTest {
     private static final String NEW_LINE = System.getProperty("line.separator");
@@ -283,5 +288,39 @@ class ReadPropertiesMojoTest {
             writer.close();
         }
         return f;
+    }
+
+    @Test
+    void readPropertiesWithEncoding() throws Exception {
+        File file = Files.createTempFile("prop-test", ".properties").toFile();
+        file.deleteOnExit();
+        Files.write(file.toPath(), "greeting=Gr\u00fc\u00dfe \u20ac".getBytes(StandardCharsets.UTF_8));
+
+        readPropertiesMojo.setEncoding("UTF-8");
+        readPropertiesMojo.setFiles(new File[] {file});
+        readPropertiesMojo.execute();
+
+        assertEquals("Gr\u00fc\u00dfe \u20ac", projectStub.getProperties().getProperty("greeting"));
+    }
+
+    @Test
+    void readPropertiesWithoutEncodingStaysIso88591() throws Exception {
+        File file = Files.createTempFile("prop-test", ".properties").toFile();
+        file.deleteOnExit();
+        Files.write(file.toPath(), "greeting=Gr\u00fc\u00dfe".getBytes(StandardCharsets.ISO_8859_1));
+
+        readPropertiesMojo.setFiles(new File[] {file});
+        readPropertiesMojo.execute();
+
+        assertEquals("Gr\u00fc\u00dfe", projectStub.getProperties().getProperty("greeting"));
+    }
+
+    @Test
+    void readPropertiesWithUnknownEncodingFails() throws Exception {
+        readPropertiesMojo.setEncoding("no-such-charset");
+        readPropertiesMojo.setFiles(new File[] {getPropertyFileForTesting()});
+
+        MojoExecutionException e = assertThrows(MojoExecutionException.class, readPropertiesMojo::execute);
+        assertTrue(e.getMessage().contains("no-such-charset"), e.getMessage());
     }
 }
