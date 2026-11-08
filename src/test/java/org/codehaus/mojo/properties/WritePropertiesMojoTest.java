@@ -3,6 +3,8 @@ package org.codehaus.mojo.properties;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.UUID;
@@ -10,6 +12,7 @@ import java.util.UUID;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.DefaultMavenExecutionResult;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.properties.managers.JdkPropertiesManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +21,8 @@ import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class WritePropertiesMojoTest {
 
@@ -164,5 +169,36 @@ class WritePropertiesMojoTest {
             written.load(fr);
             return written;
         }
+    }
+
+    @Test
+    void encodingIsHonouredWhenWriting() throws Exception {
+        projectStub.getProperties().put("greeting", "Gr\u00fc\u00dfe \u20ac");
+        writeProjectProperties.setEncoding("UTF-8");
+
+        writeProjectProperties.execute();
+
+        String content = new String(Files.readAllBytes(outputFile.toPath()), StandardCharsets.UTF_8);
+        assertTrue(content.contains("greeting=Gr\u00fc\u00dfe \u20ac"), content);
+    }
+
+    @Test
+    void writesIso88591WithoutEncoding() throws Exception {
+        projectStub.getProperties().put("greeting", "Gr\u00fc\u00dfe \u20ac");
+
+        writeProjectProperties.execute();
+
+        String content = new String(Files.readAllBytes(outputFile.toPath()), StandardCharsets.ISO_8859_1);
+        assertTrue(content.contains("greeting=Gr\u00fc\u00dfe ?"), content);
+    }
+
+    @Test
+    void unknownEncodingFailsBeforeTouchingTheOutputFile() throws Exception {
+        Files.write(outputFile.toPath(), "keep=me".getBytes(StandardCharsets.ISO_8859_1));
+        writeProjectProperties.setEncoding("no-such-charset");
+
+        assertThrows(MojoExecutionException.class, writeProjectProperties::execute);
+
+        assertEquals("keep=me", new String(Files.readAllBytes(outputFile.toPath()), StandardCharsets.ISO_8859_1));
     }
 }

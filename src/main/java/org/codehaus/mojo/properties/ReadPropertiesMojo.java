@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -121,6 +122,18 @@ public class ReadPropertiesMojo extends AbstractPropertiesMojo {
     private boolean override = true;
 
     /**
+     * Encoding of the properties files and URLs, for example <code>UTF-8</code>. When not set, <code>.properties</code>
+     * resources are read as ISO-8859-1, as the JDK does, and YAML resources are detected by the YAML parser.
+     *
+     * @since 1.4.0
+     */
+    @Parameter
+    private String encoding;
+
+    /** The character set resolved from {@link #encoding}, or {@code null} for the manager's default. */
+    private Charset charset;
+
+    /**
      * Used for resolving property placeholders.
      */
     private final PropertyResolver resolver = new PropertyResolver();
@@ -165,6 +178,7 @@ public class ReadPropertiesMojo extends AbstractPropertiesMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (!skipLoadProperties) {
             checkParameters();
+            charset = toCharset(encoding);
             loadFiles();
             loadUrls();
             resolveProperties();
@@ -211,7 +225,7 @@ public class ReadPropertiesMojo extends AbstractPropertiesMojo {
                 }
 
                 PropertiesManager manager = getPropertiesManager(resource.getResourceExtension());
-                Properties properties = manager.load(stream);
+                Properties properties = charset == null ? manager.load(stream) : manager.load(stream, charset);
 
                 Properties projectProperties = project.getProperties();
                 Map<String, String> newProperties = new HashMap<>();
@@ -310,6 +324,10 @@ public class ReadPropertiesMojo extends AbstractPropertiesMojo {
      */
     public void setUseDefaultValues(boolean useDefaultValues) {
         this.useDefaultValues = useDefaultValues;
+    }
+
+    void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     void setKeyPrefix(String keyPrefix) {

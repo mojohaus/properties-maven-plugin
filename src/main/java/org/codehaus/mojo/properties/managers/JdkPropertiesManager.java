@@ -6,11 +6,13 @@ import javax.inject.Singleton;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,9 +41,21 @@ public class JdkPropertiesManager implements PropertiesManager {
     }
 
     @Override
-    public void save(Properties properties, OutputStream out, String comments) throws IOException {
+    public Properties load(InputStream in, Charset charset) throws IOException {
+        Properties properties = new Properties();
+        properties.load(new InputStreamReader(in, charset));
+        return properties;
+    }
 
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, StandardCharsets.ISO_8859_1);
+    @Override
+    public void save(Properties properties, OutputStream out, String comments) throws IOException {
+        save(properties, out, comments, StandardCharsets.ISO_8859_1);
+    }
+
+    @Override
+    public void save(Properties properties, OutputStream out, String comments, Charset charset) throws IOException {
+
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, charset);
 
         try (PrintWriter pw = new PrintWriter(outputStreamWriter);
                 StringWriter sw = new StringWriter()) {
