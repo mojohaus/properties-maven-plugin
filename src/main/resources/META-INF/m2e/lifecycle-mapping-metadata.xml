@@ -27,5 +27,31 @@
                 </execute>
             </action>
         </pluginExecution>
+        <pluginExecution>
+            <pluginExecutionFilter>
+                <goals>
+                    <goal>set-system-properties</goal>
+                </goals>
+            </pluginExecutionFilter>
+            <action>
+                <execute>
+                    <runOnIncremental>true</runOnIncremental>
+                    <runOnConfiguration>true</runOnConfiguration>
+                </execute>
+            </action>
+        </pluginExecution>
+        <pluginExecution>
+            <pluginExecutionFilter>
+                <goals>
+                    <goal>write-active-profile-properties</goal>
+                </goals>
+            </pluginExecutionFilter>
+            <action>
+                <execute>
+                    <runOnIncremental>true</runOnIncremental>
+                    <runOnConfiguration>true</runOnConfiguration>
+                </execute>
+            </action>
+        </pluginExecution>
     </pluginExecutions>
 </lifecycleMappingMetadata>
