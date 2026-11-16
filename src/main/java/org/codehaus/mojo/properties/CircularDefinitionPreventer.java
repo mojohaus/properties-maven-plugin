@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 class CircularDefinitionPreventer {
-    private static class VisitedProperty {
+    private static final class VisitedProperty {
         private final String key;
 
         private final String value;
