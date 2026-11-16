@@ -96,7 +96,7 @@ public class ReadPropertiesMojo extends AbstractPropertiesMojo {
      * @since 1.1.0
      */
     @Parameter
-    private String keyPrefix = null;
+    private String keyPrefix;
 
     /**
      * Skip plugin execution.
@@ -445,7 +445,7 @@ public class ReadPropertiesMojo extends AbstractPropertiesMojo {
 
         private final URL url;
 
-        private boolean isMissingClasspathResouce = false;
+        private boolean isMissingClasspathResouce;
 
         private String classpathUrl;
 
