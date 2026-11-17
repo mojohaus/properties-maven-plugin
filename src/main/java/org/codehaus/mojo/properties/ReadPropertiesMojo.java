@@ -195,6 +195,7 @@ public class ReadPropertiesMojo extends AbstractPropertiesMojo {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (!skipLoadProperties) {
             checkParameters();
