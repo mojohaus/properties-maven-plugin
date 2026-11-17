@@ -29,6 +29,7 @@ public class ExpansionBufferImpl extends ExpansionBuffer {
         super(unresolved);
     }
 
+    @Override
     public KeyAndDefaultValue extractPropertyKeyAndDefaultValue() {
         advanceToNextPrefix();
 
@@ -41,6 +42,7 @@ public class ExpansionBufferImpl extends ExpansionBuffer {
         return new KeyAndDefaultValue(key, null);
     }
 
+    @Override
     protected String beforeNextSuffix() {
         int propertySuffixPos = unresolved.indexOf("}");
         return unresolved.substring(0, propertySuffixPos);

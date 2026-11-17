@@ -29,6 +29,7 @@ public class DefaultValuesAwareExpansionBufferImpl extends ExpansionBuffer {
         super(unresolved);
     }
 
+    @Override
     public KeyAndDefaultValue extractPropertyKeyAndDefaultValue() {
         advanceToNextPrefix();
 
@@ -43,6 +44,7 @@ public class DefaultValuesAwareExpansionBufferImpl extends ExpansionBuffer {
         return new KeyAndDefaultValue(key, defaultValue);
     }
 
+    @Override
     protected String beforeNextSuffix() {
         int defValuePos = unresolved.indexOf(":");
         int propertySuffixPos = matchingSuffixPos();

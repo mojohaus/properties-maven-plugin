@@ -36,6 +36,7 @@ abstract class ExpansionBuffer {
 
     public abstract KeyAndDefaultValue extractPropertyKeyAndDefaultValue();
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(resolved);
         return sb.append(unresolved).toString();
