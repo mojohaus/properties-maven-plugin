@@ -15,6 +15,7 @@ import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -71,7 +72,7 @@ public class JdkPropertiesManager implements PropertiesManager {
                 }
             }
 
-            lines.sort(null);
+            Collections.sort(lines);
             for (String l : lines) {
                 pw.println(l);
             }
