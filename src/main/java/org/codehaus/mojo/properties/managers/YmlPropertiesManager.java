@@ -16,7 +16,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,7 +109,7 @@ public class YmlPropertiesManager implements PropertiesManager {
                 }
             }
 
-            Collections.sort(lines);
+            lines.sort(null);
             for (final String l : lines) {
                 pw.println(l);
             }
