@@ -11,7 +11,7 @@ what the code and the POMs do not make obvious.
   (`SetSystemPropertiesMojo`); `PropertyResolver` expands `${key:default}` references.
 - `managers` holds the file formats: `JdkPropertiesManager` for `.properties` and
   `YmlPropertiesManager` for YAML.
-- The site is built from `src/site/apt`.
+- The site is built from `src/site/markdown`.
 
 ## Build gates
 
@@ -49,8 +49,8 @@ what the code and the POMs do not make obvious.
 
 ## Continuous integration and pull requests
 
-- `.github/workflows/maven.yml` calls the shared `maven-verify.yml@v5` workflow from
-  `apache/maven-gh-actions-shared`. Branches in this repository build under the push event, so look
+- `.github/workflows/maven.yml` calls the shared `maven-verify.yml` workflow from
+  `mojohaus/.github`. Branches in this repository build under the push event, so look
   at the push run for a pull request from a same-repository branch.
 - Pull requests are squash- or rebase-merged; merge commits are disabled. Release Drafter builds
   the release notes from the titles and labels, so the title should describe the change for a
