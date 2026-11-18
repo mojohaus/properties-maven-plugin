@@ -25,8 +25,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests the support class that produces concrete values from a set of properties.
@@ -128,25 +128,16 @@ class PropertyResolverTest {
 
         String value1 = resolver.getPropertyValue("p1", properties, new Properties());
         String value2 = resolver.getPropertyValue("p2", properties, new Properties());
-        String value5 = null;
-        try {
-            value5 = resolver.getPropertyValue("p5", properties, new Properties());
-            fail();
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("p5"), "expected message to contain 'p5': " + e.getMessage());
-        }
-        String value6 = null;
-        try {
-            value6 = resolver.getPropertyValue("p6", properties, new Properties());
-            fail();
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("p7"), "expected message to contain 'p7': " + e.getMessage());
-        }
+
+        IllegalArgumentException e5 = assertThrows(
+                IllegalArgumentException.class, () -> resolver.getPropertyValue("p5", properties, new Properties()));
+        assertTrue(e5.getMessage().contains("p5"), "expected message to contain 'p5': " + e5.getMessage());
+        IllegalArgumentException e6 = assertThrows(
+                IllegalArgumentException.class, () -> resolver.getPropertyValue("p6", properties, new Properties()));
+        assertTrue(e6.getMessage().contains("p7"), "expected message to contain 'p7': " + e6.getMessage());
 
         assertEquals("value", value1);
         assertEquals("value", value2);
-        assertNull(value5);
-        assertNull(value6);
     }
 
     @Test
