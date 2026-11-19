@@ -2,24 +2,22 @@ package org.codehaus.mojo.properties;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.properties.managers.JdkPropertiesManager;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class WritePrefixedPropertiesMojoTest {
+class WritePrefixedPropertiesMojoTest {
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    @TempDir
+    File temporaryFolder;
 
     private MavenProject projectStub;
     private WritePrefixedPropertiesMojo writePrefixedPropertiesMojo;
@@ -27,13 +25,13 @@ public class WritePrefixedPropertiesMojoTest {
     private String prefix;
     private String commonPrefix;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() {
         projectStub = new MavenProject();
         writePrefixedPropertiesMojo =
                 new WritePrefixedPropertiesMojo(Collections.singletonList(new JdkPropertiesManager()));
         writePrefixedPropertiesMojo.setProject(projectStub);
-        outputFile = temporaryFolder.newFile();
+        outputFile = new File(temporaryFolder, "output.properties");
         writePrefixedPropertiesMojo.setOutputFile(outputFile);
         prefix = "prefix.";
         writePrefixedPropertiesMojo.setKeyPrefix(prefix);
@@ -42,7 +40,7 @@ public class WritePrefixedPropertiesMojoTest {
     }
 
     @Test
-    public void prefixedPropertiesAreWritten() throws Exception {
+    void prefixedPropertiesAreWritten() throws Exception {
         String propertyKey = UUID.randomUUID().toString();
         projectStub.getProperties().put(prefix + propertyKey, "foo");
         projectStub.getProperties().put(propertyKey, "bar");
@@ -58,7 +56,7 @@ public class WritePrefixedPropertiesMojoTest {
     }
 
     @Test
-    public void propertiesWithCommonPrefixAreWritten() throws Exception {
+    void propertiesWithCommonPrefixAreWritten() throws Exception {
         String propertyKey = UUID.randomUUID().toString();
         projectStub.getProperties().put(commonPrefix + propertyKey, "foo");
 
@@ -73,7 +71,7 @@ public class WritePrefixedPropertiesMojoTest {
     }
 
     @Test
-    public void propertiesWithSpecificAndCommonPrefixAreWrittenWithoutCommonValue() throws Exception {
+    void propertiesWithSpecificAndCommonPrefixAreWrittenWithoutCommonValue() throws Exception {
         String propertyKey = UUID.randomUUID().toString();
         projectStub.getProperties().put(commonPrefix + propertyKey, "foo");
         projectStub.getProperties().put(prefix + propertyKey, "bar");
