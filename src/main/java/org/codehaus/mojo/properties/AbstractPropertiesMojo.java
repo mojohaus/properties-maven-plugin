@@ -1,5 +1,6 @@
 package org.codehaus.mojo.properties;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
@@ -38,6 +39,17 @@ public abstract class AbstractPropertiesMojo extends AbstractMojo {
         } catch (IllegalCharsetNameException | UnsupportedCharsetException e) {
             throw new MojoExecutionException("Invalid encoding '" + encoding + "'", e);
         }
+    }
+
+    /**
+     * Return the extension of a file name or path: the text after the last dot that follows the last file separator.
+     *
+     * @param filename a file name or path
+     * @return the extension without the dot, or an empty string when there is none
+     */
+    static String extension(String filename) {
+        int lastDot = filename.lastIndexOf('.');
+        return lastDot > filename.lastIndexOf(File.separatorChar) ? filename.substring(lastDot + 1) : "";
     }
 
     protected PropertiesManager getPropertiesManager(String resourceExtension) {
