@@ -1,9 +1,7 @@
----
 title: Usage
 author:
-  - Zarar Siddiqi
+- Zarar Siddiqi
 date: 2007-07-18
----
 
 Usage
 =====
@@ -21,7 +19,7 @@ reads property files or URLs and stores them as project properties.
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>properties-maven-plugin</artifactId>
-        <version>${project.version}</version>
+        <version><!-- latest release --></version>
         <executions>
           <execution>
             <phase>initialize</phase>
@@ -50,7 +48,6 @@ or alternatively
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>properties-maven-plugin</artifactId>
-        <version>${project.version}</version>
         <executions>
           <execution>
             <phase>initialize</phase>
@@ -60,7 +57,7 @@ or alternatively
             <configuration>
               <urls>
                 <url>classpath:/config/dev.properties</url>
-                <file>file:///${env.HOME}/mydev.properties</file>
+                <url>file:///${env.HOME}/mydev.properties</url>
               </urls>
             </configuration>
           </execution>
@@ -69,6 +66,32 @@ or alternatively
     </plugins>
   </build>
 </project>
+```
+
+The goal accepts more settings:
+
+* `encoding` is the character set of the files and URLs, for example `UTF-8`. Without it `.properties` resources are
+  read as ISO-8859-1, as the JDK does.
+* `keyPrefix` is added to the name of every property read, which separates properties of the same name from
+  different files.
+* `includedPropertyKeys` and `excludedPropertyKeys` choose the keys to import. They are matched as written in the
+  file, before `keyPrefix` is applied. When `includedPropertyKeys` is not empty, no other key is read.
+* `override` (default `true`) controls whether a value replaces a project property of the same name, and `quiet`
+  ignores files and URLs that cannot be found.
+* `useDefaultValues` turns on the `${name:default}` placeholders described in the [introduction](./index.html).
+* `prop.skipLoadProperties` skips the goal.
+
+```xml
+<configuration>
+  <files>
+    <file>etc/config/dev.properties</file>
+  </files>
+  <encoding>UTF-8</encoding>
+  <keyPrefix>dev.</keyPrefix>
+  <excludedPropertyKeys>
+    <excludedPropertyKey>password</excludedPropertyKey>
+  </excludedPropertyKeys>
+</configuration>
 ```
 
 write-project-properties
@@ -84,7 +107,6 @@ writes all project properties to a given file.
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>properties-maven-plugin</artifactId>
-        <version>${project.version}</version>
         <executions>
           <execution>
             <phase>generate-resources</phase>
@@ -93,7 +115,7 @@ writes all project properties to a given file.
             </goals>
             <configuration>
               <outputFile>
-                \${project.build.outputDirectory}/app.properties
+                ${project.build.outputDirectory}/app.properties
               </outputFile>
             </configuration>
           </execution>
@@ -113,9 +135,52 @@ user properties too.
 <configuration>
   <includeUserProperties>true</includeUserProperties>
   <outputFile>
-    \${project.build.outputDirectory}/app.properties
+    ${project.build.outputDirectory}/app.properties
   </outputFile>
 </configuration>
+```
+
+`includedPropertyKeys` and `excludedPropertyKeys` limit the keys written, and `encoding` sets the character set of the
+output file, `ISO-8859-1` for a `.properties` file when it is not set. A JVM system property with the same name as a
+project property replaces its value in the output.
+
+write-prefixed-properties
+-------------------------
+
+The [properties:write-prefixed-properties](./write-prefixed-properties-mojo.html) goal writes the project properties
+whose names start with a prefix to a file, without the prefix. Use it together with the `keyPrefix` of
+`read-project-properties` to pick the properties of one environment.
+
+A property that starts with the `commonKeyPrefix` (default `*.`) is written too, unless a property with the
+`keyPrefix` and the same remaining name exists; that one wins. With the properties
+
+```properties
+*.db.url=jdbc:h2:mem:test
+dev.db.url=jdbc:postgresql://dev/app
+dev.db.user=app
+```
+
+and the configuration below, the file contains the keys `db.url`, with the value of `dev.db.url`, and `db.user`.
+
+```xml
+<plugin>
+  <groupId>org.codehaus.mojo</groupId>
+  <artifactId>properties-maven-plugin</artifactId>
+  <executions>
+    <execution>
+      <phase>generate-resources</phase>
+      <goals>
+        <goal>write-prefixed-properties</goal>
+      </goals>
+      <configuration>
+        <keyPrefix>dev.</keyPrefix>
+        <outputFile>
+          ${project.build.outputDirectory}/app.properties
+        </outputFile>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
 ```
 
 write-active-profile-properties
@@ -131,7 +196,6 @@ writes properties of all active profiles to a given file.
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>properties-maven-plugin</artifactId>
-        <version>${project.version}</version>
         <executions>
           <execution>
             <phase>generate-resources</phase>
@@ -140,7 +204,7 @@ writes properties of all active profiles to a given file.
             </goals>
             <configuration>
               <outputFile>
-                \${project.build.outputDirectory}/app.properties
+                ${project.build.outputDirectory}/app.properties
               </outputFile>
             </configuration>
           </execution>
@@ -164,7 +228,6 @@ goal sets the specified system properties.
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>properties-maven-plugin</artifactId>
-        <version>${project.version}</version>
         <executions>
           <execution>
             <goals>
@@ -185,3 +248,4 @@ goal sets the specified system properties.
   </build>
 </project>
 ```
+

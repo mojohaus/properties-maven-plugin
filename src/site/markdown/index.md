@@ -24,6 +24,10 @@ In order to resolve such issue new features must by implement in Maven itself, l
 - [MNG-7833](https://issues.apache.org/jira/browse/MNG-7833)
 - [MNG-7914](https://issues.apache.org/jira/browse/MNG-7914)
 
+## Requirements
+
+The plugin requires Maven 3.9.0 or later and Java 8 or later.
+
 ## Plugin Overview
 
 The Properties Maven Plugin is here to make life a little easier when dealing
@@ -89,6 +93,8 @@ the following replacements will happen:
   files or properties from URLs as Project properties.
 - [properties:write-project-properties](./write-project-properties-mojo.html) Writes project
   properties to a file.
+- [properties:write-prefixed-properties](./write-prefixed-properties-mojo.html) Writes the project
+  properties that start with a prefix to a file, without the prefix.
 - [properties:write-active-profile-properties](./write-active-profile-properties-mojo.html) Writes
   properties of all active profiles to a file.
 - [properties:set-system-properties](./set-system-properties-mojo.html) Sets system properties.

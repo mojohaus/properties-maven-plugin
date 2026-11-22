@@ -36,7 +36,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.mojo.properties.managers.PropertiesManager;
 
 /**
- * Writes project properties to a file.
+ * Writes project properties to a file. A JVM system property with the same name as a project property replaces its
+ * value in the output.
  *
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
  *
@@ -46,14 +47,14 @@ import org.codehaus.mojo.properties.managers.PropertiesManager;
 public class WriteProjectProperties extends AbstractWritePropertiesMojo {
 
     /**
-     * Property keys to exclude.
+     * Property keys to exclude. They are removed before <code>includedPropertyKeys</code> is applied.
      * @since 1.3.0
      */
     @Parameter(property = "properties.excludedPropertyKeys")
     private Set<String> excludedPropertyKeys;
 
     /**
-     * Property keys to include.
+     * Property keys to include; when set and not empty, no other property is written.
      * @since 1.3.0
      */
     @Parameter(property = "properties.includedPropertyKeys")

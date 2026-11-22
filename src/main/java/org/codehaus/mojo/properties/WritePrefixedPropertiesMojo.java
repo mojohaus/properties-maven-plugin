@@ -36,7 +36,9 @@ import org.codehaus.mojo.properties.managers.PropertiesManager;
 /**
  * Writes project properties having keys with specific or common prefix to a file, removing this prefix.
  * Can be used in association with keyPrefix attribute on ReadPropertiesMojo, to isolate properties for specific
- *  environment for example.
+ * environment for example.
+ *
+ * @since 1.4.1
  * @version $Id$
  */
 @Mojo(name = "write-prefixed-properties", defaultPhase = LifecyclePhase.NONE, threadSafe = true)
