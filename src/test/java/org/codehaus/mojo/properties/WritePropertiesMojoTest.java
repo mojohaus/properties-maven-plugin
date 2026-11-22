@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.UUID;
@@ -169,6 +170,19 @@ class WritePropertiesMojoTest {
             written.load(fr);
             return written;
         }
+    }
+
+    @Test
+    void outputStartsWithTheHeaderHasNoTimestampAndIsSorted() throws Exception {
+        projectStub.getProperties().put("b", "2");
+        projectStub.getProperties().put("a", "1");
+
+        writeProjectProperties.execute();
+
+        // java.util.Properties#store would add a "#<date>" comment line, which makes builds irreproducible
+        assertEquals(
+                Arrays.asList("#Properties", "a=1", "b=2"),
+                Files.readAllLines(outputFile.toPath(), StandardCharsets.ISO_8859_1));
     }
 
     @Test

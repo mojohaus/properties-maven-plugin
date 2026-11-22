@@ -36,8 +36,10 @@ what the code and the POMs do not make obvious.
 - Run a subset:
 
   ```shell
-  mvn -B -P run-its verify -Dinvoker.test=write-project,read-project
+  mvn -B -P run-its verify -Dinvoker.test=read-project,write-active-profile
   ```
+- Behavior of a single mojo, such as key filtering, encodings and the written file's header, belongs in the unit
+  tests; an IT stays only where the real Maven session or plugin descriptor matters.
 - Write `verify.groovy` as `assert` statements. Invoker fails a script whose last expression is
   anything other than `true` or `null`, so a trailing `list.each { }` fails the test; use a `for`
   loop.
