@@ -31,7 +31,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.properties.managers.PropertiesManager;
-import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:zarars@gmail.com">Zarar Siddiqi</a>
@@ -69,7 +68,7 @@ public abstract class AbstractWritePropertiesMojo extends AbstractPropertiesMojo
     protected void writeProperties(Properties properties) throws MojoExecutionException {
         Charset charset = toCharset(encoding);
         try {
-            PropertiesManager manager = getPropertiesManager(FileUtils.extension(outputFile.getName()));
+            PropertiesManager manager = getPropertiesManager(extension(outputFile.getName()));
             if (charset == null) {
                 manager.save(properties, Files.newOutputStream(outputFile.toPath()), "Properties");
             } else {

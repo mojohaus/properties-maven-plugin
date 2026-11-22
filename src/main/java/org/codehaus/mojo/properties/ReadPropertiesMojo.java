@@ -32,6 +32,7 @@ import java.nio.file.Files;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -44,8 +45,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.properties.managers.PropertiesManager;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.cli.CommandLineUtils;
 
 /**
  * The read-project-properties goal reads property files and URLs and stores the properties as project properties. It
@@ -347,7 +346,14 @@ public class ReadPropertiesMojo extends AbstractPropertiesMojo {
      * @throws IOException If the environment variables could not be queried from the shell.
      */
     Properties getSystemEnvVars() throws IOException {
-        return CommandLineUtils.getSystemEnvVars();
+        // Windows environment variable names are case-insensitive, so they are normalized to upper case
+        boolean windows =
+                System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("windows");
+        Properties envVars = new Properties();
+        for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
+            envVars.put(windows ? entry.getKey().toUpperCase(Locale.ENGLISH) : entry.getKey(), entry.getValue());
+        }
+        return envVars;
     }
 
     /**
@@ -420,7 +426,7 @@ public class ReadPropertiesMojo extends AbstractPropertiesMojo {
 
         @Override
         public String getResourceExtension() {
-            return FileUtils.extension(file.getName());
+            return extension(file.getName());
         }
 
         @Override
@@ -472,7 +478,7 @@ public class ReadPropertiesMojo extends AbstractPropertiesMojo {
 
         @Override
         public String getResourceExtension() {
-            return FileUtils.extension(url.getFile());
+            return extension(url.getFile());
         }
 
         @Override
