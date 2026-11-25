@@ -9,10 +9,10 @@ try (InputStream input = Files.newInputStream(prop.toPath())) {
 }
 
 def expected = [
-        'project-properties-test1' : 'value21',
-        'project-properties-test2' : 'value22',
-        'settings-properties-test1': 'value1',
-        'settings-properties-test2': 'value2'
+    'project-properties-test1' : 'value21',
+    'project-properties-test2' : 'value22',
+    'settings-properties-test1': 'value1',
+    'settings-properties-test2': 'value2'
 ]
 
 assert properties.equals(expected)

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-File testFile = new File( basedir, 'target/classes/test.txt' )
+File testFile = new File(basedir, 'target/classes/test.txt')
 assert testFile.exists()
 
 String content = testFile.getText()
@@ -24,7 +24,7 @@ assert content.contains('props1 has value value1')
 assert content.contains('props2 has value value2')
 assert content.contains('props3 has value value3')
 
-File buildLog = new File( basedir, 'build.log' )
+File buildLog = new File(basedir, 'build.log')
 assert buildLog.exists()
 assert buildLog.getText().contains("[WARNING] Unknown properties resource extension: 'txt' assume as: 'properties'")
 
